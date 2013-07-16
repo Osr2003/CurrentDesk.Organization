@@ -1,0 +1,182 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBAgents.AgentDetailsModel
+@{
+    ViewBag.Title = "AgentDetails";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="agents"><span class="normal"><a href="@Url.Action("Index", "AssetManagerAgents")">My Agents</a> :</span> @Model.FirstName @Model.LastName</h1>
+            </div>
+
+            <!-- Agent Information Section -->
+            <article>
+                <h2 class="inline-block">Agent Information</h2>
+                <div class="content-section">
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>First Name</h3>
+                            @Model.FirstName</li>
+                        <li class="columns four">
+                            <h3>Last Name</h3>
+                            @Model.LastName</li>
+                        <li class="columns four">
+                            <h3>Date of Birth</h3>
+                            @Model.BirthDate</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Phone Number</h3>
+                            @Model.PhoneNumber</li>
+                        <li class="columns eight">
+                            <h3>Email Address</h3>
+                            @Model.EmailAddress</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Phone ID</h3>
+                            @Model.PhoneID</li>
+                        <li class="columns eight">
+                            <h3>Password</h3>
+                            @Model.Password</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Password</h3>
+                            <input class="input-text width-sm" type="text" placeholder="[password]" /><button class="btn btn-small margin-left">Save Changes</button></li>
+                        <li class="columns eight"></li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Agent Address</h3>
+                            @Model.AgentAddress.Split('@')[0], @Model.AgentAddress.Split('@')[1]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            @Model.AgentCity</li>
+                        <li class="columns four">
+                            <h3>Country</h3>
+                            @Model.AgentCountry
+                        </li>
+                        <li class="columns four">
+                            <h3>Postal Code</h3>
+                            @Model.AgentPostalCode</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Banking Information Section -->
+            <article>
+                <h2 class="inline-block">Agent Banking Information</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Bank Name</h3>
+                            @Model.BankName</li>
+                        <li class="columns eight">
+                            <h3>Account Number</h3>
+                            @Model.AccountNumber</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Bic Number/SWIFT Code</h3>
+                            @Model.BicOrSwiftCode</li>
+                        <li class="columns eight">
+                            <h3>Receiving Bank Information</h3>
+                            @Model.ReceivingBankInfo @Model.ReceivingBankInfoDetail</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Bank Address</h3>
+                            @Model.BankAddress.Split('@')[0], @Model.BankAddress.Split('@')[1]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            @Model.BankCity</li>
+                        <li class="columns five">
+                            <h3>Country</h3>
+                            @Model.BankCountry</li>
+                        <li class="columns three">
+                            <h3>Postal Code</h3>
+                            @Model.BankPostalCode</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Referral Links Section -->
+            <article>
+                <h2 class="inline-block">Referral Links</h2>
+                <div class="content-section">
+
+                    <table class="column-table">
+                        <tr>
+                            <td class="text-left width-fifty">
+                                <h3 class="h3">Current Referral Link</h3>
+                                <strong><a><span id="spnCurrReferralLink"></span></a></strong></td>
+                            @if (ViewData["CustomizedLink"] != null)
+                            {
+                                <td class="text-left width-fifty">
+                                    <h3 class="h3">Customized Link</h3>
+                                    <strong><a><span id="spnCustomReferralLink"></span></a></strong></td>
+                            }
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="primary" href="@Url.Action("AgentDetails", "AssetManagerAgents", new { agentID = Model.AgentID })"><span class="arrow"></span><strong>@Model.FirstName @Model.LastName</strong>@String.Format("{0:000}", Model.AgentID)</a></li>
+                <li><a class="single referrals" href="@Url.Action("AgentReferralFees", "AssetManagerAgents", new { agentID = Model.AgentID, agentName = Model.FirstName + '@' + Model.LastName })"><span class="arrow"></span><strong>Agent Referral Fees</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAgents').addClass('active');
+
+            //Set referral link in span
+            var referralLink = 'http://' + window.location.host + '/AccountSignUp/LiveAccountInitial?referralID=@ViewData["AccountNumber"]-@String.Format("{0:000}", Model.AgentID)';
+            $('#spnCurrReferralLink').text(referralLink);
+
+            //Set customized link if available in span
+            @if (ViewData["CustomizedLink"] != null)
+            {
+            <text>
+            var customizedLink = 'http://' + window.location.host + '/AccountSignUp/LiveAccountInitial?referralID=@ViewData["CustomizedLink"]-@String.Format("{0:000}", Model.AgentID)';
+            $('#spnCustomReferralLink').text(customizedLink);
+            </text>
+            }
+
+        });
+    </script>
+}

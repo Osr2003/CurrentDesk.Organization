@@ -1,0 +1,320 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientDetailsModel
+@{
+    ViewBag.Title = "ClientDetails";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="@Url.Action("Index", "IntroducingBrokerClients")">My Clients</a> :</span> @Model.FirstName @Model.LastName : @Model.AccountID</h1>
+            </div>
+
+            <!-- Client Information Section -->
+            <article id="artClientInfo">
+                <h2 class="inline-block">Client Information</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns two">
+                            <h3>Title</h3>
+                            @Html.DisplayFor(model => model.Title)</li>
+                        <li class="columns three">
+                            <h3>First Name</h3>
+                            @Html.DisplayFor(model => model.FirstName)</li>
+                        <li class="columns three">
+                            <h3>Middle Name</h3>
+                            @Html.DisplayFor(model => model.MiddleName)</li>
+                        <li class="columns four">
+                            <h3>Last Name</h3>
+                            @Html.DisplayFor(model => model.LastName)</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns five">
+                            <h3>Date of Birth</h3>
+                            @Html.DisplayFor(model => model.DobMonth)/@Html.DisplayFor(model => model.DobDay)/@Html.DisplayFor(model => model.DobYear)</li>
+                        <li class="columns seven">
+                            <h3>Gender</h3>
+                            @Html.DisplayFor(model => model.Gender)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Citizenship</h3>
+                            @Html.DisplayFor(model => model.Citizenship)</li>
+                        <li class="columns seven">
+                            <h3>ID Information</h3>
+                            @Html.DisplayFor(model => model.IdInfo): @Html.DisplayFor(model => model.IdNumber)</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns twelve">
+                            <h3>Country of Residence</h3>
+                            @Html.DisplayFor(model => model.ResidenceCountry)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Account ID</h3>
+                            @Html.DisplayFor(model => model.ClientAccountNumber)</li>
+                        <li class="columns three">
+                            <h3>Phone ID</h3>
+                            @Html.DisplayFor(model => model.PhoneID)</li>
+                        <li class="columns four">
+								<h3>Agent</h3>
+                            @Html.DropDownListFor(model => model.AgentID, (IEnumerable<SelectListItem>)ViewData["Agents"], "", new { @id = "drpAgents", @class = "width-150" })
+							<button id="btnClientAgentEdit" class="btn btn-small margin-left" disabled="">Reset</button>
+							</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Password</h3>
+                            <input class="input-text width-sm" type="password" disabled="" value="password"><button class="btn btn-small margin-left">Reset</button></li>
+                        <li class="columns seven">
+                            <h3>Status</h3>
+                            @if(Model.Status == "Approved")
+                            {
+                            <span style="color:#78A800;">@Html.DisplayFor(model => model.Status)</span>
+                            }
+                            else if (Model.Status == "Pending")
+                            {
+                            <span style="color:#F9CE34;">@Html.DisplayFor(model => model.Status)</span>
+                            }
+                            else if (Model.Status == "Missing Documents")
+                            {
+                            <span style="color:#E70000;">@Html.DisplayFor(model => model.Status)</span>
+                            }
+                            else if (Model.Status == "Declined")
+                            {
+                            <span style="color:#000000;">@Html.DisplayFor(model => model.Status)</span>
+                            }
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Contact Information Section -->
+            <article>
+                <h2 class="inline-block">Contact Information</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Residential Address</h3>
+                            @Html.DisplayFor(model => model.ResidentialAddLine1)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            @Html.DisplayFor(model => model.ResidentialCity)</li>
+                        <li class="columns four">
+                            <h3>Country</h3>
+                            @Html.DisplayFor(model => model.ResidentialCountry)</li>
+                        <li class="columns four">
+                            <h3>Postal Code</h3>
+                            @Html.DisplayFor(model => model.ResidentialPostalCode)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Time At Current Address</h3>
+                            @Html.DisplayFor(model => model.YearsInCurrentAdd) years, @Html.DisplayFor(model => model.MonthsInCurrentAdd) months</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Previous Address</h3>
+                            @Html.DisplayFor(model => model.PreviousAddLine1)</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            @Html.DisplayFor(model => model.PreviousCity)</li>
+                        <li class="columns four">
+                            <h3>Country</h3>
+                            @Html.DisplayFor(model => model.PreviousCountry)</li>
+                        <li class="columns four">
+                            <h3>Postal Code</h3>
+                            @Html.DisplayFor(model => model.PreviousPostalCode)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Telephone Number</h3>
+                            @Html.DisplayFor(model => model.TelNumberCountryCode) - @Html.DisplayFor(model => model.TelNumber)</li>
+                        <li class="columns eight">
+                            <h3>Mobile Number</h3>
+                            @Html.DisplayFor(model => model.MobileNumberCountryCode) - @Html.DisplayFor(model => model.MobileNumber)</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Email Address</h3>
+                            @Html.DisplayFor(model => model.EmailAddress)</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Banking Information Section -->
+            <article>
+                @foreach (var item in Model.BankAccountModelList)
+                {
+                <h2 class="inline-block">@item.BankName</h2>
+                <div class="content-section">
+                    <ul class="row">
+                                <li class="columns four">
+                                    <h3>Bank Name</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankName)</label></li>
+                                <li class="columns eight">
+                                    <h3>Account Number</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.AccountNumber)</label></li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>Bic Number/SWIFT Code</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BicOrSwiftCode)</label></li>
+                                <li class="columns eight">
+                                    <h3>Receiving Bank Information</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.ReceivingBankInfoId)</label>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.ReceivingBankInfo)</label></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>Bank Address</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankAddLine1)</label>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankAddLine2)</label>
+                                </li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankCity)</label></li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankCountry)</label></li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    <label class="bold-font">@Html.DisplayFor(model => item.BankPostalCode)</label></li>
+                            </ul>
+                </div>
+                }
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="primary" href="@Url.Action("ClientDetails", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID})"><span class="arrow"></span><strong>@Model.FirstName @Model.LastName</strong>@Model.AccountID</a></li>
+                <li><a class="single accounts" href="@Url.Action("ClientAccounts", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="@Url.Action("ClientDocuments", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li><a class="single history" href="@Url.Action("ClientActivity", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li><a class="notes" href="@Url.Action("ClientNoteHistory", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <li><a class="fund" href="@Url.Action("DepositClientFund", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Deposit</strong>Client Funds</a></li>
+					<li><a class="internal" href="@Url.Action("TransferClientFund", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName })"><span class="arrow"></span><strong>Transfer</strong>Client Funds</a></li>
+					<li><a class="withdraw" href="@Url.Action("WithdrawClientFund", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Withdraw</strong>Client Funds</a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAccount", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.FirstName+'@'+Model.LastName})"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+
+            $('select').chosen();
+
+            //Update selected agent if agentID != null
+            //Disable dropdown, enale Edit button
+            @if(Model.AgentID != null)
+            {
+            <text>
+            $('#drpAgents').val(@Model.AgentID);
+            $('#drpAgents').attr("disabled", "disabled");
+            $("#drpAgents").trigger("liszt:updated");
+            $('#btnClientAgentEdit').removeAttr("disabled");
+            </text>
+            }
+            //Enable dropdown, disable Edit button
+            else
+            {
+            <text>
+            $('#drpAgents').removeAttr("disabled");
+            $("#drpAgents").trigger("liszt:updated");
+            $('#btnClientAgentEdit').attr("disabled", "disabled");
+            </text>
+            }
+
+        });//End of ready
+
+        //Edit button click
+        $('#btnClientAgentEdit').click(function(){
+            //Enable dropdown
+            $('#drpAgents').removeAttr("disabled");
+            $("#drpAgents").trigger("liszt:updated");
+        });
+
+        //On change event of Agents dropdown
+        $('#drpAgents').change(function () {
+            changeClientAgent();
+
+            //Disable dropdown, enable Edit button
+            $('#drpAgents').attr("disabled", "disabled");
+            $("#drpAgents").trigger("liszt:updated");
+            $('#btnClientAgentEdit').removeAttr("disabled");
+        });
+
+        //Function to change/assign agent to a client
+        function changeClientAgent() {
+            $("#loading").show();
+
+            var value = {
+                "clientID": @Model.ClientID,
+                "agentID": $('#drpAgents').val()
+            }
+
+            //Post request to change/assign client agent
+            $.post("@Url.Action("ChangeClientAgent", "IntroducingBrokerClients")", value, function (data) {
+                if (data) {
+                    $("#loading").hide();
+                    $('#artClientInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>New agent has been assigned.</div>');
+                }
+                else {
+                    $("#loading").hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+        
+    </script>
+}

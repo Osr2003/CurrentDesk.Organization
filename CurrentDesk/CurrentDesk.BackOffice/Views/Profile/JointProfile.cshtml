@@ -1,0 +1,964 @@
+﻿@model CurrentDesk.BackOffice.Models.JointAccountReviewModel
+@{
+    ViewBag.Title = "JointProfile";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile : </span><span id="spnHeaderTypeName">Primary Holder Information</span></h1>
+            </div>
+            <div id="divPrimaryInfo">
+                <!-- Personal Information Section -->
+                <article id="artPrimaryInfo">
+                    <h2 class="inline-block">Personal Information</h2>
+                    <a class="icon edit togglePersonal-link" href="#">Edit</a>
+                    <div class="content-section">
+                        <div class="row toggle-show">
+                            <!-- This <div> with the classes "columns two border-right" is here to display the right vertical border correctly. This is only here for styling purposes. No content should be added inside. -->
+                            <div class="columns two border-right"></div>
+                            <div class="columns two">
+                                <div class="avatar">
+                                    <img src="@CurrentDesk.BackOffice.Security.SessionManagement.ImageURL" width="150px" height="130px" onerror="imgError(this);"  alt="" />
+                                </div>
+                            </div>
+                            <div class="columns ten">
+                                <ul class="row">
+                                    <li class="columns two">
+                                        <h3>Title</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderTitle)</li>
+                                    <li class="columns three">
+                                        <h3>First Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderFirstName)</li>
+                                    <li class="columns three">
+                                        <h3>Middle Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderMiddleName)</li>
+                                    <li class="columns four">
+                                        <h3>Last Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderLastName)</li>
+                                </ul>
+                                <ul class="row border">
+                                    <li class="columns five">
+                                        <h3>Date of Birth</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderDobDay)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobMonth)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobYear)</li>
+                                    <li class="columns seven">
+                                        <h3>Gender</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderGender)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns five">
+                                        <h3>Citizenship</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderCitizenship)</li>
+                                    <li class="columns seven">
+                                        <h3>ID Information</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderIdInfo): @Html.DisplayFor(model => model.PrimaryAccountHolderIdNumber)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns twelve">
+                                        <h3>Country of Residence</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderResidenceCountry)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns five">
+                                        <h3>Account Number:</h3>
+                                        @Html.DisplayFor(model => model.ClientAccountNumber)</li>
+                                    <li class="columns seven">
+                                        <h3>Phone ID</h3>
+                                        <label class="bold-font" id="lblPhoneID">@Html.DisplayFor(model => model.PhoneID)</label></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row toggle-hide">
+                            <!-- This <div> with the classes "columns two border-right" is here to display the right vertical border correctly. This is only here for styling purposes. No content should be added inside. -->
+                            <div class="columns two border-right"></div>
+                            <div class="columns two text-center">
+                                <div class="avatar">
+                                    <img id="imgEditSrc" src="@CurrentDesk.BackOffice.Security.SessionManagement.ImageURL" width="150px" height="130px"  onerror="imgError(this);" alt="" />
+                                </div>
+                                <a class="btn btn-mini" href="#myImageModal" role="button" data-toggle="modal">Change Image</a>
+                            </div>
+                            <div class="columns ten">
+                                <ul class="row">
+                                    <li class="columns two">
+                                        <h3>Title</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderTitle)</li>
+                                    <li class="columns three">
+                                        <h3>First Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderFirstName)</li>
+                                    <li class="columns three">
+                                        <h3>Middle Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderMiddleName)</li>
+                                    <li class="columns four">
+                                        <h3>Last Name</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderLastName)</li>
+                                </ul>
+                                <ul class="row border">
+                                    <li class="columns five">
+                                        <h3>Date of Birth</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderDobDay)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobMonth)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobYear)</li>
+                                    <li class="columns seven">
+                                        <h3>Gender</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderGender)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns five">
+                                        <h3>Citizenship</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderCitizenship)</li>
+                                    <li class="columns seven">
+                                        <h3>ID Information</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderIdInfo): @Html.DisplayFor(model => model.PrimaryAccountHolderIdNumber)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns twelve">
+                                        <h3>Country of Residence</h3>
+                                        @Html.DisplayFor(model => model.PrimaryAccountHolderResidenceCountry)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns five">
+                                        <h3>Account Number:</h3>
+                                        @Html.DisplayFor(model => model.ClientAccountNumber)</li>
+                                    <li class="columns seven">
+                                        <label class="h3" for="PhoneID">Phone ID</label>
+                                        <input id="txtPhoneID" class="width-med" type="text" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-box toggle-hide text-right">
+                        <button class="btn cancelPersonalClick">Cancel</button>
+                        <button id="btnJointPerInfoSave" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </article>
+                <!-- Contact Information Section -->
+                <article>
+                    <h2 class="inline-block">Contact Information</h2>
+                    <a class="icon edit toggleContact-link" href="#">Edit</a>
+                    <div class="content-section">
+                        <div class="toggle-show">
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Residential Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHolderResidentialAddLine1)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Time At Current Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeYearsInCurrentAdd) years, @Html.DisplayFor(model => model.PrimaryAccountHoldeMonthsInCurrentAdd) months</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Previous Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousAddLine1)</li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>Telephone Number</h3>
+                                    <label class="bold-font" id="lblTelCountryCode">@Html.DisplayFor(model => model.PrimaryAccountHoldeTelNumberCountryCode)</label>
+                                    - 
+                                    <label class="bold-font" id="lblTelCountry">@Html.DisplayFor(model => model.PrimaryAccountHoldeTelNumber)</label></li>
+                                <li class="columns eight">
+                                    <h3>Mobile Number</h3>
+                                    <label class="bold-font" id="lblMobCountryCode">@Html.DisplayFor(model => model.PrimaryAccountHoldeMobileNumberCountryCode)</label>
+                                    -
+                                    <label class="bold-font" id="lblMobile">@Html.DisplayFor(model => model.PrimaryAccountHoldeMobileNumber)</label></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Email Address</h3>
+                                    <label class="bold-font" id="lblEmailAddress">@Html.DisplayFor(model => model.PrimaryAccountHoldeEmailAddress)</label></li>
+                            </ul>
+                        </div>
+
+                        <div class="toggle-hide">
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Residential Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHolderResidentialAddLine1)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Time At Current Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldeYearsInCurrentAdd) years, @Html.DisplayFor(model => model.PrimaryAccountHoldeMonthsInCurrentAdd) months</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Previous Address</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousAddLine1)</li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <label class="h3" for="Telephone">Telephone Number</label>
+                                    <input id="txtJntTelephoneCountryCode" class="width-extraSmall" type="text" />
+                                    <input id="txtJntTelephone" class="width-default" type="text" /></li>
+                                <li class="columns eight">
+                                    <label class="h3" for="Mobile">Mobile Number</label>
+                                    <input id="txtJntMobileCountryCode" class="width-extraSmall" type="text" />
+                                    <input id="txtJntMobile" class="width-default" type="text" /></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns five">
+                                    <label class="h3" for="Email">Email Address</label>
+                                    <input id="txtJntEmail" class="width-med" type="text" /></li>
+                                <li class="columns eight"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="button-box toggle-hide text-right">
+                        <button class="btn cancelContactClick">Cancel</button>
+                        <button id="btnJointContactInfoSave" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </article>
+            </div>
+            <div id="divSecondaryInfo">
+                <!-- Secondary Holder Section -->
+                <article>
+                    <h2>Secondary Holder</h2>
+                    <div class="content-section">
+                        <ul class="row">
+                            <li class="columns two">
+                                <h3>Title</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderTitle)</li>
+                            <li class="columns three">
+                                <h3>First Name</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderFirstName)</li>
+                            <li class="columns three">
+                                <h3>Middle Name</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderMiddleName) </li>
+                            <li class="columns four">
+                                <h3>Last Name</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderLastName)</li>
+                        </ul>
+                        <ul class="row border">
+                            <li class="columns five">
+                                <h3>Date of Birth</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderDobDay)/@Html.DisplayFor(model => model.SecondaryAccountHolderDobMonth)/@Html.DisplayFor(model => model.SecondaryAccountHolderDobYear)</li>
+                            <li class="columns seven">
+                                <h3>Gender</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderGender)</li>
+                        </ul>
+                        <ul class="row">
+                            <li class="columns five">
+                                <h3>Citizenship</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderCitizenship)</li>
+                            <li class="columns seven">
+                                <h3>ID Information</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderIdInfo): @Html.DisplayFor(model => model.SecondaryAccountHolderIdNumber)</li>
+                        </ul>
+                        <ul class="row">
+                            <li class="columns twelve">
+                                <h3>Country of Residence</h3>
+                                @Html.DisplayFor(model => model.SecondaryAccountHolderResidenceCountry)</li>
+                        </ul>
+                    </div>
+                </article>
+            </div>
+            <div id="divBankingInfo">
+                <!-- Banking Information Section -->
+                <article id="bankingInfo">
+                    <ul class="button-bar">
+                        <li><a id="aAddNewBank" class="btn btn-mini" href="#myModal" role="button" data-toggle="modal">Add Bank Account</a></li>
+                    </ul>
+                    <h2>Bank Information</h2>
+                    @foreach (var item in Model.BankAccountModelList)
+                    {
+                        <h2 class="inline-block">@item.BankName</h2>
+                        <a id="@item.BankAccountID" class="icon edit togglebank-link" href="#">Edit</a>
+                        <div style="margin-bottom: 10px;" class="content-section">
+                            <div class="toggle-show">
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <h3>Bank Name</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankName" >@Html.DisplayFor(model => item.BankName)</label></li>
+                                    <li class="columns eight">
+                                        <h3>Account Number</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblAccountNumber" >@Html.DisplayFor(model => item.AccountNumber)</label></li>
+                                </ul>
+                                <ul class="row border">
+                                    <li class="columns four">
+                                        <h3>Bic Number/SWIFT Code</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBicOrSwiftCode" >@Html.DisplayFor(model => item.BicOrSwiftCode)</label></li>
+                                    <li class="columns eight">
+                                        <h3>Receiving Bank Information</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblReceivingBankInfoId" >@Html.DisplayFor(model => item.ReceivingBankInfoId)</label>
+                                        <label class="bold-font" id="@item.BankAccountID-lblReceivingBankInfo" >@Html.DisplayFor(model => item.ReceivingBankInfo)</label></li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <h3>Bank Address</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankAddLine1" >@Html.DisplayFor(model => item.BankAddLine1)</label>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankAddLine2" >@Html.DisplayFor(model => item.BankAddLine2)</label>
+                                    </li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <h3>City</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankCity" >@Html.DisplayFor(model => item.BankCity)</label></li>
+                                    <li class="columns four">
+                                        <h3>Country</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankCountry" >@Html.DisplayFor(model => item.BankCountry)</label></li>
+                                    <li class="columns four">
+                                        <h3>Postal Code</h3>
+                                        <label class="bold-font" id="@item.BankAccountID-lblBankPostalCode" >@Html.DisplayFor(model => item.BankPostalCode)</label></li>
+                                </ul>
+                            </div>
+                            <div class="toggle-hide">
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <label class="h3" for="BankName">Bank Name</label>
+                                        @Html.TextBoxFor(model => item.BankName, new { @id = item.BankAccountID + "txtBankName", @class = "input-text width-med" })</li>
+                                    <li class="columns eight">
+                                        <label class="h3" for="AccountNum">Account Number</label>
+                                        @Html.TextBoxFor(model => item.AccountNumber, new { @id = item.BankAccountID + "txtAccountNumber", @class = "input-text width-med" })</li>
+                                </ul>
+                                <ul class="row border">
+                                    <li class="columns four">
+                                        <label class="h3" for="Swift">Bic Number/SWIFT Code</label>
+                                        @Html.TextBoxFor(model => item.BicOrSwiftCode, new { @id = item.BankAccountID + "txtBicSwiftCode", @class = "input-text width-med" })
+                                    </li>
+                                    <li class="columns eight">
+                                        <label class="h3" for="Receiving">Receiving Bank Information</label>
+                                        @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @class = @item.BankAccountID + "chzn-select", style = "width: 150px;", @id = item.BankAccountID + "drpReceivingBankInfoId" })
+                                        @Html.TextBoxFor(model => item.ReceivingBankInfo, new { @id = item.BankAccountID + "txtReceivingBankInfo", @class = "input-text width-med margin-left" })
+                                    </li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns twelve">
+                                        <label class="h3" for="Address">Bank Address</label>
+                                        @Html.TextBoxFor(model => item.BankAddLine1, new { @id = item.BankAccountID + "txtBankAddressLine1", @class = "input-text width-med" })
+                                    </li>
+                                    <li class="columns twelve">
+                                        @Html.TextBoxFor(model => item.BankAddLine2, new { @id = item.BankAccountID + "txtBankAddressLine2", @class = "input-text width-med" })</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <label class="h3" for="City">City</label>
+                                        @Html.TextBoxFor(model => item.BankCity, new { @id = item.BankAccountID + "txtBankCity", @class = "input-text width-med" })
+                                    </li>
+                                    <li class="columns five">
+                                        <label class="h3" for="Country">Country</label>
+                                        @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @class = @item.BankAccountID + "bankSelect", style = "width: 150px;", @id = item.BankAccountID + "drpBankCountry" })
+                                    </li>
+                                    <li class="columns three">
+                                        <label class="h3" for="Zip">Postal Code</label>
+                                        @Html.TextBoxFor(model => item.BankPostalCode, new { @id = item.BankAccountID + "txtBankPostalCode", @class = "input-text width-small" })
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="button-box toggle-hide text-right">
+                            <button class="btn cancelBankClick">Cancel</button>
+                            <button id=@item.BankAccountID class="btn btn-primary button-Bank">Save Changes</button>
+                        </div>
+                    }
+                </article>
+            </div>
+        </div>
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li id="liPrimary" class="active" onclick="showPrimaryInfo()"><a class="primary" href="#"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                <li id="liSecondary"><a class="secondary" href="#" onclick="showSecondaryInfo()"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                <li id="liBanking"><a class="banking" href="#" onclick="showBankingInfo()"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+
+<!-- Begin Modal Upload Content -->
+<div id="myImageModal" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add Image</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns">
+                <input id="fileUploader" type="file" name="file" accept="image/*" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnUploadClose" class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnUpload" class="btn btn-primary">Upload</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="myModal" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Bank Account Information</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-BankName">
+                    Bank Name <span class="required">*</span>
+                </label>
+                <input id="Modal-BankName" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-AccountNum">
+                    Account Number <span class="required">*</span>
+                </label>
+                <input id="Modal-AccountNum" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3" for="Modal-Swift">
+                    Bic Number/SWIFT Code <span class="required">*</span>
+                </label>
+                <input id="Modal-Swift" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-Receiving">Receiving Bank Information <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @id = "drpNewRecievingBankInfo", style = "width: 150px;" })
+                <input id="Modal-ReceivingBankInfo" class="width-med margin-left" type="text" />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3" for="Modal-Address">Bank Address <span class="required">*</span></label>
+                <input id="Modal-Address" class="width-med" type="text" /></li>
+            <li class="columns twelve">
+                <input id="Address2" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-City">
+                    City <span class="required">*</span>
+                </label>
+                <input id="Modal-City" class="width-med" type="text" /></li>
+            <li class="columns five">
+                <label class="h3" for="Modal-Country">Country <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @id = "drpNewBankCountry", @class = "width-med" })
+            </li>
+            <li class="columns three">
+                <label class="h3" for="Modal-Zip">Postal Code <span class="required">*</span></label><input id="Modal-Zip" class="width-100" type="text" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnAddNewBankAccount" class="btn btn-primary">Add Bank Account</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/upload")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+            $('#divSecondaryInfo, #divBankingInfo').hide();
+            $("#drpNewRecievingBankInfo").chosen();
+            $("#drpNewBankCountry").chosen();
+
+            //Upload Image       
+            $('#btnUpload').click(function () {
+                if (validateUploadedFile()) {
+                    var url = 'http://' + window.location.host + '/Profile/AddImage';
+                    $('#fileUploader').upload(url, function (data) {
+                        if (data) {
+                            $('#myImageModal').modal('hide');
+                            $('#artPrimaryInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully uploaded a profile image.</div>');
+                            window.location.reload();
+                        }
+                        else {
+                            $('#modalConfirmError').modal('show');
+                        }
+                    }, 'json');
+                }
+            });
+
+
+            //Adding New Bank Account
+            $("#btnAddNewBankAccount").click(function () {
+                //If valid entries
+                if (checkValidNewBankInfoValues()) {
+                    $("#loading").show();
+
+                    var values = {
+                        "BankName": $('#Modal-BankName').val(),
+                        "AccountNumber": $('#Modal-AccountNum').val(),
+                        "BicOrSwiftCode": $('#Modal-Swift').val(),
+                        "BankAddLine1": $('#Modal-Address').val(),
+                        "BankAddLine2": $('#Address2').val(),
+                        "ReceivingBankInfoId": $('#drpNewRecievingBankInfo').val(),
+                        "ReceivingBankInfo": $('#Modal-ReceivingBankInfo').val(),
+                        "BankCity": $('#Modal-City').val(),
+                        "BankCountry": $('#drpNewBankCountry').val(),
+                        "BankPostalCode": $('#Modal-Zip').val()
+                    }
+                    $.post("@Url.Action("AddNewBankAccount", "Profile")", values, function (data) {
+                        if (data == true) {
+                            $("#loading").hide();
+                            $('#myModal').modal('hide');
+                            $('#bankingInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added a new bank.</div>');
+                            window.location.reload();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+            });
+
+            //Functions Related To Bank Information
+            //-----------------------------------------------------
+
+            //jQuery custom script when edit button in the icon bar is clicked
+            $('.togglebank-link').click(function () {
+                var bankID = $(this).attr("id");
+                resetBankInfo(bankID);
+
+                $(this).next('.content-section').find('.toggle-show').toggle();
+                $(this).next('.content-section').find('.toggle-hide').toggle();
+                $(this).nextAll('.button-box').eq(0).show();
+
+                //Set scroll position and focus
+                $(window).scrollTop((($(window).outerHeight(true) - 250) / 2) + $(window).scrollTop());
+                $('#' + bankID + 'txtBankName').focus();
+                $(this).hide();
+                return false;
+            });
+
+            //jQuery custom script when cancel button is clicked
+            $('.cancelBankClick').click(function () {
+
+                $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+                $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+                $(this).parent().prev('.content-section').prev('.togglebank-link').show();
+                $(this).parent().hide();
+
+                return false;
+            });
+
+            //Updating Bank Information
+            $('.button-Bank').click(function () {
+                var btn = $(this);
+                var bankID = $(this).attr("id");
+                var bankName = $('#' + bankID + 'txtBankName').val();
+                var accountNumber = $('#' + bankID + 'txtAccountNumber').val();
+                var bicOrSwiftCode = $('#' + bankID + 'txtBicSwiftCode').val();
+                var bankAddLine1 = $('#' + bankID + 'txtBankAddressLine1').val();
+                var bankAddLine2 = $('#' + bankID + 'txtBankAddressLine2').val();
+                var receivingBankInfoId = $('#' + bankID + 'drpReceivingBankInfoId').val();
+                var receivingBankInfo = $('#' + bankID + 'txtReceivingBankInfo').val();
+                var bankCity = $('#' + bankID + 'txtBankCity').val();
+                var bankCountry = $('#' + bankID + 'drpBankCountry').val();
+                var bankPostalCode = $('#' + bankID + 'txtBankPostalCode').val();
+
+                if (checkValidEditBankInfoValues(bankID)) {
+                    $("#loading").show();
+
+                    var values = {
+                        "BankAccountID": bankID,
+                        "BankName": bankName,
+                        "AccountNumber": accountNumber,
+                        "BicOrSwiftCode": bicOrSwiftCode,
+                        "BankAddLine1": bankAddLine1,
+                        "BankAddLine2": bankAddLine2,
+                        "ReceivingBankInfoId": receivingBankInfoId,
+                        "ReceivingBankInfo": receivingBankInfo,
+                        "BankCity": bankCity,
+                        "BankCountry": bankCountry,
+                        "BankPostalCode": bankPostalCode,
+                    }
+
+                    $.post("@Url.Action("UpdateBankInformation", "Profile")", values, function (data) {
+
+                        if (data == true) {
+                            $("#loading").hide();
+
+                            $('#bankingInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your banking information.</div>');
+
+                            $('#' + bankID + '-lblBankName').text(bankName);
+                            $('#' + bankID + '-lblAccountNumber').text(accountNumber);
+                            $('#' + bankID + '-lblBicOrSwiftCode').text(bicOrSwiftCode);
+                            $('#' + bankID + '-lblBankAddLine1').text(bankAddLine1);
+                            $('#' + bankID + '-lblBankAddLine2').text(bankAddLine2);
+                            $('#' + bankID + '-lblReceivingBankInfoId').text($('#' + bankID + 'drpReceivingBankInfoId :selected').text());
+                            $('#' + bankID + '-lblReceivingBankInfo').text(receivingBankInfo);
+                            $('#' + bankID + '-lblBankCity').text(bankCity);
+                            $('#' + bankID + '-lblBankCountry').text($('#' + bankID + 'drpBankCountry :selected').text());
+                            $('#' + bankID + '-lblBankPostalCode').text(bankPostalCode);
+
+                            btn.parent().prev('.content-section').find('.toggle-show').toggle();
+                            btn.parent().prev('.content-section').find('.toggle-hide').toggle();
+                            btn.parent().parent().find('.togglebank-link').show();
+                            btn.parent().hide();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+
+                        return false;
+                    });
+                }
+            });
+
+            //------End Bank Info--------------
+
+            //Functions Related To Individual Personal  Information
+            //-----------------------------------------------------
+
+            //jQuery custom script when edit button in the icon bar is clicked
+            $('.togglePersonal-link').click(function () {
+                resetJointPersonalInfo();
+                $(this).next('.content-section').find('.toggle-show').toggle();
+                $(this).next('.content-section').find('.toggle-hide').toggle();
+                $(this).nextAll('.button-box').eq(0).show();
+                $(this).hide();
+
+                //Set scroll position and focus
+                $(window).scrollTop((($(window).outerHeight(true) - 400) / 2) + $(window).scrollTop());
+                $('#txtPhoneID').focus();
+                return false;
+            });
+
+            //jQuery custom script when cancel button is clicked
+            $('.cancelPersonalClick').click(function () {
+
+                $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+                $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+                $(this).parent().prev('.content-section').prev('.togglePersonal-link').show();
+                $(this).parent().hide();
+
+                return false;
+            });
+
+            //Updating Individual Personal Information
+            $('#btnJointPerInfoSave').click(function () {
+                var clickedButton = $(this);
+
+                if (validateJointPersonalInfo()) {
+                    $("#loading").show();
+
+                    var jointPersonalInforamtionValues = {
+                        "phoneID": $('#txtPhoneID').val()
+                    }
+
+                    //Post request to update Trust info
+                    $.post("@Url.Action("UpdateJointPersonalInformation", "Profile")", jointPersonalInforamtionValues, function (data) {
+                        if (data == true) {
+                            $("#loading").hide();
+
+                            $('#artPrimaryInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your profile.</div>');
+
+                            $('#lblPhoneID').text($('#txtPhoneID').val());
+
+                            clickedButton.parent().prev('.content-section').find('.toggle-show').toggle();
+                            clickedButton.parent().prev('.content-section').find('.toggle-hide').toggle();
+                            clickedButton.parent().parent().find('.togglePersonal-link').show();
+                            clickedButton.parent().hide();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+                else {
+                    $('.requiredError').remove();
+                    $('#txtPhoneID').after('<span class="requiredError">*</span>');
+                }
+            });
+
+            //Function to reset all edit textboxes to present values
+            function resetJointPersonalInfo() {
+                $('#txtPhoneID').val($('#lblPhoneID').text());
+            }
+
+            //Function to check valid Trust Info values
+            function validateJointPersonalInfo() {
+                if ($('#txtPhoneID').val() != '' && $('#txtPhoneID').val().length <= 30) {
+                    return true;
+                }
+                return false;
+            }
+
+            //------End Individual Contact Info--------------
+
+            //Functions Related To Individual Contact  Information
+            //---------------------------------
+
+            $('.toggleContact-link').click(function () {
+                resetJointContactInfo();
+                $(this).next('.content-section').find('.toggle-show').toggle();
+                $(this).next('.content-section').find('.toggle-hide').toggle();
+                $(this).nextAll('.button-box').eq(0).show();
+                $(this).hide();
+
+                //Set scroll position and focus
+                $(window).scrollTop((($(window).outerHeight(true)) / 2) + $(window).scrollTop());
+                $('#txtJntTelephoneCountryCode').focus();
+                return false;
+            });
+
+            //jQuery custom script when cancel button is clicked
+            $('.cancelContactClick').click(function () {
+
+                $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+                $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+                $(this).parent().prev('.content-section').prev('.toggleContact-link').show();
+                $(this).parent().hide();
+
+                return false;
+            });
+
+            //Function to reset all edit textboxes to present values
+            function resetJointContactInfo() {
+                $('#txtJntTelephoneCountryCode').val($('#lblTelCountryCode').html());
+                $('#txtJntTelephone').val($('#lblTelCountry').html());
+                $('#txtJntMobileCountryCode').val($('#lblMobCountryCode').html());
+                $('#txtJntMobile').val($('#lblMobile').html());
+                $('#txtJntEmail').val($('#lblEmailAddress').html());
+            }
+
+            //Updating Individual Contact Information  
+            $('#btnJointContactInfoSave').click(function () {
+
+                if (validateJointContactInformation()) {
+                    $("#loading").show();
+
+                    var clickedButton = $(this);
+                    var values = { "emailID": $('#txtJntEmail').val() }
+
+                    //Post request to check if email already exists          
+                    $.post("@Url.Action("CheckIfDuplicateEmail", "Profile")", values, function (data) {
+                        if (data == false) {
+                            var jointContactInformationValues = {
+                                "TelephoneCountryCode": $('#txtJntTelephoneCountryCode').val(),
+                                "TelephoneNumber": $('#txtJntTelephone').val(),
+                                "MobileCountryCode": $('#txtJntMobileCountryCode').val(),
+                                "MobileNumber": $('#txtJntMobile').val(),
+                                "EmailID": $('#txtJntEmail').val()
+                            }
+
+                            //Post request to update Trustee Cmpy Contact info            
+                            $.post("@Url.Action("UpdateJointContactInforamation", "Profile")", jointContactInformationValues, function (data) {
+                                if (data == true) {
+                                    $("#loading").hide();
+
+                                    $('#artPrimaryInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your profile.</div>');
+
+                                    $('#lblTelCountryCode').text($('#txtJntTelephoneCountryCode').val());
+                                    $('#lblTelCountry').text($('#txtJntTelephone').val());
+                                    $('#lblMobCountryCode').text($('#txtJntMobileCountryCode').val());
+                                    $('#lblMobile').text($('#txtJntMobile').val());
+                                    $('#lblEmailAddress').text($('#txtJntEmail').val());
+
+                                    clickedButton.parent().prev('.content-section').find('.toggle-show').toggle();
+                                    clickedButton.parent().prev('.content-section').find('.toggle-hide').toggle();
+                                    clickedButton.parent().parent().find('.toggleContact-link').show();
+                                    clickedButton.parent().hide();
+                                }
+                                else {
+                                    $("#loading").hide();
+                                    $('#modalConfirmError').modal('show');
+                                }
+                            });
+                        }
+                        else if (data == true) {
+                            $("#loading").hide();
+                            $('#txtJntEmail').after('<span class="requiredError">Email already exists!</span>');
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+            });
+
+
+            //Function to Validate Joint Information
+            function validateJointContactInformation() {
+                $('.requiredError').remove();
+                var valid = true;
+                var regNumeric = new RegExp("^[0-9]*$");
+                var regEmail = /^([a-zA-Z0-9_.-])+@@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+
+                if ($('#txtJntTelephoneCountryCode').val() == '' || !regNumeric.test($('#txtJntTelephoneCountryCode').val()) || $('#txtJntTelephoneCountryCode').val().length > 10) {
+                    $('#txtJntTelephoneCountryCode').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#txtJntTelephone').val() == '' || !regNumeric.test($('#txtJntTelephone').val()) || $('#txtJntTelephone').val().length > 15) {
+                    $('#txtJntTelephone').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#txtJntMobileCountryCode').val() == '' || !regNumeric.test($('#txtJntMobileCountryCode').val()) || $('#txtJntMobileCountryCode').val().length > 10) {
+                    $('#txtJntMobileCountryCode').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#txtJntMobile').val() == '' || !regNumeric.test($('#txtJntMobile').val()) || $('#txtJntMobile').val().length > 15) {
+                    $('#txtJntMobile').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if (!regEmail.test($('#txtJntEmail').val()) || $('#txtJntEmail').val().length > 50) {
+                    $('#txtJntEmail').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+
+                return valid;
+            }
+
+            //------End Joint Contact Info--------------
+        });
+
+        //Function to validate image file to be uploaded
+        function validateUploadedFile() {
+            $('#uploadErrorID').remove();
+            if ($('#fileUploader').val().length == 0) {
+                $('#fileUploader').after('<span id="uploadErrorID" class="requiredError">*</span>');
+                return false;
+            }
+            else {
+                var fileName = $('#fileUploader').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if (fileName.indexOf(".") == -1 || fileExt != "jpg" && fileExt != "tif" && fileExt != "png" && fileExt != "gif") {
+                    $('#myImageModal').modal('hide');
+                    $('#artPrimaryInfo').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Image file type is not accepted; please upload jpg, png, tif or gif.</div>');
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+
+        //Function to show primary account holder info
+        function showPrimaryInfo() {
+            $('#spnHeaderTypeName').text('Primary Holder Information');
+            $('#divPrimaryInfo').show();
+            $('#divSecondaryInfo, #divBankingInfo').hide();
+
+            $('#liBanking, #liSecondary').removeClass('active');
+            $('#liPrimary').addClass('active');
+        }
+
+        //Function to show secondary account holder info
+        function showSecondaryInfo() {
+            $('#spnHeaderTypeName').text('Secondary Holder Information');
+            $('#divSecondaryInfo').show();
+            $('#divPrimaryInfo, #divBankingInfo').hide();
+
+            $('#liBanking, #liPrimary').removeClass('active');
+            $('#liSecondary').addClass('active');
+        }
+
+        //Function to show banking info
+        function showBankingInfo() {
+            $('#spnHeaderTypeName').text('Banking Information');
+            $('#divPrimaryInfo, #divSecondaryInfo').hide();
+            $('#divBankingInfo').show();
+
+            $('#liPrimary, #liSecondary').removeClass('active');
+            $('#liBanking').addClass('active');
+        }
+
+        //Empty/reset add new bank info textboxes
+        $('#aAddNewBank').click(function () {
+            $('#Modal-BankName').val('');
+            $('#Modal-AccountNum').val('');
+            $('#Modal-Swift').val('');
+            $('#Modal-Address').val('');
+            $('#Address2').val('');
+            //$('#drpNewRecievingBankInfo').val();
+            $('#Modal-ReceivingBankInfo').val('');
+            $('#Modal-City').val('');
+            //$('#drpNewBankCountry').val('');
+            $('#Modal-Zip').val('');
+        });
+    </script>
+}

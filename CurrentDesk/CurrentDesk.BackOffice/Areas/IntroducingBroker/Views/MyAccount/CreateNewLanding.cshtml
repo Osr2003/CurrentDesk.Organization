@@ -1,0 +1,119 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientAccountsModel
+@{
+    ViewBag.Title = "CreateNewLanding";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="accounts"><span class="normal">My Accounts : </span>New Landing Account</h1>
+            </div>
+
+            <!-- New Landing Account Section -->
+            <article class="row">
+                <div class="columns seven">
+                    <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                    <dl class="form-box">
+                        <dt>
+                            <label>Select Currency <span class="required">*</span></label></dt>
+                        <dd>
+                            @Html.DropDownListFor(model => model.Currency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "", new { @id = "drpAccountCurrency" })
+                        </dd>
+                        <dd>
+                            <small class="inline-block width-large">The Electronic Signature eliminates paper use and expedites the overall application process.To submit an electronic signature, simply type your name into the “Enter Electronic Signature” text field and click “Confirm Signature.”</small>
+                        </dd>
+                        <dt>
+                            <label for="modalSignature">Enter Electronic Signature <span class="required">*</span></label></dt>
+                        <dd>
+                            <input id="modalSignature" class="width-250" type="text" placeholder="type your full name here" /><button class="btn btn-small margin-left">Confirm Signature</button></dd>
+                    </dl>
+                    <div class="button-box">
+                        <button class="btn btn-primary" onclick="createNewLandingAcc(this)">Submit</button></div>
+                </div>
+                <div class="columns five">
+                    <div class="information-box">
+                        <div class="info-group">
+                            <strong class="icn-sm pin">Helpful Tip</strong>
+                            <p>[content]</p>
+                        </div>
+                        <div class="info-group">
+                            <strong class="icn-sm info">Did You Know?</strong>
+                            <p>[content]</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="accounts" href="@Url.Action("Index", "MyAccount")"><span class="arrow"></span><strong>Accounts List</strong></a></li>
+                <li class="active"><a class="landing" href="@Url.Action("CreateNewLandingAcc", "MyAccount")"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+            $('#drpAccountCurrency').css("width", "200px");
+            $('#drpAccountCurrency').chosen();
+
+        });//End of ready
+
+        //Function to create new landing account
+        function createNewLandingAcc(btnCntrl) {
+            if ($('#drpAccountCurrency').val() != '' && $('#modalSignature').val() != '') {
+                $(btnCntrl).attr("disabled", "disabled");
+                $("#loading").show();
+
+                var values = {
+                    "currencyID": $('#drpAccountCurrency').val()
+                }
+
+                $.post("@Url.Action("CreateNewLandingAccount", "MyAccount")", values, function (data) {
+                    if (data) {
+                        $("#loading").hide();
+                        window.location.href = '/IntroducingBroker/MyAccount';
+                    }
+                    else {
+                        $("#loading").hide();
+                        $(btnCntrl).removeAttr("disabled");
+                        alert('Some error occured!');
+                    }
+                });
+            }
+            else {
+                alert('Select currency and enter signature!');
+            }
+        }
+
+    </script>
+}

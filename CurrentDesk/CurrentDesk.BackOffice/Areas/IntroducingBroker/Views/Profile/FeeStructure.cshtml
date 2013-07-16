@@ -1,0 +1,288 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.FeeStructureModel
+@using CurrentDesk.Common
+@{
+    ViewBag.Title = "FeeStructure";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+			<div class="content-left">
+				<!-- Page Title Bar -->
+				<div class="page-title"><h1 class="profile"><span class="normal">My Profile :</span> Fee Group Management</h1></div>
+				<!-- Fee Structures Section -->
+				<article id="artFeeGrp">
+					<ul class="button-bar">
+						<li><button onclick="resetAddNewFeeModalValues()" class="btn btn-mini" data-toggle="modal" data-target="#modalNewFee">New Fee Group</button></li>
+					</ul>
+					<h2 class="inline-block">Fee Groups</h2>
+					
+					<div class="content-section no-border-bottom">
+						<table id="tblFeeStructure">
+							<tr>
+								<td/>
+							</tr>
+						</table>						
+					</div>
+				</article>
+			</div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_INDIVIDUAL)
+                {
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("PersonalInformation", "Profile")"><span class="arrow"></span><strong>Personal/Contact</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li class="active"><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_JOINT)
+                {
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li class="active"><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_CORPORATE)
+                {
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                <li><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li class="active"><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+                }
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewFee" class="modal hide fade medium">
+	
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<h2 class="inline-block h2">New Fee Group</h2>
+	</div>
+
+    <!-- Modal Body -->
+	<div class="content-section">
+		<ul class="row border">
+			<li class="columns twelve">
+				<label class="h3">Name <span class="required">*</span></label>
+				<input id="txtStructureName" class="input-text width-250" type="text" />
+			</li>
+		</ul>
+		<ul class="row border">
+			<li class="columns twelve">
+				<label class="h3">Spread Markup <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.WidenSpread, (IEnumerable<SelectListItem>)ViewData["WideSpreads"], "", new { @id = "drpWidenSpread", @class = "width-150" })
+				<span class="inline-h3">Other:</span><input id="txtWidenSpreadOther" class="input-text width-small" type="text" disabled="disabled" />
+			</li>
+		</ul>
+		<ul class="row">
+			<li class="columns twelve">
+				<label class="h3">Currency <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.AccountCurrency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "", new { @id = "drpAccountCurrency", @class = "width-150" })
+			</li>
+		</ul>
+	</div>
+	
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Cancel</button>
+		<button id="btnAddNewFeeModal" class="btn btn-primary">Add Fee Group</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqgrid")
+    <script>
+        // jqGrid plugin for handling tabular data: http://www.trirand.com/blog/
+        $(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+            $('#drpWidenSpread, #drpIncreasedCommissions, #drpAccountCurrency').chosen();
+
+            //Onchange event of widenspread dropdown to enable
+            //widenspreadother textbox when Others is selected
+            $('#drpWidenSpread').change(function () {
+                if ($('#drpWidenSpread').val() == 7) {
+                    $('#txtWidenSpreadOther').removeAttr("disabled");
+                }
+                else {
+                    $('#txtWidenSpreadOther').attr("disabled", "disabled");
+                }
+            });
+
+            //Load FeeStructure grid
+            $("#tblFeeStructure").jqGrid({
+                url: 'GetAllFeeStructure',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                sortname: 'StructureName',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                sortable: true,
+                loadonce: true,
+                colNames: ['PK_FeeID', 'Name', 'Spread Markup', 'Currency', 'Actions'],
+                colModel: [
+                    { name: 'PK_FeeID', hidden: true},
+                    { name: 'StructureName', title: false },
+                    { name: 'SpreadMarkUp', width: 150, fixed: true, align: 'right', title: false },
+                    { name: 'Currency', width: 150, fixed: true, align: 'center', sorttype: 'currency', title: false },
+                    { name: 'Action', width: 80, fixed: true, align: 'center', title: false, sortable: false }
+                ]
+            });
+
+            //Click function to add new fee structure
+            $('#btnAddNewFeeModal').click(function () {
+                if (checkValidNewFeeValues()) {
+                    $(this).attr("disabled", "disabled");
+                    $('#loading').show();
+
+                    var feeValues = {
+                        "StructureName": $('#txtStructureName').val(),
+                        "SpreadMarkUp": $('#drpWidenSpread').val(),
+                        "Currency": $('#drpAccountCurrency').val(),
+                        "WidenSpreadOther": $('#txtWidenSpreadOther').val()
+                    }
+
+                    //Post request to insert new fee structure
+                    $.post("@Url.Action("InsertNewFeeStructure", "Profile")", feeValues, function (data) {
+                        if (data) {
+                            $('#loading').hide();
+                            $('#modalNewFee').modal('hide');
+                            $('#artFeeGrp').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>				You have successfully created a new fee group.</div>');
+                            $("#tblFeeStructure").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                        }
+                        else {
+                            $('#loading').hide();
+                            $('#btnAddNewFeeModal').removeAttr("disabled");
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+            });
+
+        });
+
+        //Function to check valid fee structure values and show error message
+        function checkValidNewFeeValues() {
+            var valid = true;
+            var regExp = /^\s*-?\d+(\.\d{1,1})?\s*$/;
+            $('.requiredError').remove();
+            if ($('#txtStructureName').val() == '') {
+                $('#txtStructureName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpWidenSpread').val() == '') {
+                $('#drpWidenSpread_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpWidenSpread').val() == 7) {
+                if ($('#txtWidenSpreadOther').val() == '') {
+                    $('#txtWidenSpreadOther').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                else if (!regExp.test($('#txtWidenSpreadOther').val())) {
+                    $('#txtWidenSpreadOther').after('<span class="requiredError">*</span>');
+                    alert('Enter one place after decimal point!');
+                    valid = false;
+                }
+            }
+            if ($('#drpAccountCurrency').val() == '') {
+                $('#drpAccountCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Function to reset all fileds of Add new fee structure modal dialog
+        function resetAddNewFeeModalValues() {
+            $('#txtStructureName').val('');
+            $('#drpWidenSpread').val('');
+            $("#drpWidenSpread").trigger("liszt:updated");
+            $('#txtWidenSpreadOther').val('');
+            $('#drpAccountCurrency').val('');
+            $("#drpAccountCurrency").trigger("liszt:updated");
+        }
+
+        //Function to make a fee structure default
+        function makeDefaultFeeStructure(feeID) {
+            $('#loading').show();
+
+            var value = {
+                "feeID": feeID
+            }
+
+            //Post request to make a fee structure default
+            $.post("@Url.Action("MakeFeeStructureDefault", "Profile")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    alert('Error!');
+                }
+            });
+        }
+	</script>
+
+}

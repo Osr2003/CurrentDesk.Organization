@@ -1,0 +1,89 @@
+﻿@model CurrentDesk.BackOffice.Areas.AssetManager.Models.Profile.ManagedAccountProgramDetail
+@{
+    ViewBag.Title = "ProgramDetails";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal"><a href="#">My Profile</a> : <a href="@Url.Action("ManagedAccountProgram", "Profile")">Managed Account Programs</a> : @Model.ProgramName :</span> Program Details</h1>
+            </div>
+
+            <!-- Program Details Section -->
+            <article>
+                <h2 class="inline-block">Program Details</h2>
+                <div class="content-section">
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Program Name</h3>
+                            @Model.ProgramName</li>
+                        <li class="columns four">
+                            <h3>Currency</h3>
+                            @Model.Currency</li>
+                        <li class="columns four">
+                            <h3>Minimum Deposit</h3>
+                            @Model.MinimumDeposit</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Minimum Stopout Level %</h3>
+                            @Model.MinimumStopOutLevel%</li>
+                        <li class="columns four">
+                            <h3>Performance Fee %</h3>
+                            @Model.PerformanceFee% @Model.PerformanceFeePeriod</li>
+                        <li class="columns four">
+                            <h3>Management Fee %</h3>
+                            @Model.ManagementFee% @Model.ManagementFeePeriod</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Deposit Acceptance</h3>
+                            @Model.DepositAcceptance</li>
+                        <li class="columns eight">
+                            <h3>Platform</h3>
+                            @Model.Platform</li>
+                    </ul>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="program" href="@Url.Action("ProgramDetails", "Profile", new { programID = Model.PK_ProgramID})"><span class="arrow"></span><strong>Program Details</strong>@Model.ProgramName</a></li>
+                <li><a class="referrals" href="@Url.Action("IntroducingBrokerProfitShare", "Profile", new { programID = Model.PK_ProgramID, programName = Model.ProgramName})"><span class="arrow"></span><strong>Introducing Broker</strong>Profit Share</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+        });//End of ready
+    </script>
+}

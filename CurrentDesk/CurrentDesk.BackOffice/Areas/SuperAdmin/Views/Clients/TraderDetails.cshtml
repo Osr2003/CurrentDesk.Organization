@@ -1,0 +1,267 @@
+﻿@{
+    ViewBag.Title = "TraderDetails";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="clients.html">Clients</a> : [client name] :</span> 00000000</h1>
+            </div>
+
+            <!-- Client Information Section -->
+            <article>
+                <h2 class="inline-block">Client Information</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns two">
+                            <h3>Title</h3>
+                            [title]</li>
+                        <li class="columns three">
+                            <h3>First Name</h3>
+                            [first name]</li>
+                        <li class="columns three">
+                            <h3>Middle Name</h3>
+                            [middle name]</li>
+                        <li class="columns four">
+                            <h3>Last Name</h3>
+                            [last name]</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns five">
+                            <h3>Date of Birth</h3>
+                            [date of birth]</li>
+                        <li class="columns seven">
+                            <h3>Gender</h3>
+                            [gender]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Citizenship</h3>
+                            [citizenship]</li>
+                        <li class="columns seven">
+                            <h3>ID Information</h3>
+                            [id type]: [id number]</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns twelve">
+                            <h3>Country of Residence</h3>
+                            [country of residence]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Account ID</h3>
+                            [account id]</li>
+                        <li class="columns three">
+                            <h3>Phone ID</h3>
+                            [phone id]</li>
+                        <li class="columns four">
+                            <h3>Agent</h3>
+                            <select class="chzn-select width-150">
+                                <option></option>
+                                <option>Micah Perini</option>
+                                <option>Travis Dahm</option>
+                                <option>Ron Singer</option>
+                            </select><button class="btn btn-small margin-left" disabled="">Edit</button>
+                        </li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns five">
+                            <h3>Password</h3>
+                            <input class="width-sm" type="password" disabled="" value="password"><button type="button" class="btn btn-small margin-left">Reset</button></li>
+                        <li class="columns three">
+                            <h3>Status</h3>
+                            <span class="green">Active</span></li>
+                        <li class="columns four">
+                            <h3>Introducing Broker</h3>
+                            <select class="chzn-select width-150" disabled="">
+                                <option></option>
+                                <option>Micah Perini</option>
+                                <option selected="">Travis Dahm</option>
+                                <option>Ron Singer</option>
+                            </select><button class="btn btn-small margin-left">Edit</button>
+                        </li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Contact Information Section -->
+            <article>
+                <h2 class="inline-block">Contact Information</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Residential Address</h3>
+                            [street address]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            [city]</li>
+                        <li class="columns four">
+                            <h3>Country</h3>
+                            [country]</li>
+                        <li class="columns four">
+                            <h3>Postal Code</h3>
+                            [postal code]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Time At Current Address</h3>
+                            [number] years, [number] months</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Previous Address</h3>
+                            [street address]</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            [city]</li>
+                        <li class="columns four">
+                            <h3>Country</h3>
+                            [country]</li>
+                        <li class="columns four">
+                            <h3>Postal Code</h3>
+                            [postal code]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Telephone Number</h3>
+                            [telephone number]</li>
+                        <li class="columns eight">
+                            <h3>Mobile Number</h3>
+                            [mobile number]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Email Address</h3>
+                            [email address]</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Banking Information Section -->
+            <article>
+                <h2 class="inline-block">Banking Information - [account name]</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Bank Name</h3>
+                            [bank name]</li>
+                        <li class="columns eight">
+                            <h3>Account Number</h3>
+                            [account number]</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Bic Number/SWIFT Code</h3>
+                            [bic number/swift code]</li>
+                        <li class="columns eight">
+                            <h3>Receiving Bank Information</h3>
+                            [branch code] [branch number]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Bank Address</h3>
+                            [street address]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            [city]</li>
+                        <li class="columns five">
+                            <h3>Country</h3>
+                            [country]</li>
+                        <li class="columns three">
+                            <h3>Postal Code</h3>
+                            [postal code]</li>
+                    </ul>
+                </div>
+            </article>
+
+            <!-- Banking Information Section -->
+            <article>
+                <h2 class="inline-block">Banking Information - [account name]</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>Bank Name</h3>
+                            [bank name]</li>
+                        <li class="columns eight">
+                            <h3>Account Number</h3>
+                            [account number]</li>
+                    </ul>
+                    <ul class="row border">
+                        <li class="columns four">
+                            <h3>Bic Number/SWIFT Code</h3>
+                            [bic number/swift code]</li>
+                        <li class="columns eight">
+                            <h3>Receiving Bank Information</h3>
+                            [branch code] [branch number]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns twelve">
+                            <h3>Bank Address</h3>
+                            [street address]</li>
+                    </ul>
+                    <ul class="row">
+                        <li class="columns four">
+                            <h3>City</h3>
+                            [city]</li>
+                        <li class="columns five">
+                            <h3>Country</h3>
+                            [country]</li>
+                        <li class="columns three">
+                            <h3>Postal Code</h3>
+                            [postal code]</li>
+                    </ul>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="primary" href="@Url.Action("TraderDetails", "Clients")"><span class="arrow"></span><strong>[client name]</strong>00000000</a></li>
+                <li><a class="single accounts" href="@Url.Action("TraderAccounts", "Clients")"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="#"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li><a class="single history" href="#"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li><a class="notes" href="@Url.Action("TraderNoteHistory", "Clients")"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liClients').addClass('active');
+            $('select').chosen();
+        });//End of ready
+    </script>
+}

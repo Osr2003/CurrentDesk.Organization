@@ -1,0 +1,158 @@
+﻿@model CurrentDesk.BackOffice.Models.LiveAccountInitialModel
+
+@{
+    ViewBag.Title = "LiveAccountInitial";
+}
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+   <div class="main-content">
+    <div class="wrapper">
+        <h1>Sign up for your account today!</h1>
+        <p class="sub-header">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        @using (Html.BeginForm())
+        {
+            @Html.ValidationSummary(true)
+            <div class="content-section">
+                <dl class="form-list width-half">
+
+                    <!-- What Account -->
+                    <dt>
+                        <label style="display: block;"><span class="right required">*Required Fields</span>Which account are you signing up for? <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">                       
+                            @Html.DropDownListFor(model => model.AccountCode, (IEnumerable<SelectListItem>)ViewData["AccountCode"], "Please Select", new { @id = "account" })                        
+                            @Html.ValidationMessageFor(model => model.AccountCode)
+                    </dd>
+
+                    <!-- Account Type -->
+                    <dt>
+                        <label>Account Type: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        
+                            @Html.DropDownListFor(model => model.AccountType, (IEnumerable<SelectListItem>)ViewData["AccountType"], "Please Select", new { @id = "account" })                                                    
+                            @Html.ValidationMessageFor(model => model.AccountType)
+                    </dd>
+
+                    <!-- Trading Platform -->
+                    <dt>
+                        <label>Trading Platform: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                       @Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"], "Please Select", new { @id = "tradingPlatform" })                       
+                        @Html.ValidationMessageFor(model => model.TradingPlatform)
+                    </dd>
+
+                    <!-- Account Currency -->
+                    <dt>
+                        <label>Account Currency: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">                        
+                            @Html.DropDownListFor(model => model.AccountCurrency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "Please Select", new { @id = "accountCurrency" })                      
+                            @Html.ValidationMessageFor(model => model.AccountCurrency)
+                    </dd>
+
+                    <!-- Email -->
+                    <dt>
+                        <label>EmailId: <span class="required">*</span></label></dt>
+                    <dd style="margin-bottom: 15px;">@Html.TextBoxFor(model => model.UserEmail, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.UserEmail)</dd>
+
+                    <!-- Password -->
+                    <dt>
+                        <label>Password: <span class="required">*</span></label></dt>
+                    <dd style="margin-bottom: 15px;">@Html.PasswordFor(model => model.Password, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.Password)</dd>
+
+                    <!-- Verify Password -->
+                    <dt>
+                        <label>Verify Password: <span class="required">*</span></label></dt>
+                    <dd>@Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword)</dd>
+
+                    <!-- Languages -->
+                    <dt>
+                        <label>Language: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">                        
+                       @Html.DropDownListFor(model => model.LanguageCode, (IEnumerable<SelectListItem>)ViewData["Language"], "Please Select", new { @id = "language" })                       
+                        @Html.ValidationMessageFor(model => model.LanguageCode)
+                    </dd>
+
+                    <!-- Is Eng Speaking -->
+                    <dt>
+                        
+                        @Html.EditorFor(model => model.IsEnglishSpeaking)
+                        @Html.ValidationMessageFor(model => model.IsEnglishSpeaking)
+                        <label>Is English Speaking </label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        
+                    </dd>
+                </dl>
+
+            </div>
+            <div class="agreements-box">
+                <div class="bottom">
+                    <h2>Agreements and Risk Disclosure</h2>
+                    <p>Before you fill out the online application form, please read our agreements and risk disclosure.  In order to read PDF files you may need to download <a href="http://get.adobe.com/reader/" target="_blank">Adobe Acrobat Reader</a>.</p>
+                    <div>
+                        <ol>
+                            <li><a href="#">Customer Agreement</a> <i>(PDF)</i></li>
+                            <li><a href="#">Terms of Business</a> <i>(PDF)</i></li>
+                            <li><a href="#">Risk Acknowledgement and Disclosure</a> <i>(PDF)</i></li>
+                        </ol>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.CheckBoxFor(model => model.IsCustomerAgreement)
+                                @Html.ValidationMessageFor(model => model.IsCustomerAgreement)</dt>
+                            <dd>
+                                <label for="docs-1">I have read and agree to the Customer Agreement</label></dd>
+                        </dl>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.CheckBoxFor(model => model.IsBuisnessTerm)
+                                @Html.ValidationMessageFor(model => model.IsBuisnessTerm)</dt>
+                            <dd>
+                                <label for="docs-2">I have read and agree to the Terms of Business</label></dd>
+                        </dl>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.CheckBoxFor(model => model.IsRiskAcknowledgementAndDisclosure)
+                                @Html.ValidationMessageFor(model => model.IsRiskAcknowledgementAndDisclosure)</dt>
+                            <dd>
+                                <label for="docs-3">I have read and agree to the Risk Acknowledgement and Disclosure</label></dd>
+                        </dl>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.CheckBoxFor(model => model.IsArbitartionClauseCustomerAgreement)
+                                @Html.ValidationMessageFor(model => model.IsArbitartionClauseCustomerAgreement)</dt>
+                            <dd>
+                                <label for="docs-4">I agree to the Arbitration Clause in the Customer Agreement <i>(optional)</i></label></dd>
+                        </dl>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.CheckBoxFor(model => model.IsResident)
+                                @Html.ValidationMessageFor(model => model.IsResident)</dt>
+                            <dd>
+                                <label for="docs-5">I certify that I am not a resident of or domiciled in the United States of America or its territories and am not a United States of America citizen. <i>(High-Net-Worth United States of America citizens are accepted on a case-by-case basis, however the Accredited Investor Disclosure Agreement is required.)</i></label></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <!-- Button Box -->
+            <div class="button-box">
+                <input id="btnLiveInitialSubmit" class="button submit right" type="submit" value="Continue" /></div>
+        }
+    </div>
+</div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+     <script type="text/javascript">     
+         (function ($) {
+             $.validator.unobtrusive.adapters.addBool("booleanrequired", "required");
+             $("select").uniform();
+
+         } (jQuery));
+    </script>
+
+
+
+
+
+}

@@ -1,0 +1,586 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3BD3A2C8-3889-4563-9E63-13DB30222121}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CurrentDesk.Repository</RootNamespace>
+    <AssemblyName>CurrentDesk.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountCreationRuleBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountCreationRuleRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountCurrencyBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountCurrencyRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdminTransactionBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AdminTransactionRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AgentBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AgentRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AssetManagerBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AssetManagerRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BankAccountInformationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BankAccountInformationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BOMAMAlertBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BOMAMAlertRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BOMAMTradeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BOMAMTradeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BrokerBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="BrokerRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ComplexType.cs" />
+    <Compile Include="ClientBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClientNoteBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClientNoteRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ClientRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Client_AccountBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Client_AccountRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CommonErrorLogger.cs" />
+    <Compile Include="ConversionActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ConversionActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CorporateAccountInformationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CorporateAccountInformationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DemoLeadBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DemoLeadRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DepositOrWithdrawActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DepositOrWithdrawActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DocumentRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFRepository.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EFUnitOfWork.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmployeeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmployeeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorLogBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorLogRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FundingSourceAcceptedCurrencyBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FundingSourceAcceptedCurrencyRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FundingSourceBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FundingSourceRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndividualAccountInformationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndividualAccountInformationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InternalUserMessageBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InternalUserMessageRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IntroducingBrokerBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IntroducingBrokerRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IRepositoryCurrentDesk.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IUnitOfWork.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JointAccountInformationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JointAccountInformationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LeadNoteBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LeadNoteRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LiveLeadBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LiveLeadRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountActivityTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountActivityTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountCodeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountCodeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountFormTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountFormTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountTypeValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountTypeValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_ActivityTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_ActivityTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AdminTransactionTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AdminTransactionTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AnnualIncomeValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AnnualIncomeValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_BrokerExchangeRateBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_BrokerExchangeRateRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CommissionIncrementValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CommissionIncrementValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CompanyTypeValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CompanyTypeValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CountryBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CountryRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CurrencyValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CurrencyValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_IDInformationTypeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_IDInformationTypeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_InitialInvestmentBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_InitialInvestmentRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_LanguagesBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_LanguagesRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_LiquidAssetsValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_LiquidAssetsValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_NetWorthEurosBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_NetWorthEurosRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_RecievingBankBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_RecievingBankRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TicketSizeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TicketSizeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingExperienceBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingExperienceRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingPlatformValuesBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingPlatformValuesRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TrusteeTypeValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TrusteeTypeValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_WidenSpreadsValueBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_WidenSpreadsValueRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ManagedAccountProgramBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ManagedAccountProgramRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MarginBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MarginRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OrganizationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="OrganizationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartnerCommissionBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PartnerCommissionRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PriceBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="PriceRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RepositoryIQueryableExtensions.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_AssetManager_ClientAccount_TraderBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_AssetManager_ClientAccount_TraderRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_AssetManager_IntroducingBroker_ClientAccountBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_AssetManager_IntroducingBroker_ClientAccountRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_Employee_ClientBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_Employee_ClientRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_Employee_IntroducingBrokerBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_Employee_IntroducingBrokerRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_IntroducingBroker_ClientBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_IntroducingBroker_ClientRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_IntroducingBroker_IntroducingBrokerBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_IntroducingBroker_IntroducingBrokerRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_UserDocumentBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="R_UserDocumentRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradeBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TraderBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradeRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TraderRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradesHistoryBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradesHistoryRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradingPlatformBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradingPlatformRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionSettingBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransactionSettingRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransferActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransferActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransferLogBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TransferLogRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TrustAccountInformationBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TrustAccountInformationRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserActivityBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserActivityRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserDocumentBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserDocumentRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserImageBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserImageRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRecordBO.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRecordRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserRepository.Generated.cs">
+      <DependentUpon>IRepositoryCurrentDesk.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\CacheKey.cs" />
+    <Compile Include="Utility\StaticCache.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="IRepositoryCurrentDesk.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>IRepositoryCurrentDesk.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CurrentDesk.Common\CurrentDesk.Common.csproj">
+      <Project>{C7C2DCC0-DAD3-47A5-BF3A-DDACEB062433}</Project>
+      <Name>CurrentDesk.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.DAL\CurrentDesk.DAL.csproj">
+      <Project>{771B71A3-B158-4E3D-869B-A2CEE967A647}</Project>
+      <Name>CurrentDesk.DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.Models\CurrentDesk.Models.csproj">
+      <Project>{E18F0986-4E55-4DD6-BEE4-994C693A693A}</Project>
+      <Name>CurrentDesk.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

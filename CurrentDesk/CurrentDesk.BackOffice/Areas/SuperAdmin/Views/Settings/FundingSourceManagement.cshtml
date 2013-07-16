@@ -1,0 +1,883 @@
+﻿@model CurrentDesk.BackOffice.Areas.SuperAdmin.Models.Settings.FundingSourceModel
+@{
+    ViewBag.Title = "FundingSourceManagement";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="settings"><span class="normal">Settings :</span> Funding Source Management</h1>
+            </div>
+
+            <!-- Funding Sources -->
+            <article id="artFundingSource">
+                <ul class="button-bar">
+                    <li><a onclick="resetFundingSourceDialog()" class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNewSource" data-backdrop="static">Add New Source</a></li>
+                </ul>
+                <h2 class="inline-block">Funding Sources</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblSources">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="platforms" href="@Url.Action("Index", "Settings")"><span class="arrow"></span><strong>Platform</strong>Management</a></li>
+                <li><a class="roles" href="@Url.Action("UserRoleSettings", "Settings")"><span class="arrow"></span><strong>User Role</strong>Settings</a></li>
+                <li><a class="agreements single" href="@Url.Action("ClientAgreement", "Settings")"><span class="arrow"></span><strong>Client Agreements</strong></a></li>
+                <li class="active"><a class="funding" href="@Url.Action("FundingSourceManagement", "Settings")"><span class="arrow"></span><strong>Funding Source</strong>Management</a></li>
+                <li><a class="forms" href="@Url.Action("BrokerFormsManagement", "Settings")"><span class="arrow"></span><strong>Broker Forms</strong>Management</a></li>
+                <li><a class="documents" href="@Url.Action("KYCDocManagement", "Settings")"><span class="arrow"></span><strong>KYC Document</strong>Management</a></li>
+                <li><a class="fees" href="@Url.Action("FeeGroupManagement", "Settings")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="symbols" href="@Url.Action("SymbolManagement", "Settings")"><span class="arrow"></span><strong>Symbol</strong>Management</a></li>
+                <li><a class="settings single" href="@Url.Action("GlobalSettings", "Settings")"><span class="arrow"></span><strong>Global Settings</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewSource" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add Funding Source</h2>
+    </div>
+
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">Source Name <span class="required">*</span></label>
+                <input id="txtSourceName" class=" width-250" type="text" />
+            </li>
+            <li class="columns six">
+                <label class="h3">Source Type <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.SourceTypeID, (IEnumerable<SelectListItem>)ViewData["SourceType"], "", new { @id = "drpSourceType", @class = "width-200" })
+            </li>
+        </ul>
+
+        <!-- Bank Account Options -->
+        <div id="1_sourceType" class="toggle-hide">
+            <ul class="row">
+                <li class="columns four">
+                    <label class="h3">Bank Name <span class="required">*</span></label><input id="txtBankName" class="width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Account Number <span class="required">*</span></label><input id="txtAccountNumber" class="width-med" type="text" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Bic Number/SWIFT Code <span class="required">*</span></label><input id="txtBicCode" class="width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Receiving Bank Information <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.ReceivingBankInfoID, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], "Please Select", new { @id = "drpReceivingBank", @class = "width-150" })
+                    <input id="txtReceivingBankInfo" class="width-med margin-left" type="text" />
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Bank Address <span class="required">*</span></label><input id="txtBankAdd1" class="width-med" type="text" /></li>
+                <li class="columns twelve">
+                    <input id="txtBankAdd2" class="width-med" type="text" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">City <span class="required">*</span></label><input id="txtBankCity" class="width-med" type="text" /></li>
+                <li class="columns five">
+                    <label class="h3">Country <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "drpCountry" })
+                </li>
+                <li class="columns three">
+                    <label class="h3">Postal Code <span class="required">*</span></label><input id="txtBankPostalCode" class="width-100" type="text" /></li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3 inline">This bank requires an intermediary</label><input id="chkIntermediary" class="margin-left" type="checkbox" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3 disabled">Intermediary Bank Name <span class="required">*</span></label><input id="txtInterBankName" class="width-med" type="text" disabled="" /></li>
+                <li class="columns four">
+                    <label class="h3">Country <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "drpInterCountry" })
+                </li>
+                <li class="columns four">
+                    <label class="h3">Bic Number/SWIFT Code <span class="required">*</span></label><input id="txtInterBankBicCode" class="width-med" type="text" disabled="" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns twelve">
+                    <label class="h3">Accepted Currencies</label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpAcceptedCurrency", @class = "width-700" })
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns six">
+                    <label class="h3">Incoming Wire Fee <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpIncomingCurrency", @class = "width-150" })
+                    <input id="txtIncomingFee" class="margin-left width-120" type="text" placeholder="enter amount" />
+                </li>
+                <li class="columns six">
+                    <label class="h3">Outgoing Wire Fee <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpOutgoingCurrency", @class = "width-150" })
+                    <input id="txtOutgoingFee" class="margin-left width-120" type="text" placeholder="enter amount" />
+                </li>
+            </ul>
+        </div>
+
+        <!-- Skrill Moneybookers Options -->
+        <ul id="2_sourceType" class="row toggle-hide">
+            <li class="columns twelve">test 2</li>
+        </ul>
+
+        <!-- Neteller Options -->
+        <ul id="3_sourceType" class="row toggle-hide">
+            <li class="columns twelve">test 3</li>
+        </ul>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="addNewFundingSource(this)">Add Source</button>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalUpdateSource" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Edit Funding Source</h2>
+    </div>
+
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">Source Name <span class="required">*</span></label>
+                <input id="txtEditSourceName" class=" width-250" type="text" />
+            </li>
+            <li class="columns six">
+                <label class="h3">Source Type <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.SourceTypeID, (IEnumerable<SelectListItem>)ViewData["SourceType"], "", new { @id = "drpEditSourceType", @class = "width-200" })
+            </li>
+        </ul>
+
+        <!-- Bank Account Options -->
+        <div id="1_editSourceType" class="toggle-hide">
+            <ul class="row">
+                <li class="columns four">
+                    <label class="h3">Bank Name <span class="required">*</span></label><input id="txtEditBankName" class="width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Account Number <span class="required">*</span></label><input id="txtEditAccountNumber" class="width-med" type="text" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Bic Number/SWIFT Code <span class="required">*</span></label><input id="txtEditBicCode" class="width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Receiving Bank Information <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.ReceivingBankInfoID, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], "Please Select", new { @id = "drpEditReceivingBank", @class = "width-150" })
+                    <input id="txtEditReceivingBankInfo" class="width-med margin-left" type="text" />
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Bank Address <span class="required">*</span></label><input id="txtEditBankAdd1" class="width-med" type="text" /></li>
+                <li class="columns twelve">
+                    <input id="txtEditBankAdd2" class="width-med" type="text" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">City <span class="required">*</span></label><input id="txtEditBankCity" class="width-med" type="text" /></li>
+                <li class="columns five">
+                    <label class="h3">Country <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "drpEditCountry" })
+                </li>
+                <li class="columns three">
+                    <label class="h3">Postal Code <span class="required">*</span></label><input id="txtEditBankPostalCode" class="width-100" type="text" /></li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3 inline">This bank requires an intermediary</label><input id="chkEditIntermediary" class="margin-left" type="checkbox" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3 disabled">Intermediary Bank Name <span class="required">*</span></label><input id="txtEditInterBankName" class="width-med" type="text" disabled="" /></li>
+                <li class="columns four">
+                    <label class="h3">Country <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "drpEditInterCountry" })
+                </li>
+                <li class="columns four">
+                    <label class="h3">Bic Number/SWIFT Code <span class="required">*</span></label><input id="txtEditInterBankBicCode" class="width-med" type="text" disabled="" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns twelve">
+                    <label class="h3">Accepted Currencies</label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpEditAcceptedCurrency", @class = "width-700" })
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns six">
+                    <label class="h3">Incoming Wire Fee <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpEditIncomingCurrency", @class = "width-150" })
+                    <input id="txtEditIncomingFee" class="margin-left width-120" type="text" placeholder="enter amount" />
+                </li>
+                <li class="columns six">
+                    <label class="h3">Outgoing Wire Fee <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpEditOutgoingCurrency", @class = "width-150" })
+                    <input id="txtEditOutgoingFee" class="margin-left width-120" type="text" placeholder="enter amount" />
+                </li>
+            </ul>
+        </div>
+
+        <!-- Skrill Moneybookers Options -->
+        <ul id="2_editSourceType" class="row toggle-hide">
+            <li class="columns twelve">test 2</li>
+        </ul>
+
+        <!-- Neteller Options -->
+        <ul id="3_editSourceType" class="row toggle-hide">
+            <li class="columns twelve">test 3</li>
+        </ul>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="updateFundingSource(this)">Update Source</button>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/tip")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        var updateSourcePkId;
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liSettings').addClass('active');
+            $('#drpAcceptedCurrency, #drpEditAcceptedCurrency').attr('data-placeholder', 'Enter or select accepted currencies');
+            $('#drpAcceptedCurrency, #drpEditAcceptedCurrency').attr('multiple', true);
+            $('#drpInterCountry').attr('disabled', true);
+
+            //$('select').chosen();
+            $('#drpSourceType, #drpReceivingBank, #drpCountry, #drpInterCountry, #drpAcceptedCurrency, #drpIncomingCurrency, #drpOutgoingCurrency').chosen();
+            $('#drpEditSourceType, #drpEditReceivingBank, #drpEditCountry, #drpEditInterCountry, #drpEditIncomingCurrency, #drpEditOutgoingCurrency').chosen();
+
+            //Source type change event
+            $("#drpSourceType").change(function () {
+                $(".toggle-hide").hide();
+                $("#" + $(this).val() + "_sourceType").show();
+            })
+
+            //Source type change event Edit
+            $("#drpEditSourceType").change(function () {
+                $(".toggle-hide").hide();
+                $("#" + $(this).val() + "_editSourceType").show();
+            })
+
+            //Intermediary bank checkbox click event
+            $('#chkIntermediary').bind('click', function () {
+                if ($('#chkIntermediary').is(':checked')) {
+                    $('#txtInterBankName').removeAttr('disabled');
+                    $('#txtInterBankBicCode').removeAttr('disabled');
+                    $('#drpInterCountry').removeAttr('disabled');
+                    $("#drpInterCountry").trigger("liszt:updated");
+                }
+                else {
+                    $('#txtInterBankName').val('').attr('disabled', 'disabled');
+                    $('#txtInterBankBicCode').val('').attr('disabled', 'disabled');
+                    $('#drpInterCountry').val('').attr('disabled', 'disabled');
+                    $("#drpInterCountry").trigger("liszt:updated");
+                }
+            });
+
+            //Intermediary bank checkbox click event for update
+            $('#chkEditIntermediary').bind('click', function () {
+                if ($('#chkEditIntermediary').is(':checked')) {
+                    $('#txtEditInterBankName').removeAttr('disabled');
+                    $('#txtEditInterBankBicCode').removeAttr('disabled');
+                    $('#drpEditInterCountry').removeAttr('disabled');
+                    $("#drpEditInterCountry").trigger("liszt:updated");
+                }
+                else {
+                    $('#txtEditInterBankName').val('').attr('disabled', 'disabled');
+                    $('#txtEditInterBankBicCode').val('').attr('disabled', 'disabled');
+                    $('#drpEditInterCountry').val('').attr('disabled', 'disabled');
+                    $("#drpEditInterCountry").trigger("liszt:updated");
+                }
+            });
+
+            $("#tblSources").jqGrid({
+                url: 'GetAllFundingSources',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'name',
+                sortable: true,
+                loadonce: true,
+                colNames: ['Type', 'Source Name', 'Account Number', 'Currency', '', 'PK_ID'],
+                colModel: [
+                    { name: 'SourceType', title: false },
+                    { name: 'SourceName', title: false },
+                    { name: 'AccountNumber', title: false, sortable: false },
+                    { name: 'AcceptedCurr', title: false },
+                    { name: 'Action', width: 110, fixed: true, align: 'center', title: false, sortable: false },
+                    { name: 'PK_FundingSourceID', hidden: true }
+                ],
+                loadComplete: function () {
+                    //Show tool tip
+                    $('.tip').tipTip({ defaultPosition: 'top' });
+                }
+            });
+
+        });//End of ready
+
+        //Function to reset all funding source dialog values
+        function resetFundingSourceDialog() {
+            $('.toggle-hide').hide();
+
+            $('#chkIntermediary').attr('checked', false);
+
+            $('#txtSourceName').val('');
+            $('#txtBankName').val('');
+            $('#txtAccountNumber').val('');
+            $('#txtReceivingBankInfo').val('');
+            $('#txtBicCode').val('');
+            $('#txtBankAdd1').val('');
+            $('#txtBankAdd2').val('');
+            $('#txtBankCity').val('');
+            $('#txtBankPostalCode').val('');
+            $('#txtInterBankName').val('').attr('disabled', 'disabled');
+            $('#txtInterBankBicCode').val('').attr('disabled', 'disabled');
+            $('#txtIncomingFee').val('');
+            $('#txtOutgoingFee').val('');
+            $('#drpSourceType').val('');
+            $('#drpReceivingBank').val('');
+            $('#drpCountry').val('');
+            $('#drpInterCountry').val('').attr('disabled', 'disabled');
+            $('#drpAcceptedCurrency').val('');
+            $('#drpIncomingCurrency').val('');
+            $('#drpOutgoingCurrency').val('');
+            $("#drpSourceType").trigger("liszt:updated");
+            $("#drpReceivingBank").trigger("liszt:updated");
+            $("#drpCountry").trigger("liszt:updated");
+            $("#drpInterCountry").trigger("liszt:updated");
+            $("#drpAcceptedCurrency").trigger("liszt:updated");
+            $("#drpIncomingCurrency").trigger("liszt:updated");
+            $("#drpOutgoingCurrency").trigger("liszt:updated");
+        }
+
+        //Function to add new funding source into database
+        function addNewFundingSource(btnCntrl) {
+            //Banking funding source
+            if ($('#drpSourceType').val() == 1) {
+                var multipleSelectValue = '';
+                var multiple = $('#drpAcceptedCurrency').val();
+                $.each(multiple, function (key, value) {
+                    multipleSelectValue += value + ',';
+                });
+
+                //Validate all fields
+                if (validateFundingSourceValues()) {
+
+                    //Validate amount & fee size
+                    if (checkAmountSize($('#txtIncomingFee')) && checkAmountSize($('#txtOutgoingFee'))) {
+                        $(btnCntrl).attr('disabled', 'disabled');
+                        $('#loading').show();
+
+                        var values = {
+                            "SourceName": $('#txtSourceName').val(),
+                            "SourceType": $('#drpSourceType').val(),
+                            "BankName": $('#txtBankName').val(),
+                            "AccountNumber": $('#txtAccountNumber').val(),
+                            "BicOrSwiftCode": $('#txtBicCode').val(),
+                            "FK_ReceivingBankInfoID": $('#drpReceivingBank').val(),
+                            "ReceivingBankInfo": $('#txtReceivingBankInfo').val(),
+                            "BankAddress": $('#txtBankAdd1').val() + '@@' + $('#txtBankAdd2').val(),
+                            "BankCity": $('#txtBankCity').val(),
+                            "FK_BankCountryID": $('#drpCountry').val(),
+                            "BankPostalCode": $('#txtBankPostalCode').val(),
+                            "InterBankName": $('#txtInterBankName').val(),
+                            "FK_InterBankCountryID": $('#drpInterCountry').val(),
+                            "InterBicOrSwiftCode": $('#txtInterBankBicCode').val(),
+                            "IncomingWireFeeAmount": $('#txtIncomingFee').val().split(',').join(''),
+                            "OutgoingWireFeeAmount": $('#txtOutgoingFee').val().split(',').join(''),
+                            "FK_IncomingWireFeeCurr": $('#drpIncomingCurrency').val(),
+                            "FK_OutgoingWireFeeCurr": $('#drpOutgoingCurrency').val(),
+                            "AcceptedCurr": multipleSelectValue
+                        }
+
+                        //Post request to add new fund source
+                        $.post("@Url.Action("AddNewFundingSource", "Settings")", values, function (data) {
+                            if (data) {
+                                $('#loading').hide();
+                                $('#modalNewSource').modal('hide');
+                                $(btnCntrl).removeAttr('disabled');
+                                $("#tblSources").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                                $('#artFundingSource').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added a new funding source.</div>');
+                            }
+                            else {
+                                $('#loading').hide();
+                                $('#modalNewSource').modal('hide');
+                                $(btnCntrl).removeAttr('disabled');
+                                $('#modalConfirmError').modal('show');
+                            }
+                        });
+                    }
+                    else {
+                        $('#artFundingSource').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Amount or Fee is too large!</div>');
+                    }
+                }
+            }
+            else {
+                alert('Currently unavailable!');
+            }
+        }
+
+        //Function to validate new Funding Source fields
+        function validateFundingSourceValues() {
+            $('.requiredError').remove();
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var valid = true;
+            
+            if ($('#txtSourceName').val() == '') {
+                $('#txtSourceName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankName').val() == '') {
+                $('#txtBankName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtAccountNumber').val() == '') {
+                $('#txtAccountNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtReceivingBankInfo').val() == '') {
+                $('#txtReceivingBankInfo').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBicCode').val() == '') {
+                $('#txtBicCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankAdd1').val() == '') {
+                $('#txtBankAdd1').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankCity').val() == '') {
+                $('#txtBankCity').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankPostalCode').val() == '') {
+                $('#txtBankPostalCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtIncomingFee').val() == '' || !regNumeric.test($('#txtIncomingFee').val())) {
+                $('#txtIncomingFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtOutgoingFee').val() == '' || !regNumeric.test($('#txtOutgoingFee').val())) {
+                $('#txtOutgoingFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpSourceType').val() == '') {
+                $('#drpSourceType_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpReceivingBank').val() == '') {
+                $('#drpReceivingBank_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpCountry').val() == '') {
+                $('#drpCountry_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpAcceptedCurrency').val() == '') {
+                $('#drpAcceptedCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpIncomingCurrency').val() == '') {
+                $('#drpIncomingCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpOutgoingCurrency').val() == '') {
+                $('#drpOutgoingCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#chkIntermediary').is(':checked')) {
+                if ($('#txtInterBankName').val() == '') {
+                    $('#txtInterBankName').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#txtInterBankBicCode').val() == '') {
+                    $('#txtInterBankBicCode').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#drpInterCountry').val() == '') {
+                    $('#drpInterCountry_chzn').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        //This function enables a funding source
+        function enableFundingSource(fundSourceID) {
+            $('#loading').show();
+
+            var value = {
+                "fundSourceID": fundSourceID
+            }
+
+            //Post request to enable funding source
+            $.post("@Url.Action("EnableFundingSource", "Settings")", value, function (data) {
+                if (data) {
+                    $('#loading').hide();
+                    $('#artFundingSource').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully enabled funding source.</div>');
+                    $('#tblSources').setGridParam({ datatype: 'json' }).trigger('reloadGrid');
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //This function disables a funding source
+        function disableFundingSource(fundSourceID) {
+            $('#loading').show();
+
+            var value = {
+                "fundSourceID": fundSourceID
+            }
+
+            //Post request to disable funding source
+            $.post("@Url.Action("DisableFundingSource", "Settings")", value, function (data) {
+                if (data) {
+                    $('#loading').hide();
+                    $('#artFundingSource').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully disabled funding source.</div>');
+                    $('#tblSources').setGridParam({ datatype: 'json' }).trigger('reloadGrid');
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //This function deletes a funding source
+        function deleteFundingSource(fundSourceID) {
+            if (window.confirm("Are you sure you want to delete this funding source?")) {
+                $('#loading').show();
+
+                var value = {
+                    "fundSourceID": fundSourceID
+                }
+
+                //Post request to delete funding source
+                $.post("@Url.Action("DeleteFundingSource", "Settings")", value, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $('#artFundingSource').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully deleted funding source.</div>');
+                        $('#tblSources').setGridParam({ datatype: 'json' }).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+        }
+
+        //Function to fetch funding source details and open edit dialog
+        function showUpdateFundSource(pkFundSource) {
+            $('#loading').show();
+
+            var value = {
+                "pkFundingSourceID": pkFundSource
+            }
+
+            //Get funding source details
+            $.getJSON("@Url.Action("GetFundingSourceDetails", "Settings")", value, function (data) {
+                if (data != null) {
+                    updateSourcePkId = data.PK_FundingSourceID;
+                    $('#txtEditSourceName').val(data.SourceName);
+                    $('#txtEditBankName').val(data.BankName);
+                    $('#txtEditAccountNumber').val(data.AccountNumber);
+                    $('#txtEditReceivingBankInfo').val(data.ReceivingBankInfo);
+                    $('#txtEditBicCode').val(data.BicOrSwiftCode);
+                    $('#txtEditBankAdd1').val(data.BankAddress.split('@@')[0]);
+                    $('#txtEditBankAdd2').val(data.BankAddress.split('@@')[1]);
+                    $('#txtEditBankCity').val(data.BankCity);
+                    $('#txtEditBankPostalCode').val(data.BankPostalCode);
+                    $('#txtEditIncomingFee').val(data.IncomingWireFeeAmount);
+                    $('#txtEditOutgoingFee').val(data.OutgoingWireFeeAmount);
+                    $('#drpEditSourceType').val(data.SourceType);
+                    $('#drpEditReceivingBank').val(data.FK_ReceivingBankInfoID);
+                    $('#drpEditCountry').val(data.FK_BankCountryID);
+                    $('#drpEditIncomingCurrency').val(data.FK_IncomingWireFeeCurr);
+                    $('#drpEditOutgoingCurrency').val(data.FK_OutgoingWireFeeCurr);
+                    $("#drpEditSourceType").trigger("liszt:updated");
+                    $("#drpEditReceivingBank").trigger("liszt:updated");
+                    $("#drpEditCountry").trigger("liszt:updated");
+                    $("#drpEditIncomingCurrency").trigger("liszt:updated");
+                    $("#drpEditOutgoingCurrency").trigger("liszt:updated");
+
+                    //If Intermediate bank required
+                    if (data.FK_InterBankCountryID != 0) {
+                        $('#chkEditIntermediary').attr('checked', true);
+                        $('#txtEditInterBankName').val(data.InterBankName).removeAttr("disabled");
+                        $('#txtEditInterBankBicCode').val(data.InterBicOrSwiftCode).removeAttr("disabled");
+                        $('#drpEditInterCountry').val(data.FK_InterBankCountryID).removeAttr("disabled");
+                        $("#drpEditInterCountry").trigger("liszt:updated");
+                    }
+
+                    //Set accepted currency dropdown values
+                    $("#drpEditAcceptedCurrency").val('');
+                    var arrAcceptedCurr = data.AcceptedCurr.split(' ').join('').split(',');
+                    $.each(arrAcceptedCurr, function (key, value) {
+                        $("select#drpEditAcceptedCurrency option").each(function () {
+                            if ($(this).text() == value)
+                                $(this).attr("selected", "selected");
+                        });
+                    });
+                    $("#drpEditAcceptedCurrency").chosen();
+                    $("#drpEditAcceptedCurrency").trigger("liszt:updated");
+
+                    $("#drpEditSourceType").trigger('change');
+                    $('#loading').hide();
+                    $('#modalUpdateSource').modal();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#artFundingSource').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                }
+            });
+        }
+
+        //Function to update particular funding source
+        function updateFundingSource(btnCntrl) {
+            //Banking funding source
+            if ($('#drpEditSourceType').val() == 1) {
+                var multipleSelectValue = '';
+                var multiple = $('#drpEditAcceptedCurrency').val();
+                $.each(multiple, function(key, value) {
+                    multipleSelectValue += value + ',';
+                });
+
+                if (validateUpdateFundingSourceValues()) {
+
+                    //Validate amount & fee size
+                    if (checkAmountSize($('#txtEditIncomingFee')) && checkAmountSize($('#txtEditOutgoingFee'))) {
+                        $(btnCntrl).attr('disabled', 'disabled');
+                        $('#loading').show();
+
+                        var values = {
+                            "PK_FundingSourceID": updateSourcePkId,
+                            "SourceName": $('#txtEditSourceName').val(),
+                            "SourceType": $('#drpEditSourceType').val(),
+                            "BankName": $('#txtEditBankName').val(),
+                            "AccountNumber": $('#txtEditAccountNumber').val(),
+                            "BicOrSwiftCode": $('#txtEditBicCode').val(),
+                            "FK_ReceivingBankInfoID": $('#drpEditReceivingBank').val(),
+                            "ReceivingBankInfo": $('#txtEditReceivingBankInfo').val(),
+                            "BankAddress": $('#txtEditBankAdd1').val() + '@@' + $('#txtEditBankAdd2').val(),
+                            "BankCity": $('#txtEditBankCity').val(),
+                            "FK_BankCountryID": $('#drpEditCountry').val(),
+                            "BankPostalCode": $('#txtEditBankPostalCode').val(),
+                            "InterBankName": $('#txtEditInterBankName').val(),
+                            "FK_InterBankCountryID": $('#drpEditInterCountry').val(),
+                            "InterBicOrSwiftCode": $('#txtEditInterBankBicCode').val(),
+                            "IncomingWireFeeAmount": $('#txtEditIncomingFee').val().split(',').join(''),
+                            "OutgoingWireFeeAmount": $('#txtEditOutgoingFee').val().split(',').join(''),
+                            "FK_IncomingWireFeeCurr": $('#drpEditIncomingCurrency').val(),
+                            "FK_OutgoingWireFeeCurr": $('#drpEditOutgoingCurrency').val(),
+                            "AcceptedCurr": multipleSelectValue
+                        }
+
+                        //Post request to add new fund source
+                        $.post("@Url.Action("UpdateFundingSource", "Settings")", values, function(data) {
+                            if (data) {
+                                $('#loading').hide();
+                                $('#modalUpdateSource').modal('hide');
+                                $(btnCntrl).removeAttr('disabled');
+                                $("#tblSources").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                                $('#artFundingSource').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully updated funding source.</div>');
+                            } else {
+                                $('#loading').hide();
+                                $('#modalUpdateSource').modal('hide');
+                                $(btnCntrl).removeAttr('disabled');
+                                $('#modalConfirmError').modal('show');
+                            }
+                        });
+                    } else {
+                        $('#artFundingSource').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Amount or Fee is too large!</div>');
+                    }
+                }
+            }
+            else {
+                alert('Currently unavailable!');
+            }
+        }
+
+        function validateUpdateFundingSourceValues() {
+            $('.requiredError').remove();
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var valid = true;
+
+            if ($('#txtEditSourceName').val() == '') {
+                $('#txtEditSourceName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditBankName').val() == '') {
+                $('#txtEditBankName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditAccountNumber').val() == '') {
+                $('#txtEditAccountNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditReceivingBankInfo').val() == '') {
+                $('#txtEditReceivingBankInfo').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditBicCode').val() == '') {
+                $('#txtEditBicCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditBankAdd1').val() == '') {
+                $('#txtEditBankAdd1').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditBankCity').val() == '') {
+                $('#txtEditBankCity').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditBankPostalCode').val() == '') {
+                $('#txtEditBankPostalCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditIncomingFee').val() == '' || !regNumeric.test($('#txtEditIncomingFee').val())) {
+                $('#txtEditIncomingFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtEditOutgoingFee').val() == '' || !regNumeric.test($('#txtEditOutgoingFee').val())) {
+                $('#txtEditOutgoingFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditSourceType').val() == '') {
+                $('#drpEditSourceType_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditReceivingBank').val() == '') {
+                $('#drpEditReceivingBank_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditCountry').val() == '') {
+                $('#drpEditCountry_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditAcceptedCurrency').val() == '') {
+                $('#drpEditAcceptedCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditIncomingCurrency').val() == '') {
+                $('#drpEditIncomingCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpEditOutgoingCurrency').val() == '') {
+                $('#drpEditOutgoingCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#chkEditIntermediary').is(':checked')) {
+                if ($('#txtEditInterBankName').val() == '') {
+                    $('#txtEditInterBankName').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#txtEditInterBankBicCode').val() == '') {
+                    $('#txtEditInterBankBicCode').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+                if ($('#drpEditInterCountry').val() == '') {
+                    $('#drpEditInterCountry_chzn').after('<span class="requiredError">*</span>');
+                    valid = false;
+                }
+            }
+
+            return valid;
+        }
+
+        //Function to check amount size(max 10 digits)
+        function checkAmountSize(cntrl) {
+            if ($(cntrl).val().split(',').join('').split('.')[0].length <= 10) {
+                return true;
+            }
+            return false;
+        }
+
+    </script>
+}

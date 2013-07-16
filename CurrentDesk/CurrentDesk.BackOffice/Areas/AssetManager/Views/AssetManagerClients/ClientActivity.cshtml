@@ -1,0 +1,107 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientActivityModel
+@{
+    ViewBag.Title = "ClientActivity";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="@Url.Action("Index", "AssetManagerClients")">My Clients</a> : <a href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })">@Model.ClientName.Replace('@', ' ')</a> :</span> Client Activty</h1>
+            </div>
+
+            <!-- Clients Activity Section -->
+            <article>
+                <h2 class="inline-block">Client Activty</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblClientActivity">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                    <div id="pager-0"></div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })"><span class="arrow"></span><strong>@Model.ClientName.Replace('@', ' ')</strong>@Model.AccountID</a></li>
+                <li><a class="single accounts" href="@Url.Action("ClientAccounts", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="@Url.Action("ClientDocuments", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li class="active"><a class="single history" href="@Url.Action("ClientActivity", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li><a class="notes" href="@Url.Action("ClientNoteHistory", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <li><a class="fund" href="@Url.Action("DepositClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Deposit</strong>Client Funds</a></li>
+                <li><a class="internal" href="@Url.Action("TransferClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Transfer</strong>Client Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("WithdrawClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Withdraw</strong>Client Funds</a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAccount", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+
+            $("#tblClientActivity").jqGrid({
+                url: 'GetClientActivityDetails?clientID=@Model.ClientID',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                cellLayout: '20',
+                height: 'auto',
+                forceFit: true,
+                scrollOffset: '0',
+                pager: '#pager-0',
+                pagerpos: 'center',
+                rowNum: '15',
+                recordpos: 'left',
+                viewrecords: true,
+                sortname: 'ActivityTimestamp',
+                loadonce: true,
+                colNames: ['Date/Time', 'Activity Details', 'Type'],
+                colModel: [
+                    { name: 'ActivityTimestamp', width: 200, fixed: true, title: false },
+                    { name: 'ActivityDetails', title: false, sortable: false },
+                    { name: 'ActivityType', width: 200, fixed: true, title: false }
+                ]
+            });
+        });//End of ready
+    </script>
+}

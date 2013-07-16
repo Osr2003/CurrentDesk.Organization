@@ -1,0 +1,252 @@
+﻿@model CurrentDesk.BackOffice.Models.MyAccount.AccountDetailsModel
+@{
+    ViewBag.Title = "RebateAccountDetails";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="accounts"><span class="normal"><a href="@Url.Action("Index", "MyAccount")">My Accounts</a> :</span> <span id="spnAccNumber">@Model.AccountNumber</span></h1>
+            </div>
+
+            <!-- Account Details Section -->
+            <article>
+                <h2 class="inline-block">Account Details: @Model.AccountNumber</h2>
+                <div class="content-section">
+
+                    <table class="column-table">
+                        <tr>
+                            <td>
+                                <h3>Account Name</h3>
+                                <strong><span id="spnAccName">@if (Model.AccountName == null)
+                                                              {
+                                    <text>
+                                    [account name]
+                                    </text>
+                                                              }
+                                                              else
+                                                              {
+                                    @Model.AccountName
+                                                              }
+                                </span></strong>
+                                <br />
+                                <a href="#" data-toggle="modal" data-target="#modalRename">rename account</a></td>
+                            <td>
+                                <h3>Balance</h3>
+                                <strong>@Model.Balance</strong></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+            <!-- Quick Reports Section -->
+            <article>
+                <h2 class="inline-block">Quick Reports</h2>
+                <div class="content-section">
+
+                    <table class="row-table">
+                        <tr>
+                            <td><strong>Summary</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposits/Withdraws</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Volume</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+            <!-- Recent Transactions Section -->
+            <article>
+                <h2 class="inline-block">Recent Transactions</h2>
+                <div class="content-section">
+
+                    <table class="row-table">
+                        @if (Model.TransferLogDetails.Count() > 0)
+                        {
+                            foreach (var log in Model.TransferLogDetails)
+                            {
+                            <tr>
+                                <td>@log.TransactionDate</td>
+                                <td>@log.TransactionType</td>
+                                <td class="text-right"><strong>@log.TransactionAmount</strong></td>
+                            </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td class="text-center">No Recent Transactions</td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="accounts" href="@Url.Action("RebateAccountDetails", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Account Details</strong>@Model.AccountNumber</a></li>
+                <li><a class="single internal" href="@Url.Action("TransferFunds", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Transfer Funds</strong></a></li>
+                <li><a class="single withdraw" href="@Url.Action("WithdrawFunds", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Withdraw Funds</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalRename" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<h2 class="inline-block h2">Rename Account</h2>
+	</div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Account Name</label>
+                @if (Model.AccountName == null)
+                {
+                    <input id="txtAccName" class="input-text width-250" type="text" value="[account name]" />
+                }
+                else
+                {
+                    <input id="txtAccName" class="input-text width-250" type="text" value="@Model.AccountName" />
+                }
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Cancel</button>
+		<button class="btn btn-primary" onclick="saveAccountName()">Save Changes</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalReports" class="modal hide fade medium">
+
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<h2 class="inline-block h2">Select Dates Range</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<ul class="row">
+			<li class="columns six">
+				<label class="h3">Start Date</label>
+				<div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+					  <input class="width-80" size="16" type="text" readonly="" />
+					  <span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+			</li>
+			<li class="columns six">
+				<label class="h3">End Date</label>
+				<div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+					  <input class="width-80" size="16" type="text" readonly="" />
+					  <span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+			</li>
+		</ul>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Cancel</button>
+		<button class="btn btn-primary">Download Report</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+
+            $('.date').datepicker();
+
+        });//End of ready
+
+        //Function to save account name
+        function saveAccountName() {
+            if ($('#txtAccName').val() != '') {
+                $("#loading").show();
+
+                var values = {
+                    "accountName": $('#txtAccName').val(),
+                    "accNumber": $('#spnAccNumber').text()
+                }
+
+                $.post("@Url.Action("SaveAccountName", "MyAccount")", values, function (data) {
+                    if (data) {
+                        $("#loading").hide();
+                        $('#spnAccName').text($('#txtAccName').val());
+                        $('#modalRename').modal('hide');
+                    }
+                    else {
+                        $("#loading").hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+            else {
+                $('.requiredError').remove();
+                $('#txtAccName').after('<span class="requiredError">*</span>');
+            }
+        }
+
+    </script>
+}

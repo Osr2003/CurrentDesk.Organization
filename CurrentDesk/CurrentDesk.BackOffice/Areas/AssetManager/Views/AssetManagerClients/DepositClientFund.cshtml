@@ -1,0 +1,319 @@
+﻿@model CurrentDesk.BackOffice.Models.Transfers.TransfersModel
+@{
+    ViewBag.Title = "DepositClientFund";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <div id="divFundAccount">
+                <!-- Page Title Bar -->
+                <div class="page-title">
+                    <h1 class="clients"><span class="normal"><a href="@Url.Action("Index", "AssetManagerClients")">My Clients</a> : <a href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })">@Model.ClientName.Replace('@', ' ')</a> :</span> Deposit Client Funds</h1>
+                </div>
+
+                <!-- Personal Information Section -->
+                <article id="artDepositFund" class="row">
+                    <div class="columns seven">
+                        <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                        <dl class="form-box">
+                            <dt>
+                                <label>From Bank Account <span class="required">*</span></label></dt>
+                            <dd>
+                                <select id="drpFundAccountBankAccount" class="chzn-select width-400" data-placeholder="Please select a bank account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    <optgroup label="Bank Accounts">
+                                        @foreach (var item in Model.BankInformation)
+                                        {
+                                            <option value="@item.BankAccNumber">@item.BankName - Account #@item.BankAccNumber</option>
+                                        }
+                                    </optgroup>
+                                    <optgroup label="New Account">
+                                        <option value="0">Add new bank account</option>
+                                    </optgroup>
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>To Landing Account <span class="required">*</span></label></dt>
+                            <dd>
+                                <select id="drpFundAccountLandingAccount" class="chzn-select width-400" data-placeholder="Please select a landing account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    @foreach (var item in Model.LandingAccInformation)
+                                    {
+                                        <optgroup label="@item.LCurrencyName Landing Account">
+                                            <option value="@item.LCurrencyName/@item.LAccNumber" data-curr="@item.LCurrencyName">@item.LAccNumber (Landing Account) - @item.LAccBalance</option>
+                                        </optgroup>
+                                    }
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>Amount <span class="required">*</span></label></dt>
+                            <dd>
+                                <input id="txtFundAmount" class="input-text width-sm" type="text" placeholder="enter amount" />
+                                <strong><span id="spnFundAccCurr"></span></strong></dd>
+                            <dt>
+                                <label>Notes</label></dt>
+                            <dd>
+                                <textarea class="width-large" style="height: 80px;"></textarea></dd>
+                        </dl>
+                        <div class="button-box">
+                            <button id="btnSubmitFundAccount" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                    <div class="columns five">
+                        <div class="information-box">
+                            <div class="info-group">
+                                <strong class="icn-sm pin">Helpful Tip</strong>
+                                <p>Here are a few tips you should know when funding your account with FQ Securities.</p>
+                                <ul>
+                                    <li>Incoming Wire Fee: 30.00</li>
+                                    <li>All incoming funds must be deposited to your landing account.</li>
+                                    <li>Processing Time: 1-3 Business Days</li>
+                                    <li>We can only accept funds from a bank account in the same name as your FQ Securities account.</li>
+                                </ul>
+                            </div>
+                            <div class="info-group">
+                                <strong class="icn-sm info">Did You Know?</strong>
+                                <p>To ensure funds safety, all client funds are held in segregated client trust accounts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })"><span class="arrow"></span><strong>@Model.ClientName.Replace('@', ' ')</strong>@Model.AccountID</a></li>
+                <li><a class="single accounts" href="@Url.Action("ClientAccounts", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="@Url.Action("ClientDocuments", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li><a class="single history" href="@Url.Action("ClientActivity", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li><a class="notes" href="@Url.Action("ClientNoteHistory", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <li class="active"><a class="fund" href="@Url.Action("DepositClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Deposit</strong>Client Funds</a></li>
+                <li><a class="internal" href="@Url.Action("TransferClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Transfer</strong>Client Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("WithdrawClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Withdraw</strong>Client Funds</a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAccount", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION NEW BANK ACCOUNT -->
+<div id="myModal" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Bank Account Information</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-BankName">
+                    Bank Name <span class="required">*</span>
+                </label>
+                <input id="Modal-BankName" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-AccountNum">
+                    Account Number <span class="required">*</span>
+                </label>
+                <input id="Modal-AccountNum" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3" for="Modal-Swift">
+                    Bic Number/SWIFT Code <span class="required">*</span>
+                </label>
+                <input id="Modal-Swift" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-Receiving">Receiving Bank Information <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @id = "drpNewRecievingBankInfo", style = "width: 150px;" })
+                <input id="Modal-ReceivingBankInfo" class="width-med margin-left" type="text" />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3" for="Modal-Address">Bank Address <span class="required">*</span></label>
+                <input id="Modal-Address" class="width-med" type="text" /></li>
+            <li class="columns twelve">
+                <input id="Address2" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-City">
+                    City <span class="required">*</span>
+                </label>
+                <input id="Modal-City" class="width-med" type="text" /></li>
+            <li class="columns five">
+                <label class="h3" for="Modal-Country">Country <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @id = "drpNewBankCountry", @class = "width-med" })
+            </li>
+            <li class="columns three">
+                <label class="h3" for="Modal-Zip">Postal Code <span class="required">*</span></label><input id="Modal-Zip" class="width-100" type="text" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnAddNewBankAccount" class="btn btn-primary">Add Bank Account</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION FUND ACCOUNT CONFIRMATION-->
+<div id="modalConfirm" class="modal hide fade medium">
+
+    <!-- Step 1: Select Bank Account to Fund -->
+    <div id="step-1">
+
+        <!-- Modal Header -->
+		<div class="modal-header">
+			<h2 class="inline-block h2">Choose where to send the funds</h2>
+		</div>
+
+        <!-- Modal Body -->
+        <div class="content-section">
+            <ul class="row">
+                <li class="columns twelve"><small>You must choose a bank account that you wish to send the funds. Once you click "Submit" you will receive funding instructions.</small></li>
+                <li class="columns twelve">
+                    <label class="h3" for="">Select Bank Account <span class="required">*</span></label>
+                    <select id="drpModalReceivingBank" class="chzn-select width-350" data-placeholder="Please select a bank account">
+                        <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                        <option></option>
+                        <option>[bank name] - [account number]</option>
+                        <option>[bank name] - [account number]</option>
+                        <option>[bank name] - [account number]</option>
+                        <option>[bank name] - [account number]</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Modal Footer -->
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button id="step-1-submit" class="btn btn-primary">Submit</button>
+		</div>
+    </div>
+
+    <!-- Step 2: Deposit Confirmation -->
+    <div id="step-2" style="display: none;">
+
+        <!-- Modal Header -->
+		<div class="modal-header">
+			<h2 class="inline-block h2">Deposit Confirmation</h2>
+		</div>
+
+        <div class="content-section">
+            <p class="padding text-normal">[confirmation message]</p>
+            <p class="padding text-normal">Funding instructions have been emailed to your address on file. To download instructions please <a href="#">click here</a>.</p>
+        </div>
+
+        <!-- Modal Footer -->
+		<div class="modal-footer">
+			<button id="step-2-submit" class="btn btn-primary" data-dismiss="modal">Close Window</button>
+		</div>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+
+            $('#drpFundAccountBankAccount').chosen();
+            $('#drpFundAccountLandingAccount').chosen();
+            $('#drpNewRecievingBankInfo').chosen();
+            $('#drpNewBankCountry').chosen();
+            $('#drpModalReceivingBank').chosen();
+
+            //Open add new bank dialog on drp last li click
+            $('#drpFundAccountBankAccount_chzn li:last').click(function () {
+                $('#myModal').modal('show');
+            });
+
+            //Show currency symbol which is being selected for transaction
+            $('#drpFundAccountLandingAccount').chosen().change(function () {
+                $('#spnFundAccCurr').text($(this).val().split('/')[0]);
+            });
+
+        });//End of ready
+
+        //Adding New Bank Account
+        $("#btnAddNewBankAccount").click(function () {
+            //If valid entries
+            if (checkValidNewBankInfoValues()) {
+                $("#loading").show();
+
+                var values = {
+                    "BankName": $('#Modal-BankName').val(),
+                    "AccountNumber": $('#Modal-AccountNum').val(),
+                    "BicOrSwiftCode": $('#Modal-Swift').val(),
+                    "BankAddLine1": $('#Modal-Address').val(),
+                    "BankAddLine2": $('#Address2').val(),
+                    "ReceivingBankInfoId": $('#drpNewRecievingBankInfo').val(),
+                    "ReceivingBankInfo": $('#Modal-ReceivingBankInfo').val(),
+                    "BankCity": $('#Modal-City').val(),
+                    "BankCountry": $('#drpNewBankCountry').val(),
+                    "BankPostalCode": $('#Modal-Zip').val(),
+                    "ClientID": @Model.ClientID
+                }
+                $.post("@Url.Action("AddNewBankAccount", "AssetManagerClients")", values, function (data) {
+                    $("#loading").hide();
+                    window.location.reload();
+                });
+            }
+        });
+
+        // Submit button click of Fund Account transfer
+        $('#btnSubmitFundAccount').click(function () {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            if ($('#drpFundAccountBankAccount').val() != '0' && $('#drpFundAccountBankAccount').val() != '' && $('#drpFundAccountLandingAccount').val() != '' && $('#txtFundAmount').val() != '' && regNumeric.test($('#txtFundAmount').val()) && parseInt($('#txtFundAmount').val()) != 0) {
+
+                // jQuery bootstrap modal window for Confirmation Dialogs(Fund Account)
+                $('#modalConfirm').modal('show');
+
+                $('#artDepositFund').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Bank transfer has been successfully submitted for your client; they can now wire funds.</div>');
+            }
+            else {
+                alert('Select account and enter amount!');
+            }
+        });
+
+        // custom jQuery to hide/show step-by-step sections(Fund Account)
+        $('#step-1-submit').click(function () {
+            $('#step-1').hide();
+            $('#step-2').show();
+        });
+
+    </script>
+}

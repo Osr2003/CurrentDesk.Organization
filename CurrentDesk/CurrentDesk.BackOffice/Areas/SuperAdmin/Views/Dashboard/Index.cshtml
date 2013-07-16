@@ -1,0 +1,956 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+	<div class="content-wrapper">
+		
+		<!-- First row of dashboard items -->
+		<div class="row content-row">
+		
+			<!-- Pending Requests -->
+			<div class="columns six">
+				<h2>Pending Requests</h2>
+				<div class="content-box">
+					
+					<table id="tableRequests">
+						<tr>
+							<td/>
+						</tr>
+					</table>
+							
+				</div>
+			</div>
+			
+			<!-- Recent Activity -->
+			<div class="columns six">
+				<div class="select-bar">
+					<select class="chzn-select width-150">
+						<!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+						<option></option>
+						<option selected="">My Activity</option>
+						<option>Client Activity</option>
+					</select>
+				</div>
+				<h2>Recent Activity</h2>
+				<div class="content-box">
+					
+					<table id="tableActivity">
+						<tr>
+							<td/>
+						</tr>
+					</table>
+					
+				</div>
+			</div>
+			
+		</div>
+		
+		<!-- Second row of dashboard items -->
+		<div class="row content-row">
+		
+			<!-- Latest Client Changes -->
+			<div class="columns twelve">
+				<h2>Latest Client Changes</h2>
+				<div class="content-box">
+					<table class="column-table">
+						<tr>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalApproved"><h3>Recently<br>Approved</h3><strong>12</strong></a></td>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalPending"><h3>Pending<br>Approval</h3><strong>12</strong></a></td>
+							<td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalMissing"><h3>Missing<br>Documents</h3><strong>12</strong></a></td>
+							<td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalDenied"><h3>Approval<br>Denied</h3><strong>12</strong></a></td>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalNew"><h3>New<br>Account</h3><strong>12</strong></a></td>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalActive"><h3>Active<br>Account</h3><strong class="green">12</strong></a></td>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalInactive"><h3>Inactive<br>Account</h3><strong class="yellow">12</strong></a></td>
+							<td class="box-link"><a href="#" data-toggle="modal" data-target="#modalDormant"><h3>Dormant<br>Account</h3><strong class="red">12</strong></a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			
+		</div>
+		
+		<!-- Third row of dashboard items -->
+		<div class="row content-row">
+		
+			<!-- Client Transactions -->
+			<div class="columns eight">
+				<div class="select-bar">
+					<select id="drpTransacTypeSelector" class="chzn-select width-150">
+						<!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+						<option></option>
+						<option value="deposit" selected="">Deposits</option>
+						<option value="transfer">Internal Transfers</option>
+						<option value="withdrawal">Withdrawals</option>
+						<option value="conversion">Conversions</option>
+					</select>
+				</div>
+				<h2>Client Transactions</h2>
+				<div class="content-box">
+					
+					<!-- Deposits Table -->
+					<div id="deposit_table" class="toggle-hide show">					
+						<table id="tblDeposits">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Transfers Table -->
+					<div id="transfer_table" class="toggle-hide">
+						<table id="tblTransfers">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Withdrawels Table -->
+					<div id="withdrawal_table" class="toggle-hide">	
+						<table id="tblWithdrawals">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Conversions Table -->
+					<div id="conversion_table" class="toggle-hide">	
+						<table id="tblConversions">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+				</div>
+			</div>
+			
+			<!-- Volume Overview -->
+			<div class="columns four volume-overview">
+				<div class="select-bar">
+					<select class="chzn-select width-150">
+						<!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+						<option></option>
+						<option selected="">Currencies</option>
+						<option>CFD's</option>
+					</select>
+				</div>
+				<h2>Volume Overview</h2>
+				<div class="content-box">
+					
+					<div class="mtd-volume"><h3 class="h3 inline">Month to Date:</h3> 200,000,000</div>
+					<div id="chartVolumeOverview" style="height: 207px;"></div>
+					
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalApproved" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Recently Approved Clients</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableApproved">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-0"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalPending" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Clients Pending Approval</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TablePending">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-1"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalMissing" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Clients Missing Documents</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableMissing">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-2"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalDenied" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Clients Denied Approval</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableDenied">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-3"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNew" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">New Client Accounts</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableNew">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-4"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalActive" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Active Client Accounts</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableActive">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-5"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalInactive" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Inactive Client Accounts</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableInactive">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-6"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalDormant" class="modal hide fade xlarge">
+	
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h2 class="inline-block h2">Dormant Client Accounts</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<table id="TableDormant">
+			<tr>
+				<td/>
+			</tr>
+		</table>
+		<div id="pager-7"></div>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" type="button" disabled="">Clear Selected</button><button class="btn" type="button" disabled="">Dismiss Selected</button>
+	</div>
+	
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/morris")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liDashboard').addClass('active');
+            $('select').chosen();
+
+            //Transaction type dropdown change event
+            $("#drpTransacTypeSelector").change(function () {
+                $(".toggle-hide").hide();
+                $("#" + $(this).val() + "_table").show().removeClass("show");
+                
+                if ($(this).val() == 'deposit') {
+                    showDepositsGrid();
+                }
+                else if ($(this).val() == 'transfer') {
+                    showTransferGrid();
+                }
+                else if ($(this).val() == 'withdrawal') {
+                    showWithdrawalGrid();
+                }
+                else if ($(this).val() == 'conversion') {
+                    showConversionGrid();
+                }
+            });
+
+            $("#drpTransacTypeSelector").trigger('change');
+
+            $("#tableRequests").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                colNames: ['Date/Time', 'Client', 'Request', 'Category'],
+                colModel: [
+                    { name: 'date', width: '110', fixed: true, title: false },
+                    { name: 'client', title: false },
+                    { name: 'request', title: false },
+                    { name: 'category', title: false }
+                ],
+                data: [
+                    {
+                        'date': '<strong class="red">04/01/2013<br>01:20 GMT</strong>',
+                        'client': '<strong class="red"><a href="">[first name] [last name]</a></strong>',
+                        'request': '<strong class="red"><a href="actions.html">Leverage Change</a></strong>',
+                        'category': '<strong class="red">[category]</strong>'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': '<a href="actions.html">New Group</a>',
+                        'category': '[category]'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': '<a href="actions.html">Ad Approval</a>',
+                        'category': '[category]'
+                    }
+                ]
+            });
+
+            $("#tableActivity").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                colNames: ['Date/Time', 'Activity Details'],
+                colModel: [
+                    { name: 'date', width: '110', fixed: true, title: false },
+                    { name: 'details', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'date': '<span class="red"><strong>04/01/2013<br>01:20 GMT</strong></span>',
+                        'details': '<span class="red"><strong>You requested <strong>[Amount] [Cur]</strong> to be withdrawn from <a href="account-details.html">000-000-0000000</a> and transferred to <strong>[Bank Name]</strong></strong></span>.'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'details': 'You have request a leverage increase to <strong>[Leverage Request]</strong> for account <a href="account-details.html">000-000-0000000</a>.'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'details': '<a href="documents.html">[Document ID]</a> document status has changed to <i>Approved</i>.'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'details': '<strong>[Amount] [Cur]</strong> has been transferred from account <a href="account-details.html">000-000-0000000</a> to <a href="account-details.html">000-000-0000000</a>.'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'details': 'You have submitted a deposit of <strong>[Amount] [Cur]</strong>.'
+                    }
+                ]
+            });
+            
+            new Morris.Bar({
+                // ID of the element in which to draw the chart.
+                element: 'chartVolumeOverview',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: [
+                  { x: 'Feb 1', y: 25000000 },
+                  { x: 'Feb 2', y: 28000000 },
+                  { x: 'Feb 3', y: 21000000 },
+                  { x: 'Feb 4', y: 19000000 },
+                  { x: 'Feb 5', y: 0 },
+                  { x: 'Feb 6', y: 6000000 },
+                  { x: 'Feb 7', y: 17000000 },
+                  { x: 'Feb 8', y: 18000000 },
+                  { x: 'Feb 9', y: 15000000 },
+                  { x: 'Feb 10', y: 22000000 },
+                  { x: 'Feb 11', y: 15000000 },
+                  { x: 'Feb 12', y: 0 },
+                  { x: 'Feb 13', y: 3000000 },
+                  { x: 'Feb 14', y: 0 },
+                  { x: 'Feb 15', y: 0 },
+                  { x: 'Feb 16', y: 0 },
+                  { x: 'Feb 17', y: 0 },
+                  { x: 'Feb 18', y: 0 },
+                  { x: 'Feb 19', y: 0 },
+                  { x: 'Feb 20', y: 0 },
+                  { x: 'Feb 21', y: 0 },
+                  { x: 'Feb 22', y: 0 },
+                  { x: 'Feb 23', y: 0 },
+                  { x: 'Feb 24', y: 0 },
+                  { x: 'Feb 25', y: 0 },
+                  { x: 'Feb 26', y: 0 },
+                  { x: 'Feb 27', y: 0 },
+                  { x: 'Feb 28', y: 0 }
+                ],
+                xkey: 'x',
+                ykeys: ['y'],
+                labels: ['DV']
+            });
+
+        });//End of ready
+
+        //Function to show all deposit transactions in grid
+        function showDepositsGrid() {
+            $("#tblDeposits").jqGrid({
+                url: 'Dashboard/GetAllDepositTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'Client', 'Status', 'Amount', 'ClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true }
+                ]
+            });
+        }
+
+        //Function to show all withdraw transactions in grid
+        function showWithdrawalGrid() {
+            $("#tblWithdrawals").jqGrid({
+                url: 'Dashboard/GetAllWithdrawalTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'Client', 'Status', 'Amount', 'ClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true }
+                ]
+            });
+        }
+        
+        //Function to show all internal transfer transactions in grid
+        function showTransferGrid() {
+            $("#tblTransfers").jqGrid({
+                url: 'Dashboard/GetAllInternalTransferTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'From', 'To', 'Status', 'Amount', 'ClientName', 'ToClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    {
+                        name: 'ToAccount', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ToClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true },
+                    { name: 'ToClientName', hidden: true }
+                ]
+            });
+        }
+
+        //Function to show all conversion transactions in grid
+        function showConversionGrid() {
+            $("#tblConversions").jqGrid({
+                url: 'Dashboard/GetAllConversionTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'From', 'Amount', 'Rate', 'To', 'Status', 'Converted', 'ClientName', 'ToClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ExchangeRate', title: false },
+                    {
+                        name: 'ToAccount', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ToClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'ExchangedAmount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true },
+                    { name: 'ToClientName', hidden: true }
+                ]
+            });
+        }
+        
+        $('#modalApproved').on('shown', function () {
+            $("#TableApproved").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-0',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalPending').on('shown', function () {
+            $("#TablePending").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalMissing').on('shown', function () {
+            $("#TableMissing").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-2',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalDenied').on('shown', function () {
+            $("#TableDenied").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-3',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalNew').on('shown', function () {
+            $("#TableNew").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-4',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalActive').on('shown', function () {
+            $("#TableActive").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-5',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalInactive').on('shown', function () {
+            $("#TableInactive").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-6',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+
+        $('#modalDormant').on('shown', function () {
+            $("#TableDormant").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '35',
+                pager: '#pager-7',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-details.html">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]'
+                    }
+                ]
+            });
+        });
+    </script>
+}

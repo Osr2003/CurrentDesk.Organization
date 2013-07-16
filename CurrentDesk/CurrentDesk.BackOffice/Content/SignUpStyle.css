@@ -1,0 +1,486 @@
+﻿/*
+	HTML5 Reset :: style.css
+	----------------------------------------------------------
+	We have learned much from/been inspired by/taken code where offered from:
+	
+	Eric Meyer					:: http://ericmeyer.com
+	HTML5 Doctor				:: http://html5doctor.com
+	and the HTML5 Boilerplate	:: http://html5boilerplate.com
+	
+-------------------------------------------------------------------------------*/
+
+/* Let's default this puppy out
+-------------------------------------------------------------------------------*/
+
+html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}									
+
+article, aside, figure, footer, header, hgroup, nav, section {display: block;}
+
+/* Responsive images and other embedded objects
+   Note: keeping IMG here will cause problems if you're using foreground images as sprites.
+   If this default setting for images is causing issues, you might want to replace it with a .responsive class instead. */
+img,
+object,
+embed {max-width: 100%;}
+
+/* force a vertical scrollbar to prevent a jumpy page */
+html {overflow-y: scroll;}
+
+ul {list-style: none;}
+
+blockquote, q {quotes: none;}
+
+blockquote:before, 
+blockquote:after, 
+q:before, 
+q:after {content: ''; content: none;}
+
+a {margin: 0; padding: 0; font-size: 100%; vertical-align: baseline; background: transparent;}
+a:hover, a:active {outline: none;}
+
+del {text-decoration: line-through;}
+
+abbr[title], dfn[title] {border-bottom: 1px dotted #000; cursor: help;}
+
+/* tables still need cellspacing="0" in the markup */
+table {border-collapse: collapse; border-spacing: 0; font-size: inherit; font: 100%;}
+th {font-weight: bold; vertical-align: bottom;}
+td {font-weight: normal; vertical-align: top;}
+td, td img {vertical-align: top;} 
+
+hr {display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;}
+
+input, select {vertical-align: middle;}
+
+pre {
+	white-space: pre; /* CSS2 */
+	white-space: pre-wrap; /* CSS 2.1 */
+	white-space: pre-line; /* CSS 3 (and 2.1 as well, actually) */
+	word-wrap: break-word; /* IE */
+}
+
+input[type="radio"] {vertical-align: text-bottom;}
+input[type="checkbox"] {vertical-align: bottom; *vertical-align: baseline;}
+.ie6 input {vertical-align: text-bottom;}
+
+select, input, textarea {font: 99% sans-serif;}
+
+small {font-size: 85%;}
+
+strong, th {font-weight: bold;}
+
+/* Make sure sup and sub don't screw with your line-heights: gist.github.com/413930 */
+sub, sup {font-size: 75%; line-height: 0; position: relative;}
+sup {top: -0.5em;}
+sub {bottom: -0.25em;}
+
+/* standardize any monospaced elements */
+pre, code, kbd, samp {font-family: monospace, sans-serif;}
+
+/* hand cursor on clickable elements */
+.clickable,
+label, 
+input[type=button], 
+input[type=submit], 
+button {cursor: pointer;}
+
+/* Webkit browsers add a 2px margin outside the chrome of form elements */
+button, input, select, textarea {margin: 0;}
+
+/* make buttons play nice in IE */
+button {width: auto; overflow: visible;}
+ 
+/* scale images in IE7 more attractively */
+.ie7 img {-ms-interpolation-mode: bicubic;}
+
+/* prevent BG image flicker upon hover */
+.ie6 html {filter: expression(document.execCommand("BackgroundImageCache", false, true));}
+
+/* let's clear some floats */
+.clearfix:before, .clearfix:after { content: "\0020"; display: block; height: 0; overflow: hidden; }  
+.clearfix:after { clear: both; }  
+.clearfix { zoom: 1; }  
+
+
+
+/* Universal Styles
+-------------------------------------------------------------------------------*/
+
+body {font: 13px/20px 'PT Sans', Helmet, Freesans, sans-serif; background:url(../img/bg-body.jpg) repeat;}
+body, select, input, textarea {color:#626363;}
+
+a {color:#5eacc7; text-decoration:none;}
+a:hover {color: #69f;}
+a:link {-webkit-tap-highlight-color: #fcd700;}
+
+.wrapper {width:960px; margin:0 auto; position:relative;}
+.button {display:block;}
+
+.right {float:right;}
+.left {float:left;}
+
+.required {color:#970000; font-family:Helmet, Freesans, sans-serif;}
+
+
+
+
+/* Grid Styles
+-------------------------------------------------------------------------------*/
+
+.container {padding: 0 20px; position:relative;}
+
+.row {width:100%; min-width:870px; margin:0 auto; zoom:1;}
+.row .row {min-width:0;}
+
+.column, .columns {margin-left: 0%; float: left; min-height: 1px; position: relative;}
+.column:first-child, .columns:first-child {margin-left: 0;}
+[class*="column"] + [class*="column"]:last-child {float: right;}
+
+.row .one 			{width:8.33%;}
+.row .two 			{width:16.66%;}
+.row .three 		{width:25%;}
+.row .four 			{width:33.2%;}
+.row .five 			{width:41.65%;}
+.row .six 			{width:49.98%;}
+.row .seven 		{width:58.31%;}
+.row .eight 		{width:66.64%;}
+.row .nine 			{width:74.97%;}
+.row .ten 			{width:83.3%;}
+.row .eleven 		{width:91.63%;}
+.row .twelve 		{width:100%;}
+
+.row .centered { float: none; margin: 0 auto; }
+	 
+.row:before, .row:after { content:""; display:table; }
+.row:after { clear: both; }
+
+
+
+
+/* Content Styles
+-------------------------------------------------------------------------------*/
+
+.header {width:940px; margin:50px auto 0; position:relative;}
+
+.main-content {border-bottom:solid 1px #d2d0d0; padding:15px 0 0px;}
+.main-content h1 {color:#d4d4d4; font-size:2em; letter-spacing:.05em; line-height:40px; margin:10px;}
+
+.main-content .sub-header {color:#626363; font-size:1.2em; margin:10px 10px 50px;}
+
+.content-section h2 {font-size:1.4em; padding-bottom:6px; margin:0 10px; border-bottom:solid 1px #e7e6e6;}
+.content-section h2.margin-bottom {margin-bottom:35px;}
+.content-section h2 .required {font-size:11px; line-height:23px;}
+.content-section label .required {font-size:11px; line-height:11px;}
+
+.width-half {float:left; width:455px; padding:0 15px 0 10px;}
+.width-full {padding:0 15px 0 10px;}
+	
+	
+	/* Agreements Box Styles */
+	.agreements-box {float:left; width:480px; margin-bottom:15px; position:relative; background:url(../Images/bg-agreements-top.png) top center no-repeat;}
+	.agreements-box .bottom {padding-bottom:35px; background:url(../Images/bg-agreements-bottom.png) bottom center no-repeat;}
+	.agreements-box h2 {margin:12px 0 0 36px; padding-top:18px; border:none;}
+	.agreements-box p {width:396px; padding:0 36px; font-size:.9em; margin:0 0 10px 0 !important; line-height:16px;}
+	.agreements-box div {line-height:16px;}
+	.agreements-box ol, .agreements-box ul {padding:0 36px 0 67px; margin:20px 0 12px; font-size:.9em;}
+	.agreements-box dl {padding:0 36px; width:408px;}
+	.agreements-box dt {float:left;}
+	.agreements-box dd {float:left;}
+	.agreements-box dl.check-list {font-size:.9em;}
+	.agreements-box dl.check-list dt {width:25px; padding-left:4px;}
+	.agreements-box dl.check-list dd {width:377px; padding-top:2px;}
+	.agreements-box dl.form-list dt {height:33px; line-height:33px;}
+	.agreements-box dl.form-list dd {height:33px; margin:0;}
+	.agreements-box dl.form-list label {margin-right:8px;}
+	
+	
+	/* Group Box */
+	.group-box {padding:8px 0 35px 25px;}
+	.group-box dt strong {margin-right:5px;}
+	
+
+
+
+/* Form Styles
+-------------------------------------------------------------------------------*/
+
+.form-box {padding:35px 10px 15px 35px; margin:0 10px 15px; background:#f5f5f5; font-family:Helmet, Freesans, sans-serif;}
+
+.form-list dt {margin-bottom:5px; line-height:13px;}
+.form-list dd {margin-bottom:6px; min-height:33px;}
+.form-list dd:last-child {margin-bottom:16px;}
+.form-list label {display:inline-block; font-weight:bold; font-size:13px; line-height:13px; margin:0 2px;}
+.form-list small {margin:0 2px;}
+
+.form-list dd label {margin-right:20px; padding-top:9px; font-size:11px; color:#929393;}
+
+.form-list dt.six:nth-child(2),
+.form-list dd.six:nth-child(2) {}
+
+.form-list .select-long select {width:290px;}
+.form-list .select-long .selector {width:280px;}
+.form-list .select-long .selector span {width:228px;}
+
+.form-list .input-text {color:#6d6d6d; padding:5px 7px; margin:1px 10px 1px 1px; background:#fff; font:13px 'PT Sans', Helmet, Freesans, sans-serif; outline:none;}
+.form-list .input-text {border-right:solid 1px #e4e4e4; border-bottom:solid 1px #e4e4e4; border-top:solid 1px #d0d0d0; border-left:solid 1px #d0d0d0;}
+.form-list .input-text {-webkit-border-radius:3px; -moz-border-radius:3px; border-radius:3px; box-shadow:inset 1px 1px 5px rgba(0,0,0,0.08), 1px 1px 0 rgb(255,255,255);}
+
+.form-list .input-text:hover,
+.form-list .input-text:active,
+.form-list .input-text:focus {margin:0 9px 0 0; border:solid 2px #9dd5ea; box-shadow:inset 1px 1px 5px rgba(0,0,0,0.08), 0 0 6px rgba(97,177,206,0.2);}
+
+.form-list .width-default 	{width:160px;}
+.form-list .width-full 		{width:830px; max-width:830px;}
+.form-list .width-longer 	{width:643px;}
+.form-list .width-long 		{width:270px;}
+.form-list .width-short 	{width:35px;}
+
+.form-list input[type="text"]:disabled {opacity:.4;}
+.form-list input[type="text"]:disabled:hover {border-right:solid 1px #e4e4e4; border-bottom:solid 1px #e4e4e4; border-top:solid 1px #d0d0d0; border-left:solid 1px #d0d0d0;}
+.form-list input[type="text"]:disabled:hover {margin:1px 10px 1px 1px; box-shadow:inset 1px 1px 5px rgba(0,0,0,0.08), 1px 1px 0 rgb(255,255,255);}
+
+.review-box .form-box {padding:15px 20px 0 20px;}
+.review-box .form-list label {margin:0;}
+.review-box .form-list dt {margin:0;}
+.review-box .form-list dd {min-height:0;}
+
+.button-box {clear:both; margin:0 10px 35px 10px; height:39px;}
+.button-box .button {display:block; height:39px; /*margin:0 0 0 10px;*/ padding:0; border:none; text-indent:-9000px;}
+.button-box .submit {width:104px; background:url(../Images/button-submit.png) no-repeat;}
+
+
+
+
+/* Footer Styles
+-------------------------------------------------------------------------------*/
+
+.footer {border-top:solid 1px #f4f4f4;}
+	
+.disclaimer {background:#2b2a2a; color:#737474; font-size:.85em; line-height:14px;}
+.disclaimer .wrapper {width:940px; padding:25px 10px 15px;}
+.disclaimer .right {float:right;}
+
+.disclaimer a {color:#5f98ad;}
+.disclaimer h2 {color:#bbb8b8; margin-bottom:20px; font-size:1.1em;}
+.disclaimer p {margin-bottom:20px; text-align:justify;}
+
+/*========================== UNIFORM ===========================*/
+
+/*
+
+Uniform Theme: Aristo
+Version: 1.0
+By: 280North / Ported by Josh Pyles
+License: Creative Commons Share Alike
+---
+For use with the Uniform plugin:
+http://pixelmatrixdesign.com/uniform/
+---
+Generated by Uniform Theme Generator:
+http://pixelmatrixdesign.com/uniform/themer.html
+
+*/
+
+
+/* SPRITES */
+
+/* Select */
+
+div.selector {float:left; line-height:30px; height:29px; margin:1px 10px 0 1px; border:solid 1px #e4e4e4; background:url(../Images/bg-select.png) repeat-x;}
+div.selector {-webkit-border-radius:3px; -moz-border-radius:3px; border-radius:3px; box-shadow:inset 0 0 6px rgb(255,255,255), 0 0 3px rgba(0,0,0,0.05);}
+div.selector span {background-position:right 0px; height:29px; line-height:30px; background:url(../Images/bg-select-arrow.png) right no-repeat;}
+div.selector select {top:-3px; left:0; cursor:pointer;}
+
+div.selector:active,
+div.selector.active {}
+
+div.selector:active span,
+div.selector.active span {}
+
+div.selector.focus, div.selector.hover, div.selector:hover {margin:0 9px 0 0; border:solid 2px #9dd5ea; box-shadow:inset 0 0 6px rgb(255,255,255), 0 0 6px rgba(97,177,206,0.2);}
+
+/*div.selector:hover {border:solid 2px #9dd5ea; box-shadow:inset 0 0 6px rgb(255,255,255), 0 0 6px rgba(97,177,206,0.2);}*/
+
+div.selector.focus span, div.selector.hover span, div.selector:hover span {}
+
+div.selector.focus:active,
+div.selector.focus.active,
+div.selector:hover:active,
+div.selector.active:hover {}
+
+div.selector.focus:active span,
+div.selector:hover:active span,
+div.selector.active:hover span,
+div.selector.focus.active span {}
+
+div.selector.disabled,
+div.selector.disabled:active,
+div.selector.disabled.active {}
+
+div.selector.disabled span,
+div.selector.disabled:active span,
+div.selector.disabled.active span {}
+
+div.selector {color:#424242; font-size:12px; display:inline-block; zoom:1; *display:inline;}
+div.selector select {padding:5px 54px 5px 5px; font-size:12px; height:34px; -webkit-appearance:none;}
+div.selector span {padding:0 51px 0 0; cursor:pointer; color:#666; text-shadow:0 1px 0 #fff;}
+div.selector.disabled span {color:#bbb;}
+
+
+
+
+/* Checkbox */
+
+div.checker {width: 22px; height: 22px; margin-right: 10px; cursor: pointer;}
+div.checker input {width: 22px; height: 33px; cursor: pointer;}
+div.checker span {height: 22px; width: 22px; background:url(../Images/bg-checkbox.png) 0 0 no-repeat;}
+
+div.checker:active span, 
+div.checker.active span {background-position:0 -66px;}
+
+div.checker.focus span,
+div.checker:hover span {background-position:0 -22px;}
+
+div.checker.focus:active span,
+div.checker:active:hover span,
+div.checker.active:hover span,
+div.checker.focus.active span {background-position:0 -66px;}
+
+div.checker span.checked {background-position:0 -44px;}
+
+div.checker:active span.checked, 
+div.checker.active span.checked {background-position:0 -66px;}
+
+div.checker.focus span.checked,
+div.checker:hover span.checked {background-position:0 -66px;}
+
+div.checker.focus:active span.checked,
+div.checker:hover:active span.checked,
+div.checker.active:hover span.checked,
+div.checker.active.focus span.checked {background-position:0 -66px;}
+
+div.checker.disabled span,
+div.checker.disabled:active span,
+div.checker.disabled.active span {background-position:0 0; opacity:.5;}
+
+div.checker.disabled span.checked,
+div.checker.disabled:active span.checked,
+div.checker.disabled.active span.checked {background-position:0 -44px; opacity:.5;}
+
+
+
+
+/* radio */
+
+div.radio {width:23px; height:23px; margin-right:2px; margin-top:5px; cursor:pointer;}
+div.radio input {width:23px; height:23px;}
+div.radio span {height:23px; width:23px; background:url(../Images/bg-radio.png) 0 0 no-repeat;}
+
+div.radio:active span, 
+div.radio.active span {background-position:0 -66px;}
+
+div.radio.focus span, 
+div.radio:hover span {background-position:0 -22px;}
+
+div.radio.focus:active span,
+div.radio:active:hover span,
+div.radio.active:hover span,
+div.radio.active.focus span {background-position:0 -66px;}
+
+div.radio span.checked {background-position:0 -44px;}
+
+div.radio:active span.checked,
+div.radio.active span.checked {background-position:0 -66px;}
+
+div.radio.focus span.checked, div.radio:hover span.checked {background-position:0 -66px;}
+
+div.radio.focus:active span.checked, 
+div.radio:hover:active span.checked,
+div.radio.focus.active span.checked,
+div.radio.active:hover span.checked {background-position:0 -66px;}
+
+div.radio.disabled span,
+div.radio.disabled:active span,
+div.radio.disabled.active span {background-position:0 0; opacity:.5;}
+
+div.radio.disabled span.checked,
+div.radio.disabled:active span.checked,
+div.radio.disabled.active span.checked {background-position:0 -66px; opacity:.5;}
+
+
+
+
+/*
+
+CORE FUNCTIONALITY 
+
+Not advised to edit stuff below this line
+-----------------------------------------------------
+*/
+
+.selector select:focus, .radio input:focus, .checker input:focus, uploader input:focus {outline: 0;}
+
+/* Select */
+div.selector {position: relative; padding-left: 10px; overflow:hidden;}
+div.selector span {display: block; float: left; -webkit-border-radius:3px; -moz-border-radius:3px; border-radius:3px;}
+div.selector select {position: absolute; opacity: 0;}
+
+/* checker */
+div.checker {position: relative;}
+div.checker span {display: block; float: left; text-align: center;}
+div.checker input {opacity: 0; display: inline-block;}
+
+/* radio */
+div.radio {position: relative; float: left;}
+div.radio span {display: block; float: left; text-align: center;}
+div.radio input {opacity: 0; text-align: center; display: inline-block;}
+
+
+/*
+VALIDATION ERROR
+----------------------------------------------------
+*/
+
+
+.field-validation-error {
+    color: #e80c4d;
+    font-weight: bold;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #e80c4d;
+}
+
+input[type="checkbox"].input-validation-error {
+    border: 0 none;
+}
+
+.validation-summary-errors {
+    color: #e80c4d;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.leftAssign
+{
+    float:left;
+    margin-top:9px;
+}
+
+/*-------------------------------------------*/

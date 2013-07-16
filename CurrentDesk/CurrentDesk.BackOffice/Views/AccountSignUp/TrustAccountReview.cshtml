@@ -1,0 +1,457 @@
+﻿@model CurrentDesk.BackOffice.Models.TrustAccountReviewModel
+@{
+    ViewBag.Title = "TrustAccountReview";
+}
+@using (Html.BeginForm("TrustAccountReview", "AccountSignUp", FormMethod.Post))
+{
+    <div class="content-section">
+        <div class="wrapper">
+            <!-- Signup Step 3 - Review -->
+            <div id="live-step-3" class="review-box">
+                <h1>
+                    Sign Up - Review</h1>
+                <div class="content-section">
+                    <h2>
+                        Trust Information</h2>
+                    <div class="form-box">
+                        <dl class="form-list row">
+                            <dt class="columns five">
+                                <label>
+                                    Trust Name:</label></dt>
+                            <dt class="columns seven">
+                                <label>
+                                    Trustee Type:</label></dt>
+                            <dd class="columns five">
+                                @Html.DisplayFor(model => model.TrustName)</dd>
+                            <dd class="columns seven">
+                                @Html.DisplayFor(model => model.TrusteeType)
+                            </dd>
+                        </dl>
+                        <dl class="form-list row">
+                            <dt class="columns twelve">
+                                <label>
+                                    Trust Address:</label></dt>
+                            <dd class="columns twelve">
+                                @Html.DisplayFor(model => model.TrustAddressLine1)</dd>
+                            <dd class="columns twelve">
+                                @Html.DisplayFor(model => model.TrustAddressLine2)</dd>
+                        </dl>
+                        <dl class="form-list row">
+                            <dt class="columns five">
+                                <label>
+                                    City:</label></dt>
+                            <dt class="columns three">
+                                <label>
+                                    Country:</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Postal Code:</label></dt>
+                            <dd class="columns five">
+                                @Html.DisplayFor(model => model.TrustCity)</dd>
+                            <dd class="columns three">
+                                @Html.DisplayFor(model => model.TrustCountry)
+                            </dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.TrustPostalCode)</dd>
+                        </dl>
+                    </div>
+                    @if (Model.TrusteeType == "Company")
+                    {
+                        <!--Company -->
+                
+                        <h2>
+                            Trustee Information</h2>
+                        <div class="form-box">
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Trustee Company Name</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        Company Type</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.TrusteeCompanyName)</dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.TrusteeCompanyType)
+                                </dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Trustee Address:</label></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.TrusteeAddressLine1)</dd>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.TrusteeAddressLine2)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        City:</label></dt>
+                                <dt class="columns three">
+                                    <label>
+                                        Country:</label></dt>
+                                <dt class="columns four">
+                                    <label>
+                                        Postal Code:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.TrusteeCity)</dd>
+                                <dd class="columns three">
+                                    @Html.DisplayFor(model => model.TrusteeCountry)
+                                </dd>
+                                <dd class="columns four">
+                                    @Html.DisplayFor(model => model.TrusteePostalCode)</dd>
+                            </dl>
+                        </div>
+                        <h2>
+                            Trustee Company Authorized Officer</h2>
+                        <div class="form-box">
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Name:</label></dt>                               
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerTitle) @Html.DisplayFor(model => model.AuthorizedOfficerFirstName) @Html.DisplayFor(model => model.AuthorizedOfficerMiddleName) @Html.DisplayFor(model => model.AuthorizedOfficerLastName)
+                                </dd>
+                               
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Date of Birth:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        Gender:</label></dt>
+                                <dd class="columns">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerDobDay)/@Html.DisplayFor(model => model.AuthorizedOfficerDobMonth)/@Html.DisplayFor(model => model.AuthorizedOfficerDobYear)</dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerGender)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Citizenship:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        ID Information:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerCitizenship)
+                                </dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerIdInfo) @Html.DisplayFor(model => model.AuthorizedOfficerIdNumber)
+                                </dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Country of Residence:</label></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerResidenceCountry)
+                                </dd>
+                            </dl>
+                        </div>
+                        <h2>
+                            Trustee Company Authorized Officer Contact Information</h2>
+                        <div class="form-box">
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Authorized Officer Address:</label><small><i>(P.O. Boxes are not acceptable.)</i></small></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerAddressLine1)</dd>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerAddressLine2)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        City:</label></dt>
+                                <dt class="columns three">
+                                    <label>
+                                        Country:</label></dt>
+                                <dt class="columns four">
+                                    <label>
+                                        Postal Code:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerCity)</dd>
+                                <dd class="columns three">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerCountry)
+                                </dd>
+                                <dd class="columns four">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerPostalCode)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Telephone Number:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        Mobile Number:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerTelCountryCode)-@Html.DisplayFor(model => model.AuthorizedOfficerTelephoneNumber)</dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.AuthorizedOfficerMobCountryCode)-@Html.DisplayFor(model => model.AuthorizedOfficerMobileNumber)</dd>
+                            </dl>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <!-- Individual -->
+                        <h2>
+                            Trustee Information</h2>
+                        <div class="form-box">
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Name:</label></dt>                                
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualTitle) @Html.DisplayFor(model => model.IndividualFirstName) @Html.DisplayFor(model => model.IndividualMiddleName) @Html.DisplayFor(model => model.IndividualLastName)
+                                </dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Date of Birth:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        Gender:</label></dt>
+                                <dd class="columns">
+                                    @Html.DisplayFor(model => model.IndividualDobDay)/@Html.DisplayFor(model => model.IndividualDobMonth)/@Html.DisplayFor(model => model.IndividualDobYear)</dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.IndividualGender)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Citizenship:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        ID Information:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.IndividualCitizenship)
+                                </dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.IndividualIdInfo) @Html.DisplayFor(model => model.IndividualIdNumber)
+                                </dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Country of Residence:</label></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualResidenceCountry)
+                                </dd>
+                            </dl>
+                        </div>
+                        <h2>
+                            Trustee Contact Information</h2>
+                        <div class="form-box">
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        Telephone Number:</label></dt>
+                                <dt class="columns seven">
+                                    <label>
+                                        Mobile Number:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.IndividualTelNumberCountryCode) @Html.DisplayFor(model => model.IndividualTelNumber)</dd>
+                                <dd class="columns seven">
+                                    @Html.DisplayFor(model => model.IndividualMobileNumberCountryCode) @Html.DisplayFor(model => model.IndividualMobileNumber)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Residential Address:</label><small><i>(P.O. Box Addresses are not acceptable.)</i></small></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualResidentialAddLine1)</dd>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualResidentialAddLine2)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        City:</label></dt>
+                                <dt class="columns three">
+                                    <label>
+                                        Country:</label></dt>
+                                <dt class="columns four">
+                                    <label>
+                                        Postal Code:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.IndividualResidentialCity)</dd>
+                                <dd class="columns three">
+                                    @Html.DisplayFor(model => model.IndividualResidentialCountry)
+                                </dd>
+                                <dd class="columns four">
+                                    @Html.DisplayFor(model => model.IndividualResidentialPostalCode)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Time at current address:</label></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualYearsInCurrentAdd)<label>Years</label>@Html.DisplayFor(model => model.IndividualMonthsInCurrentAdd)<label>Months</label></dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns twelve">
+                                    <label>
+                                        Previous Address:</label></dt>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualPreviousAddLine1)</dd>
+                                <dd class="columns twelve">
+                                    @Html.DisplayFor(model => model.IndividualPreviousAddLine2)</dd>
+                            </dl>
+                            <dl class="form-list row">
+                                <dt class="columns five">
+                                    <label>
+                                        City:</label></dt>
+                                <dt class="columns three">
+                                    <label>
+                                        Country:</label></dt>
+                                <dt class="columns four">
+                                    <label>
+                                        Postal Code:</label></dt>
+                                <dd class="columns five">
+                                    @Html.DisplayFor(model => model.IndividualPreviousCity)</dd>
+                                <dd class="columns three">
+                                    @Html.DisplayFor(model => model.IndividualPreviousCountry)
+                                </dd>
+                                <dd class="columns four">
+                                    @Html.DisplayFor(model => model.IndividualPreviousPostalCode)</dd>
+                            </dl>
+                           
+                        </div>
+                    }
+                    <h2>
+                        Banking Information</h2>
+                    <div class="form-box">
+                        <dl class="form-list row">
+                            <dt class="columns five">
+                                <label>
+                                    Bank Name:</label></dt>
+                            <dt class="columns three">
+                                <label>
+                                    Account Number:</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Bic Number/SWIFT Code:</label></dt>
+                            <dd class="columns five">
+                                @Html.DisplayFor(model => model.BankName)</dd>
+                            <dd class="columns three">
+                                @Html.DisplayFor(model => model.AccountNumber)</dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.BicOrSwiftCode)</dd>
+                        </dl>
+                        <dl class="form-list row">
+                            <dt class="columns five">
+                                <label>
+                                    Bank Address:</label></dt>
+                            <dt class="columns seven">
+                                <label>
+                                    Receiving Bank Information:</label></dt>
+                            <dd class="columns fove">
+                                @Html.DisplayFor(model => model.BankAddLine1)<br/>
+                                @Html.DisplayFor(model => model.BankAddLine2)<br/>
+                                @Html.DisplayFor(model => model.BankCity), @Html.DisplayFor(model => model.BankCountry),
+                                @Html.DisplayFor(model => model.BankPostalCode)</dd>
+                            <dd class="columns seven">
+                                @Html.DisplayFor(model => model.ReceivingBankInfoId):@Html.DisplayFor(model => model.ReceivingBankInfo)
+                            </dd>
+                        </dl>
+                    </div>
+                    <h2>
+                        Financial Information</h2>
+                    <div class="form-box">
+                        <dl class="form-list row">
+                            <dt class="columns four">
+                                <label>
+                                    Estimate Annual Income?</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Liquid Assets:</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Total net worth in Euros:</label></dt>
+                        </dl>
+                        <dl class="form-list row">
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.EstimatedAnnualIncome)</dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.LiquidAssets)</dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.NetWorthEuros)</dd>
+                        </dl>
+                    </div>
+                    <h2>
+                        Trading Experience</h2>
+                    <div class="form-box">
+                        <dl class="form-list row">
+                            <dt class="columns four">
+                                <label>
+                                    Do you have experience trading securities?</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Do you have experience trading options?</label></dt>
+                            <dt class="columns four">
+                                <label>
+                                    Do you have experience trading foreign exchange?</label></dt>
+                        </dl>
+                        <dl class="form-list row">
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.DrpHaveExperienceTradingSecurities)</dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.DrpHaveExperienceTradingOptions)</dd>
+                            <dd class="columns four">
+                                @Html.DisplayFor(model => model.DrpHaveExperienceTradingForeignExchange)</dd>
+                        </dl>
+                    </div>
+                    <h2>
+                        Other Information</h2>
+                    <div class="form-box">
+                        <dl class="form-list row">
+                            <dt class="columns six">
+                                <label>
+                                    Do you have or have you ever held and other account with FQ Securities?</label></dt>
+                            <dt class="columns six">
+                                <label>
+                                    Have you ever been a registered person/entity with CFTC, NFA, SEC, FINRA, FSA, BaFin,
+                                    etc?</label></dt>
+                            <dd class="columns six">
+                                @Html.DisplayFor(model => model.HaveAccWithFqSecurities)</dd>
+                            <dd class="columns six">
+                                @Html.DisplayFor(model => model.RequiredToBeRegisteredWithRegulator)</dd>
+                        </dl>
+                        <dl class="form-list row">
+                            <dt class="columns six">
+                                <label>
+                                    Are you required to be registered with a regulator?</label></dt>
+                            <dt class="columns six">
+                                <label>
+                                    Are you an employee of an exchange or regulator organization?</label></dt>
+                            <dd class="columns six">
+                                @Html.DisplayFor(model => model.EverDeclaredBankruptcy)</dd>
+                            <dd class="columns six">
+                                @Html.DisplayFor(model => model.RegisteredPerson)</dd>
+                        </dl>
+                        <dl class="form-list row">
+                            <dt class="columns twelve">
+                                <label>
+                                    Have you ever declared bankruptcy?</label></dt>
+                            <dd class="columns twelve">
+                                @Html.DisplayFor(model => model.EmployeeOfExchangeOrRegulatorOperator)</dd>
+                        </dl>
+                    </div>
+                    <div style="display: none">
+                        @Html.EditorFor(model => model.TrustModel)
+                        @Html.EditorFor(model => model.IsLive)
+                    </div>
+                    <!-- Button Box -->
+                    <div class="button-box">
+                        <input class="live-submit-send button submit right" type="submit" value="Submit" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,242 @@
+﻿@{
+    ViewBag.Title = "ManageAccPrograms";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="clients.html">Clients</a> : <a href="client-details-ib.html">[client name]</a> :</span> Managed Account Programs</h1>
+            </div>
+
+            <!-- Managed Account Programs Section -->
+            <article>
+                <ul class="button-bar">
+                    <li>
+                        <button class="btn btn-mini" data-toggle="modal" data-target="#modalNewProgram">New Program</button></li>
+                </ul>
+                <h2 class="inline-block">Managed Account Programs</h2>
+
+                <div class="content-section no-border-bottom">
+                    <table id="TablePrograms">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("AssetManagerDetails", "Clients")"><span class="arrow"></span><strong>[client name]</strong>00000000</a></li>
+                <li><a class="single accounts" href="@Url.Action("AssetManagerAccounts", "Clients")"><span class="arrow"></span><strong>AM Accounts</strong></a></li>
+                <li><a class="single clients" href="@Url.Action("AssetManagerClients", "Clients")"><span class="arrow"></span><strong>AM Clients</strong></a></li>
+                <li><a class="single agents" href="#"><span class="arrow"></span><strong>AM Agents</strong></a></li>
+                <li><a class="fees" href="#"><span class="arrow"></span><strong>AM Fee Group</strong>Management</a></li>
+                <li class="active"><a class="programs" href="@Url.Action("ManageAccPrograms", "Clients")"><span class="arrow"></span><strong>Manage Account</strong>Programs</a></li>
+                <li><a class="tools" href="#"><span class="arrow"></span><strong>AM Marketing</strong>Tools</a></li>
+                <li><a class="single documents" href="#"><span class="arrow"></span><strong>AM Documents</strong></a></li>
+                <li><a class="single history" href="#"><span class="arrow"></span><strong>AM Activity</strong></a></li>
+                <li><a class="notes" href="#"><span class="arrow"></span><strong>AM Note</strong>History</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewProgram" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Program</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Program Name <span class="required">*</span></label>
+                <input class=" width-150" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Minimum Deposit <span class="required">*</span></label>
+                <input class=" width-150" type="text" maxlength="12">
+            </li>
+            <li class="columns four">
+                <label class="h3">Currency <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>USD</option>
+                    <option>EUR</option>
+                    <option>GBP</option>
+                    <option>CHF</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="Help content goes here. It can be really long sections of texted to explain whatever needs to be explained."></a>
+            <li class="columns eight">
+                <label class="h3">Minimum Stopout Level % </label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns four"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Performance Fee %</label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns four">
+                <label class="h3">Period</label>
+                <select class="chzn-select width-150">
+                    <option selected="">Monthly</option>
+                    <option>Quarterly</option>
+                    <option>Annually</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Management Fee %</label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,10">
+            </li>
+            <li class="columns four">
+                <label class="h3">Period</label>
+                <select class="chzn-select width-150">
+                    <option>Monthly</option>
+                    <option>Quarterly</option>
+                    <option selected="">Annually</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Fee Group <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Fee Group 1</option>
+                    <option>Fee Group 2</option>
+                    <option>Fee Group 3</option>
+                    <option>Fee Group 4</option>
+                </select>
+            </li>
+            <li class="columns four">
+                <label class="h3">Deposit Acceptance <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Bi-weekly</option>
+                    <option>Monthly</option>
+                    <option>Quarterly</option>
+                    <option>Annually</option>
+                </select>
+            </li>
+            <li class="columns four">
+                <label class="h3">Platform <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option selected="">MetaTrader 4</option>
+                </select>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Add Program</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/tip")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/simple-slider.min.js"></script>
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liClients').addClass('active');
+            $('select').chosen();
+
+            $("[data-slider]").each(function () {
+                var input = $(this);
+                $('<input type="text" value="0">').addClass('output width-25 text-center margin-left').insertAfter($(this));
+            }).bind('slider:ready slider:changed', function (event, data) {
+                $(this).nextAll('.output:first').val(data.value.toFixed(0));
+            });
+
+            $('.output').keyup(function () {
+                var value = $(this).val();
+                $(this).prevAll('[data-slider]').simpleSlider('setValue', value);
+            });
+
+            $("#TablePrograms").jqGrid({
+                datatype: "clientSide",
+                sortname: 'account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['Program Name', 'Currency', ''],
+                colModel: [
+                    { name: 'name', title: false },
+                    { name: 'currency', width: 150, fixed: true, align: 'center', sorttype: 'currency', title: false },
+                    { name: 'actions', width: 80, fixed: true, align: 'center', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'name': '<a href="client-program-details-am.html">[program name]</a>',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon active tip" title="Disable" type="button"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '<a href="client-program-details-am.html">[program name]</a>',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon active tip" title="Disable" type="button"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '<a href="client-program-details-am.html">[program name]</a>',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon inactive tip" title="Enable" type="button"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '<a href="client-program-details-am.html">[program name]</a>',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon active tip" title="Disable" type="button"><input class="icon delete tip" title="Delete" type="button">'
+                    }
+                ]
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+        });//End of ready
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />    
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|PT+Sans+Narrow:700" />  
+    
+    
+     
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+            @*<div class="content-wrapper">
+                <div class="float-left">
+                    <p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>
+                </div>
+                <div class="float-right">
+                    <section id="login">
+                        @Html.Partial("_LoginPartial")
+                    </section>
+                    <nav>
+                        <ul id="menu">
+                            <li>@Html.ActionLink("Demo", "Index", "AccountSignUp")</li>
+                            <li>@Html.ActionLink("Live Account", "LiveAccountInitial", "AccountSignUp")</li>
+                            <li>@Html.ActionLink("Become A Partner", "PartnersAccountInitial", "AccountSignUp")</li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>*@
+            <div class="header"><img src="~/Images/logo.png" alt="FastQuote Securities" /></div>
+        </header>
+    <div id="body">
+        @RenderSection("featured", required: false)
+        <section class="content-wrapper main-content clear-fix">
+                @RenderBody()
+            </section>
+    </div>
+    <footer>
+           <!-- Footer Section -->
+<div class="footer">
+	
+	<!-- Disclamer Section -->
+	<div class="disclaimer">
+		<div class="wrapper">
+			<h2>&copy; Copyright 2013. All Rights Reserved. Powered by CurrentDesk.</h2>
+			<p><strong>HIGH RISK WARNING:</strong> Foreign exchange trading carries a high level of risk that may not be suitable for all investors. Leverage creates additional risk and loss exposure. Before you decide to trade foreign exchange, carefully consider your investment objectives, experience level, and risk tolerance. You could lose some or all of your initial investment; do not invest money that you cannot afford to lose. Educate yourself on the risks associated with foreign exchange trading, and seek advice from an independent financial or tax advisor if you have any questions.</p>
+			<p><strong>ADVISORY WARNING:</strong> FQ Securities provides references and links to selected blogs and other sources of economic and market information as an educational service to its clients and prospects and does not endorse the opinions or recommendations of the blogs or other sources of information. Clients and prospects are advised to carefully consider the opinions and analysis offered in the blogs or other information sources in the context of the client or prospect’s individual analysis and decision making. None of the blogs or other sources of information is to be considered as constituting a track record. Past performance is no guarantee of future results and FQ Securities specifically advises clients and prospects to carefully review all claims and representations made by advisors, bloggers, money managers and system vendors before investing any funds or opening an account with any Forex dealer. Any news, opinions, research, data, or other information contained within this website is provided as general market commentary and does not constitute investment or trading advice. FQ Securities expressly disclaims any liability for any lost principal or profits without limitation which may arise directly or indirectly from the use of or reliance on such information. As with all such advisory services, past results are never a guarantee of future results.</p>
+		</div>
+	</div>
+	
+</div>
+<!-- End Footer Section -->
+        </footer>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/uniform")
+    @RenderSection("scripts", required: false) 
+</body>
+</html>

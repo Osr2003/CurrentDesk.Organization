@@ -1,0 +1,1320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{15ACE7DC-981E-4ECD-AF28-ADB7540924B3}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CurrentDesk.BackOffice</RootNamespace>
+    <AssemblyName>CurrentDesk.BackOffice</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ApplicationServer.Caching.AzureClientHelper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureClientHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Caching.AzureCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Caching.Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationServer.Caching.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.DistributedCache, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.Web.DistributedCache.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsFabric.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.WindowsFabric.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsFabric.Data.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.WindowsFabric.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="MT4ManLibraryNETv03, Version=1.0.4874.23075, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MetaTraderAssemblies\MT4ManLibraryNETv03.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20710.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.Data, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.Data.2.0.20710.0\lib\net40\WebMatrix.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebPages.OAuth, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.OAuth.2.0.20710.0\lib\net40\Microsoft.Web.WebPages.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="WebMatrix.WebData, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.2.0.20710.0\lib\net40\WebMatrix.WebData.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.AspNet.4.0.3.12153\lib\net40-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.0.3.12153\lib\net40-full\DotNetOpenAuth.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.0.3.12153\lib\net40-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.0.3.12153\lib\net40-full\DotNetOpenAuth.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.0.3.12153\lib\net40-full\DotNetOpenAuth.OpenId.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.0.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.0.3.12153\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\AuthConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\AssetManager\AssetManagerAreaRegistration.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\AssetManagerAgentsController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\AssetManagerClientsController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\DocumentController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\FundTransferController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\InboxController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\MyAccountController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\AssetManager\Controllers\ReportsController.cs" />
+    <Compile Include="Areas\AssetManager\Models\Profile\IntroducingBrokerProfitShareModel.cs" />
+    <Compile Include="Areas\AssetManager\Models\Profile\ManagedAccountProgramModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\DocumentController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\FundTransferController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\InboxController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\IntroducingBrokerAgentsController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\IntroducingBrokerClientsController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\MyAccountController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\ProfileController.cs" />
+    <Compile Include="Areas\IntroducingBroker\Controllers\ReportsController.cs" />
+    <Compile Include="Areas\IntroducingBroker\IntroducingBrokerAreaRegistration.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\Dashboard\DashboardModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBAgents\AgentDetailsModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBAgents\AgentReferralFeesModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBAgents\AgentsListModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientActivityModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientNoteHistoryModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientAccountDetailsModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientAccountsModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientDetailsModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\ClientDocumentModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\IBClients\IBClientsModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\Profile\FeeStructureModel.cs" />
+    <Compile Include="Areas\IntroducingBroker\Models\Profile\MarketingModel.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\ClientsController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\InboxController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\ReportsController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\RequestsController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\SettingsController.cs" />
+    <Compile Include="Areas\SuperAdmin\Controllers\TransactionsController.cs" />
+    <Compile Include="Areas\SuperAdmin\Models\DashboardTransactionModel.cs" />
+    <Compile Include="Areas\SuperAdmin\Models\Settings\FundingSourceModel.cs" />
+    <Compile Include="Areas\SuperAdmin\Models\Transactions\InternalTransferModel.cs" />
+    <Compile Include="Areas\SuperAdmin\Models\Transactions\TransactionModel.cs" />
+    <Compile Include="Areas\SuperAdmin\SuperAdminAreaRegistration.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountCreationController.cs" />
+    <Compile Include="Controllers\AccountSignUpController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FundTransferController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InboxController.cs" />
+    <Compile Include="Controllers\MyAccountController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Custom\AuthorizeRoles.cs" />
+    <Compile Include="Custom\AuthorizeTrader.cs" />
+    <Compile Include="Custom\CustomAttributes.cs" />
+    <Compile Include="Custom\GreaterThanIfAttribute.cs" />
+    <Compile Include="Custom\NoCacheAttribute.cs" />
+    <Compile Include="Custom\RequiredIfAttribute.cs" />
+    <Compile Include="Extension\ExtensionUtility.cs" />
+    <Compile Include="Filters\EnableCompressionAttribute.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Handlers\AuthRedirectHandler.cs" />
+    <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\BankAccountModel.cs" />
+    <Compile Include="Models\CorporateAccountModel.cs" />
+    <Compile Include="Models\CorporateAccountReviewModel.cs" />
+    <Compile Include="Models\Dashboard\DashboardModel.cs" />
+    <Compile Include="Models\Dashboard\UserActivityModel.cs" />
+    <Compile Include="Models\DemoAccountModel.cs" />
+    <Compile Include="Models\Document\DocumentModel.cs" />
+    <Compile Include="Models\Edit\ContactInfoEditModel.cs" />
+    <Compile Include="Models\Edit\PersonalInfoEditModel.cs" />
+    <Compile Include="Models\Error\ErrorModel.cs" />
+    <Compile Include="Models\Inbox\InboxModel.cs" />
+    <Compile Include="Models\IndividualAccountModel.cs" />
+    <Compile Include="Models\IndividualAccountReviewModel.cs" />
+    <Compile Include="Models\JointAccountModel.cs" />
+    <Compile Include="Models\JointAccountReviewModel.cs" />
+    <Compile Include="Models\LiveAccountInitialModel.cs" />
+    <Compile Include="Models\MyAccount\AccountDetailsModel.cs" />
+    <Compile Include="Models\MyAccount\CurrencyAccountModel.cs" />
+    <Compile Include="Models\MyAccount\MyAccountModel.cs" />
+    <Compile Include="Models\PartnerAccountInitialModel.cs" />
+    <Compile Include="Models\ProfileParentModel.cs" />
+    <Compile Include="Models\Transfers\TransfersModel.cs" />
+    <Compile Include="Models\TrustAccountModel.cs" />
+    <Compile Include="Models\TrustAccountReviewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\BackOfficeCustomMembershipProvider.cs" />
+    <Compile Include="Security\BackOfficeUser.cs" />
+    <Compile Include="Security\BackOfficeUserAlias.cs" />
+    <Compile Include="Security\LoginInformation.cs" />
+    <Compile Include="Security\LoginVerification.cs" />
+    <Compile Include="Security\SessionManagement.cs" />
+    <Compile Include="WebRole.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\bootstrap-fileupload.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\chosen.css" />
+    <Content Include="Content\Common.css" />
+    <Content Include="Content\datepicker.css" />
+    <Content Include="Content\morris.css" />
+    <Content Include="Content\SignUpStyle.css" />
+    <Content Include="Content\simple-slider.css" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\tipTip.css" />
+    <Content Include="Content\ui.jqgrid.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Images\account-landing.png" />
+    <Content Include="Images\account-managed.png" />
+    <Content Include="Images\account-master.png" />
+    <Content Include="Images\account-metatrader.png" />
+    <Content Include="Images\account-rebate.png" />
+    <Content Include="Images\activity-gray.png" />
+    <Content Include="Images\activity-green.png" />
+    <Content Include="Images\activity-red.png" />
+    <Content Include="Images\activity-yellow.png" />
+    <Content Include="Images\ad-preview.jpg" />
+    <Content Include="Images\avatar.png" />
+    <Content Include="Images\bg-agreements-bottom.png" />
+    <Content Include="Images\bg-agreements-top.png" />
+    <Content Include="Images\bg-body.png" />
+    <Content Include="Images\bg-button-green.png" />
+    <Content Include="Images\bg-button.png" />
+    <Content Include="Images\bg-checkbox.png" />
+    <Content Include="Images\bg-chf.png" />
+    <Content Include="Images\bg-content-left.png" />
+    <Content Include="Images\bg-eur.png" />
+    <Content Include="Images\bg-gbp.png" />
+    <Content Include="Images\bg-header.png" />
+    <Content Include="Images\bg-login-body.png" />
+    <Content Include="Images\bg-login-wrapper.png" />
+    <Content Include="Images\bg-market-hours.png" />
+    <Content Include="Images\bg-nav-accounts.png" />
+    <Content Include="Images\bg-nav-agents.png" />
+    <Content Include="Images\bg-nav-clients.png" />
+    <Content Include="Images\bg-nav-dashboard.png" />
+    <Content Include="Images\bg-nav-documents.png" />
+    <Content Include="Images\bg-nav-inbox.png" />
+    <Content Include="Images\bg-nav-leads.png" />
+    <Content Include="Images\bg-nav-portal.png" />
+    <Content Include="Images\bg-nav-profile.png" />
+    <Content Include="Images\bg-nav-reports.png" />
+    <Content Include="Images\bg-nav-requests.png" />
+    <Content Include="Images\bg-nav-settings.png" />
+    <Content Include="Images\bg-nav-tools.png" />
+    <Content Include="Images\bg-nav-transfers.png" />
+    <Content Include="Images\bg-notifications.png" />
+    <Content Include="Images\bg-page-title.png" />
+    <Content Include="Images\bg-select-arrow.png" />
+    <Content Include="Images\bg-select.png" />
+    <Content Include="Images\bg-subnav-active.png" />
+    <Content Include="Images\bg-subnav-arrow.png" />
+    <Content Include="Images\bg-subnav-shadow.png" />
+    <Content Include="Images\bg-top-bar.png" />
+    <Content Include="Images\bg-top-nav-active.png" />
+    <Content Include="Images\bg-top-nav.png" />
+    <Content Include="Images\bg-top-right-angle.png" />
+    <Content Include="Images\bg-top-right.png" />
+    <Content Include="Images\bg-usd.png" />
+    <Content Include="Images\button-active.png" />
+    <Content Include="Images\button-clear.png" />
+    <Content Include="Images\button-delete.png" />
+    <Content Include="Images\button-download.png" />
+    <Content Include="Images\button-submit.png" />
+    <Content Include="Images\button-upload.png" />
+    <Content Include="Images\button-view-edit.png" />
+    <Content Include="Images\chosen-sprite%402x.png" />
+    <Content Include="Images\chosen-sprite.png" />
+    <Content Include="Images\glyphicons-halflings-white.png" />
+    <Content Include="Images\glyphicons-halflings.png" />
+    <Content Include="Images\icon-accounts.png" />
+    <Content Include="Images\icon-agents.png" />
+    <Content Include="Images\icon-agreements.png" />
+    <Content Include="Images\icon-archive-white.png" />
+    <Content Include="Images\icon-bank.png" />
+    <Content Include="Images\icon-clients.png" />
+    <Content Include="Images\icon-company.png" />
+    <Content Include="Images\icon-conversions.png" />
+    <Content Include="Images\icon-delete-white.png" />
+    <Content Include="Images\icon-documents.png" />
+    <Content Include="Images\icon-edit.png" />
+    <Content Include="Images\icon-email.png" />
+    <Content Include="Images\icon-fees.png" />
+    <Content Include="Images\icon-forms.png" />
+    <Content Include="Images\icon-fund.png" />
+    <Content Include="Images\icon-funding.png" />
+    <Content Include="Images\icon-groups.png" />
+    <Content Include="Images\icon-help.png" />
+    <Content Include="Images\icon-history.png" />
+    <Content Include="Images\icon-internal.png" />
+    <Content Include="Images\icon-landing.png" />
+    <Content Include="Images\icon-logout.png" />
+    <Content Include="Images\icon-managed.png" />
+    <Content Include="Images\icon-managers.png" />
+    <Content Include="Images\icon-notes.png" />
+    <Content Include="Images\icon-platforms.png" />
+    <Content Include="Images\icon-program.png" />
+    <Content Include="Images\icon-programs.png" />
+    <Content Include="Images\icon-referrals.png" />
+    <Content Include="Images\icon-reply-white.png" />
+    <Content Include="Images\icon-reports.png" />
+    <Content Include="Images\icon-roles.png" />
+    <Content Include="Images\icon-save.png" />
+    <Content Include="Images\icon-settings.png" />
+    <Content Include="Images\icon-slave.png" />
+    <Content Include="Images\icon-sprite.png" />
+    <Content Include="Images\icon-symbols.png" />
+    <Content Include="Images\icon-title-accounts.png" />
+    <Content Include="Images\icon-title-agents.png" />
+    <Content Include="Images\icon-title-clients.png" />
+    <Content Include="Images\icon-title-documents.png" />
+    <Content Include="Images\icon-title-inbox.png" />
+    <Content Include="Images\icon-title-leads.png" />
+    <Content Include="Images\icon-title-profile.png" />
+    <Content Include="Images\icon-title-reports.png" />
+    <Content Include="Images\icon-title-requests.png" />
+    <Content Include="Images\icon-title-settings.png" />
+    <Content Include="Images\icon-title-tools.png" />
+    <Content Include="Images\icon-title-transfers.png" />
+    <Content Include="Images\icon-tools.png" />
+    <Content Include="Images\icon-user.png" />
+    <Content Include="Images\icon-users.png" />
+    <Content Include="Images\icon-withdraw.png" />
+    <Content Include="Images\icon-crying.png" />
+    <Content Include="Images\impact-high.png" />
+    <Content Include="Images\impact-low.png" />
+    <Content Include="Images\impact-med.png" />
+    <Content Include="Images\impact-none.png" />
+    <Content Include="Images\loading.gif" />
+    <Content Include="Images\logo-header.png" />
+    <Content Include="Images\logo-login.png" />
+    <Content Include="Images\logo-metatrader4.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\notifications-arrow.png" />
+    <Content Include="Images\ui-icons_888888_256x240.png" />
+    <Content Include="MarketingImages\1.jpg" />
+    <Content Include="MarketingImages\15.jpg" />
+    <Content Include="MarketingImages\16.jpg" />
+    <Content Include="MarketingImages\17.JPG" />
+    <Content Include="MarketingImages\2.jpg" />
+    <Content Include="MarketingImages\26.jpg" />
+    <Content Include="MarketingImages\3.jpg" />
+    <Content Include="MarketingImages\33.jpg" />
+    <Content Include="MarketingImages\4.jpg" />
+    <Content Include="MarketingImages\5.JPG" />
+    <Content Include="MarketingImages\6.png" />
+    <Content Include="MarketingImages\7.jpg" />
+    <Content Include="MarketingImages\8.jpg" />
+    <Content Include="Areas\SuperAdmin\Views\Settings\GlobalSettings.cshtml" />
+    <None Include="Microsoft.WindowsAzure.Caching\ClientPerfCountersInstaller.exe.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcirt.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp100.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp100d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp110.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp110d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp110_clr0400.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcp60.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr100.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr100d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr100_clr0400.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr110.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr110d.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcr110_clr0400.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\msvcrt.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\mtmanapi.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="RunTimeLibraries\mtmanapi64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Microsoft.WindowsAzure.Caching\ClientPerfCountersInstaller.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Microsoft.WindowsAzure.Caching\PerformanceCounters.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Scripts\bootstrap-datepicker.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\chosen.jquery.js" />
+    <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\jquery-1.7.1-vsdoc.js" />
+    <Content Include="Scripts\jquery-1.7.1.js" />
+    <Content Include="Scripts\jquery-1.7.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.8.20.js" />
+    <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\css\ellipsis-xbl.xml" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\css\ui.jqgrid.css" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\Changes.txt" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-ar.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-bg.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-bg1251.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-cat.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-cn.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-cs.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-da.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-de.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-dk.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-el.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-en.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-es.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-fa.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-fi.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-fr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-gl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-he.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-hr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-hr1250.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-hu.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-id.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-is.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-it.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-ja.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-kr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-lt.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-mne.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-nl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-no.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-pl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-pt-br.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-pt.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-ro.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-ru.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-sk.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-sr-latin.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-sr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-sv.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-th.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-tr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-tw.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-ua.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\i18n\grid.locale-vi.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\install.txt" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\jquery-1.9.0.min.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\jquery.jqGrid.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\js\jquery.jqGrid.src.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\grid.addons.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\grid.postext.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\grid.setcolumns.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\jquery.contextmenu.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\jquery.searchFilter.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\jquery.tablednd.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\searchFilter.css" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\ui.multiselect.css" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\plugins\ui.multiselect.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\css\ellipsis-xbl.xml" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\css\ui.jqgrid.css" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\css\ui.multiselect.css" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.base.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.celledit.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.common.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.custom.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.filter.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.formedit.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.grouping.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.import.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.inlinedit.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.jqueryui.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.loader.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.subgrid.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.tbltogrid.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\grid.treegrid.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-ar.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-bg.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-bg1251.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-cat.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-cn.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-cs.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-da.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-de.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-dk.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-el.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-en.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-es.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-fa.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-fi.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-fr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-gl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-he.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-hr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-hr1250.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-hu.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-id.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-is.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-it.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-ja.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-kr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-lt.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-mne.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-nl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-no.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-pl.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-pt-br.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-pt.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-ro.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-ru.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-sk.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-sr-latin.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-sr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-sv.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-th.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-tr.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-tw.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-ua.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\i18n\grid.locale-vi.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\jqDnR.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\jqModal.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\jquery.fmatter.js" />
+    <Content Include="Scripts\jquery.jqGrid-4.4.4\src\JsonXml.js" />
+    <Content Include="Scripts\jquery.peity.min.js" />
+    <Content Include="Scripts\jquery.uniform.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.upload.js" />
+    <Content Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\knockout-2.1.0.debug.js" />
+    <Content Include="Scripts\knockout-2.1.0.js" />
+    <Content Include="Scripts\modernizr-1.7.min.js" />
+    <Content Include="Scripts\modernizr-2.5.3.js" />
+    <Content Include="Scripts\MorrisPlugin\morris.js" />
+    <Content Include="Scripts\MorrisPlugin\raphael-2.1.0.js" />
+    <Content Include="Scripts\Profile\BankingCommon.js" />
+    <Content Include="Scripts\selectivizr.min.js" />
+    <Content Include="UploadedImages\103.jpg" />
+    <Content Include="UploadedImages\108.jpg" />
+    <Content Include="UploadedImages\109.jpg" />
+    <Content Include="UploadedImages\112.jpg" />
+    <Content Include="UploadedImages\12.JPG" />
+    <Content Include="UploadedImages\13.jpg" />
+    <Content Include="UploadedImages\14.jpg" />
+    <Content Include="UploadedImages\15.jpg" />
+    <Content Include="UploadedImages\16.JPG" />
+    <Content Include="UploadedImages\17.jpg" />
+    <Content Include="UploadedImages\41.jpg" />
+    <Content Include="UploadedImages\45.jpg" />
+    <Content Include="UploadedImages\73.jpg" />
+    <Content Include="UploadedImages\74.jpg" />
+    <Content Include="UploadedImages\75.jpg" />
+    <Content Include="UploadedImages\85.jpg" />
+    <Content Include="UploadedImages\86.jpg" />
+    <Content Include="UploadedImages\87.jpg" />
+    <Content Include="UploadedImages\88.jpg" />
+    <Content Include="UploadedImages\Chrysanthemum.jpg" />
+    <Content Include="UploadedImages\Tulips.jpg" />
+    <Content Include="UserDocuments\TestDocument.txt" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Content\Site.css" />
+    <Content Include="Scripts\_references.js" />
+    <Content Include="Images\accent.png" />
+    <Content Include="Images\bullet.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\orderedList0.png" />
+    <Content Include="Images\orderedList1.png" />
+    <Content Include="Images\orderedList2.png" />
+    <Content Include="Images\orderedList3.png" />
+    <Content Include="Images\orderedList4.png" />
+    <Content Include="Images\orderedList5.png" />
+    <Content Include="Images\orderedList6.png" />
+    <Content Include="Images\orderedList7.png" />
+    <Content Include="Images\orderedList8.png" />
+    <Content Include="Images\orderedList9.png" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
+    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
+    <Content Include="Views\Account\_RemoveExternalLoginsPartial.cshtml" />
+    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
+    <Content Include="Views\Account\Login1.cshtml" />
+    <Content Include="Views\Account\Manage.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
+    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Error\PageNotFound.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Utility\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CurrentDesk.Common\CurrentDesk.Common.csproj">
+      <Project>{C7C2DCC0-DAD3-47A5-BF3A-DDACEB062433}</Project>
+      <Name>CurrentDesk.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.Logging\CurrentDesk.Logging.csproj">
+      <Project>{679209f2-bd52-42c6-b65f-91b336d1bd53}</Project>
+      <Name>CurrentDesk.Logging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.MetaTrader\CurrentDesk.MetaTrader.csproj">
+      <Project>{5cabe88e-d58e-4177-9884-631c158c6f5c}</Project>
+      <Name>CurrentDesk.MetaTrader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.Models\CurrentDesk.Models.csproj">
+      <Project>{E18F0986-4E55-4DD6-BEE4-994C693A693A}</Project>
+      <Name>CurrentDesk.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CurrentDesk.Repository\CurrentDesk.Repository.csproj">
+      <Project>{3bd3a2c8-3889-4563-9e63-13db30222121}</Project>
+      <Name>CurrentDesk.Repository</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\DemoAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\LiveAccountInitial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\JointAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\TrustAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\CorporateAccount.cshtml" />
+    <Content Include="Views\AccountSignUp\IndividualAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\PartnerAccountInitial.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\RegistartionSuccess.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\ErrorMessage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\IndividualAccountReview.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\JointAccountReview.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\CorporateAccountReview.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\Login.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\BackOfficeMaster.cshtml" />
+    <Content Include="Views\Profile\IndividualProfile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Profile\CorporateProfile.cshtml" />
+    <Content Include="Views\Profile\JointProfile.cshtml" />
+    <Content Include="Views\Profile\TrustProfile.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\AccountSignUp\TrustAccountReview.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\PartnerLogin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MyAccount\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Error\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\ErrorMessage.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FundTransfer\FundAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FundTransfer\WithdrawFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\FundTransfer\InternalTransfer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MyAccount\FundAccount.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MyAccount\InternalTransfer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MyAccount\WithdrawFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Dashboard\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Shared\IntroducingBrokerMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\PersonalInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\FeeStructure.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\Marketing.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\Banking.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\PrimaryHolder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\SecondaryHolder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\CompanyInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Profile\AuthOfficerInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\CreateNewLanding.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientAccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\MyAccount\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\MyAccount\CreateNewLanding.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\MyAccount\AccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\MyAccount\WithdrawFunds.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\MyAccount\TransferFunds.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\FundTransfer\WithdrawFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\FundTransfer\InternalTransfer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\DepositClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\WithdrawClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\TransferClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Document\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery.tipTip.minified.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Document\BrokerForms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientDocuments.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Document\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Document\BrokerForms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Dashboard\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerAgents\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerAgents\AgentDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerAgents\AgentReferralFees.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\simple-slider.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="BrokerForms\4.pdf" />
+    <Content Include="BrokerForms\5.pdf" />
+    <Content Include="BrokerForms\6.pdf" />
+    <Content Include="BrokerForms\7.pdf" />
+    <Content Include="BrokerForms\8.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Shared\AssetManagerMaster.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\PersonalInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\Banking.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\Marketing.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\FeeStructure.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\PrimaryHolder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\SecondaryHolder.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\CompanyInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\AuthOfficerInformation.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Document\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Document\BrokerForms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerAgents\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerAgents\AgentDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerAgents\AgentReferralFees.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\FundTransfer\WithdrawFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\FundTransfer\InternalTransfer.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientDocuments.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientAccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\CreateNewLanding.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\DepositClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\WithdrawClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\TransferClientFund.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\ManagedAccountProgram.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\ProgramDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Profile\IntroducingBrokerProfitShare.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\CreateNewLandingAcc.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\RebateAccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\WithdrawFunds.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\TransferFunds.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\MasterAccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\MyAccount\SlaveAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientNoteHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientNoteHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Inbox\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Inbox\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Inbox\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Reports\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Reports\ReportGroups.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Reports\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\Reports\ReportGroups.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Reports\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\Reports\ReportGroups.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\IntroducingBroker\Views\IntroducingBrokerClients\ClientActivity.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\AssetManager\Views\AssetManagerClients\ClientActivity.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\MyAccount\AccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Shared\SuperAdminMaster.cshtml.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Dashboard\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Reports\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Inbox\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Transactions\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="InstallRunTime.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="Areas\SuperAdmin\Views\Settings\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Transactions\OutgoingFunds.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Transactions\InternalTransfers.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Transactions\ConversionsRequests.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\UserRoleSettings.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\ClientAgreement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\FundingSourceManagement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\BrokerFormsManagement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\KYCDocManagement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\FeeGroupManagement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Settings\SymbolManagement.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Requests\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\TraderDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\TraderAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\TraderNoteHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerClients.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerAgents.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerFeeGroups.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerDocuments.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IntroducingBrokerNoteHistory.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\AssetManagerDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\AssetManagerAccounts.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\AssetManagerClients.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\ManageAccPrograms.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IBAgentDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\IBAccountDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\AssetManagerRebateAccDetails.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Areas\SuperAdmin\Views\Clients\AssetManagerMasterAccDetails.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50237</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/CurrentDesk.BackOffice</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost/CurrentDesk.BackOffice</IISAppRootUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

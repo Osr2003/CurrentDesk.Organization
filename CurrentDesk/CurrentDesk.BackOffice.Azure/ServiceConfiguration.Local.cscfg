@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ServiceConfiguration serviceName="CurrentDesk.BackOffice.Azure" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="1" osVersion="*" schemaVersion="2013-03.2.0">
+  <Role name="CurrentDesk.BackOffice">
+    <Instances count="1" />
+    <ConfigurationSettings>
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername" value="CurrentDesk" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword" value="MIIBnQYJKoZIhvcNAQcDoIIBjjCCAYoCAQAxggFOMIIBSgIBADAyMB4xHDAaBgNVBAMME1dpbmRvd3MgQXp1cmUgVG9vbHMCEFnAkXEx5Y6wSuM8FOj4/cgwDQYJKoZIhvcNAQEBBQAEggEAXUYpSQbvP/GAiFQ9LNPUEUHXHXWrqlDofR0UGd2aNgFX5bCcURQ8pHnFat6//wdX/AMiKTX3iMtArIkv57c4Y/pEZaVmYSxJqxyhb1UJZE/sVmkKG1ONdQ86lUV59Kl8Og5srrHXxL58w4/xFlSIx7cx5JpZNH4Oi7amnW82bqWR8nUowzA0v15NdtyW4TR3Jin2BqvxpPkCU291EN1wT9/w1hGCGpllJd+yfhA3zuWxze4Vq6VHBS2Y4ves9ZKSf8Imby4gW8kvIZclX0SLaywjszT+J7DaR+ziW7dHRCc6mnokFo5G//b8P7VemmIvR1q8mw420MFQ9K3E2ByPPTAzBgkqhkiG9w0BBwEwFAYIKoZIhvcNAwcECNw86mN4xsR/gBCt+lPxqeDlO6UJ0MWmvEVL" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration" value="2014-01-15T23:59:59.0000000+05:30" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled" value="true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Caching.ClientDiagnosticLevel" value="1" />
+      <Setting name="ServerName" value="mtdem01.primexm.com:443" />
+      <Setting name="ManagerId" value="900" />
+      <Setting name="Password" value="!FQS123!!" />
+    </ConfigurationSettings>
+    <Certificates>
+      <Certificate name="Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption" thumbprint="90460C8B9078146C739C7922D12F9A8E225EF0C5" thumbprintAlgorithm="sha1" />
+    </Certificates>
+  </Role>
+</ServiceConfiguration>

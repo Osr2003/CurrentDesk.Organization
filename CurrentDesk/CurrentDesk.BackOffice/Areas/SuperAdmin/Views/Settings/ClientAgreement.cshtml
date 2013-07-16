@@ -1,0 +1,399 @@
+﻿@{
+    ViewBag.Title = "ClientAgreement";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="settings"><span class="normal">Settings :</span> Client Agreements</h1>
+            </div>
+
+            <!-- KYC Documents -->
+            <article>
+                <ul class="button-bar">
+                    <li><a class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNewAgreement" data-backdrop="static">Add New Agreement</a></li>
+                </ul>
+                <h2 class="inline-block">Client Agreements</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tableDocs">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="platforms" href="@Url.Action("Index", "Settings")"><span class="arrow"></span><strong>Platform</strong>Management</a></li>
+                <li><a class="roles" href="@Url.Action("UserRoleSettings", "Settings")"><span class="arrow"></span><strong>User Role</strong>Settings</a></li>
+                <li class="active"><a class="agreements single" href="@Url.Action("ClientAgreement", "Settings")"><span class="arrow"></span><strong>Client Agreements</strong></a></li>
+                <li><a class="funding" href="@Url.Action("FundingSourceManagement", "Settings")"><span class="arrow"></span><strong>Funding Source</strong>Management</a></li>
+                <li><a class="forms" href="@Url.Action("BrokerFormsManagement", "Settings")"><span class="arrow"></span><strong>Broker Forms</strong>Management</a></li>
+                <li><a class="documents" href="@Url.Action("KYCDocManagement", "Settings")"><span class="arrow"></span><strong>KYC Document</strong>Management</a></li>
+                <li><a class="fees" href="@Url.Action("FeeGroupManagement", "Settings")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="symbols" href="@Url.Action("SymbolManagement", "Settings")"><span class="arrow"></span><strong>Symbol</strong>Management</a></li>
+                <li><a class="settings single" href="@Url.Action("GlobalSettings", "Settings")"><span class="arrow"></span><strong>Global Settings</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewAgreement" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add New Agreement</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section no-scroll">
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="[need content]"></a>
+            <li class="columns four">
+                <label class="h3">Agreement Type <span class="required">*</span></label>
+                <select id="typeSelector" class="chzn-select width-200">
+                    <option></option>
+                    <option value="client">Client Agreement</option>
+                    <option value="lpoa">Limited Power of Attorney</option>
+                </select>
+                <script>
+                    $("#typeSelector").change(function () {
+                        $(".toggle-hide").hide();
+                        $("#" + $(this).val() + "_options").show();
+                    })
+                </script>
+            </li>
+            <li class="columns five">
+                <label class="h3">Agreement Name <span class="required">*</span></label>
+                <input class=" width-250" type="text">
+            </li>
+            <li class="columns three">
+                <label class="h3">Version</label>
+                <input class=" width-75" type="text">
+            </li>
+        </ul>
+
+        <!-- Client Agreement Options -->
+        <div id="client_options" class="toggle-hide">
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Account Platform <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select platform" multiple>
+                        <option></option>
+                        <option>Metatrader</option>
+                        <option>Power Trader</option>
+                    </select>
+                </li>
+                <li class="columns four">
+                    <label class="h3">Account Category <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select category" multiple>
+                        <option></option>
+                        <option>Trader</option>
+                        <option>Introducing Broker</option>
+                        <option>Asset Manager</option>
+                        <option>Co-Branding</option>
+                    </select>
+                </li>
+                <li class="columns four">
+                    <label class="h3">Account Class <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select class" multiple>
+                        <option></option>
+                        <option>Individual</option>
+                        <option>Joint</option>
+                        <option>Coporate</option>
+                        <option>Trust</option>
+                    </select>
+                </li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Account Type <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select type" multiple>
+                        <option></option>
+                        <option>Trading Account</option>
+                        <option>Master Account</option>
+                        <option>Landing Account</option>
+                        <option>Fee/Rebate Account</option>
+                        <option>Managed Account</option>
+                    </select>
+                </li>
+                <li class="columns eight">
+                    <label class="h3">Account Preference <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select preference" multiple>
+                        <option></option>
+                        <option>Professional</option>
+                        <option>Institutional</option>
+                    </select>
+                </li>
+            </ul>
+            <ul class="row border">
+                <li class="columns twelve">
+                    <label class="h3">Upload File <span class="required">*</span></label>
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        <div class="input-append">
+                            <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span></div>
+                            <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Agreement Description</label>
+                    <textarea class="width-full" style="height: 60px;"></textarea>
+                </li>
+            </ul>
+        </div>
+
+        <!-- LPOA Options -->
+        <div id="lpoa_options" class="toggle-hide">
+            <ul class="row border">
+                <li class="columns twelve">
+                    <label class="h3">Agreement Content <span class="required">*</span></label>
+                    <textarea id="ckeditor" style="height: 100px"></textarea>
+                </li>
+            </ul>
+            <script type="text/javascript">
+                //<![CDATA[
+                CKEDITOR.replace('ckeditor', {
+                    skin: 'currentdesk',
+                    height: '120px',
+                    toolbarCanCollapse: false,
+                    removePlugins: 'resize, elementspath',
+                    bodyClass: 'contents',
+                    toolbar:
+					[
+					  ['Undo', 'Redo', '-', 'Bold', 'Italic', 'Underline', '-', 'NumberedList', 'BulletedList']
+					]
+                });
+                //]]>
+            </script>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Account Platform <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select platform" multiple>
+                        <option></option>
+                        <option>Metatrader</option>
+                        <option>Power Trader</option>
+                    </select>
+                </li>
+                <li class="columns four">
+                    <label class="h3">Account Category <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select category" multiple>
+                        <option></option>
+                        <option>Trader</option>
+                        <option>Introducing Broker</option>
+                        <option>Asset Manager</option>
+                        <option>Co-Branding</option>
+                    </select>
+                </li>
+                <li class="columns four">
+                    <label class="h3">Account Class <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select class" multiple>
+                        <option></option>
+                        <option>Individual</option>
+                        <option>Joint</option>
+                        <option>Coporate</option>
+                        <option>Trust</option>
+                    </select>
+                </li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Account Type <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select type" multiple>
+                        <option></option>
+                        <option>Trading Account</option>
+                        <option>Master Account</option>
+                        <option>Landing Account</option>
+                        <option>Fee/Rebate Account</option>
+                        <option>Managed Account</option>
+                    </select>
+                </li>
+                <li class="columns eight">
+                    <label class="h3">Account Preference <span class="required">*</span></label>
+                    <select class="chzn-select width-200" data-placeholder="Enter or select preference" multiple>
+                        <option></option>
+                        <option>Professional</option>
+                        <option>Institutional</option>
+                    </select>
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Agreement Description</label>
+                    <textarea class="width-full" style="height: 40px;"></textarea>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Add Agreement</button>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalEditAgreement" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Edit Agreement</h2>
+    </div>
+
+    <div class="content-section">
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="[need content]"></a>
+            <li class="columns seven">
+                <label class="h3">Agreement Name <span class="required">*</span></label>
+                <input class=" width-250" type="text" value="[agreement name]">
+            </li>
+            <li class="columns five">
+                <label class="h3">Version</label>
+                <input class=" width-80" type="text" value="[version]">
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <label class="h3">Platforms</label>
+                <select class="chzn-select width-560" data-placeholder="Enter or select platforms" multiple>
+                    <option></option>
+                    <option selected="">Metatrader</option>
+                    <option>Power Trader</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <label class="h3">Agreement Description</label>
+                <textarea class="width-full" style="height: 80px;">[agreement description]</textarea>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Upload New File</label>
+                <div class="fileupload fileupload-new" data-provides="fileupload">
+                    <div class="input-append">
+                        <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i><span class="fileupload-preview"></span></div>
+                        <span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input type="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+                    </div>
+                </div>
+                <input type="checkbox" checked="">
+                <label class="h3 inline">Requires client acceptance</label>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/tip")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liSettings').addClass('active');
+            $('select').chosen();
+
+            $("#typeSelector").change(function () {
+                $(".toggle-hide").hide();
+                $("#" + $(this).val() + "_options").show();
+            })
+
+            $("#tableDocs").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Agreement Name', 'Description', 'Version', ''],
+                colModel: [
+                    { name: 'name', title: false, sortable: false },
+                    { name: 'description', title: false, sortable: false },
+                    { name: 'version', width: 80, fixed: true, align: 'center', title: false, sortable: false },
+                    { name: 'actions', width: 110, fixed: true, align: 'center', title: false, sortable: false, search: false }
+                ],
+                data: [
+                    {
+                        'name': '<a href="">[agreement name]</a>',
+                        'description': 'a really really long string of text that will wrap and be the description of the tooltip when a user is looking at his list of documents',
+                        'version': '1.0.1',
+                        'actions': '<input class="icon active tip" title="Disable" type="button" value="Disable"><input type="button" class="icon view-edit tip" data-modal="modalEdit" title="View/Edit"><input class="icon delete tip" title="Delete" type="button" value="Delete Group">'
+                    },
+                    {
+                        'name': '<a href="">[agreement name]</a>',
+                        'description': 'a really really long string of text that will wrap and be the description of the tooltip when a user is looking at his list of documents',
+                        'version': '1.0.1',
+                        'actions': '<input class="icon inactive tip" title="Enable" type="button" value="Disable"><input type="button" class="icon view-edit tip" data-modal="modalEdit" title="View/Edit"><input class="icon delete tip" title="Delete" type="button" value="Delete Group">'
+                    }
+                ]
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+            $('input[data-modal="modalEdit"]').click(function (e) {
+                e.preventDefault();
+                $('#modalEditAgreement').modal();
+            });
+
+        });//End of ready
+    </script>
+}

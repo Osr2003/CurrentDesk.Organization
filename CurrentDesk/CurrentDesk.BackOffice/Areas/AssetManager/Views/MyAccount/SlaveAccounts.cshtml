@@ -1,0 +1,140 @@
+﻿@{
+    ViewBag.Title = "SlaveAccounts";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="accounts"><span class="normal"><a href="@Url.Action("Index", "MyAccount")">My Accounts</a> :</span> Slave Accounts Connected</h1>
+            </div>
+
+            <!-- Slave Accounts Section -->
+            <article class="no-margin">
+                <h2 class="inline-block">Slave Accounts List</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="TableSlave">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="accounts" href="@Url.Action("MasterAccountDetails", "MyAccount", new { accountNumber = ViewData["AccountNumber"]})"><span class="arrow"></span><strong>Account Details</strong>@ViewData["AccountNumber"]</a></li>
+                <li class="active"><a class="slave" href="@Url.Action("SlaveAccounts", "MyAccount", new { accountNumber = ViewData["AccountNumber"]})"><span class="arrow"></span><strong>Slave Accounts</strong>Connected</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+
+            $("#TableSlave").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['Account Number', 'First Name', 'Last Name', 'Company Name', 'Group', 'High-Water Mark', 'Equity', ''],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false },
+                    { name: 'group', title: false },
+                    { name: 'highwater', title: false, search: false },
+                    { name: 'equity', title: false, search: false },
+                    { name: 'actions', title: false, width: 75, fixed: true, align: 'center', search: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="client-account-details.html">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'group': '[group]',
+                        'highwater': '[high-water mark]',
+                        'equity': '[equity]',
+                        'actions': '<button class="btn btn-mini">Revoke</button>'
+                    },
+                    {
+                        'account': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'fname': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'lname': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'company': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'group': '[group]',
+                        'highwater': '[high-water mark]',
+                        'equity': '[equity]',
+                        'actions': '<button class="btn btn-mini">Revoke</button>'
+                    },
+                    {
+                        'account': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'fname': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'lname': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'company': '&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;',
+                        'group': '[group]',
+                        'highwater': '[high-water mark]',
+                        'equity': '[equity]',
+                        'actions': '<button class="btn btn-mini">Revoke</button>'
+                    },
+                    {
+                        'account': '<a href="client-account-details.html">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'group': '[group]',
+                        'highwater': '[high-water mark]',
+                        'equity': '[equity]',
+                        'actions': '<button class="btn btn-mini">Revoke</button>'
+                    },
+                    {
+                        'account': '<a href="client-account-details.html">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'group': '[group]',
+                        'highwater': '[high-water mark]',
+                        'equity': '[equity]',
+                        'actions': '<button class="btn btn-mini">Revoke</button>'
+                    }
+                ]
+            });
+            $("#TableSlave").filterToolbar({
+                searchOnEnter: true
+            });
+
+        });//End of ready
+    </script>
+}

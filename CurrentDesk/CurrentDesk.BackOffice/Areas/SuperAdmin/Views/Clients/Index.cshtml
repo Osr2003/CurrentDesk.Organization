@@ -1,0 +1,208 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- Page Title Bar -->
+    <div class="page-title">
+        <h1 class="clients">Clients</h1>
+    </div>
+
+    <!-- Padding div needed for single column layouts -->
+    <div class="padding-footer">
+
+        <!-- Clients List Section -->
+        <article class="no-margin">
+            <div class="select-bar">
+                <select class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option selected="">Clients List</option>
+                    <option>Accounts List</option>
+                </select>
+            </div>
+            <h2 class="inline-block">Clients List</h2>
+            <div class="content-section no-border-bottom">
+                <table id="TableClients">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+        <!-- Accounts List Section -->
+        <article class="no-margin">
+            <h2 class="inline-block">Accounts List</h2>
+            <div class="content-section no-border-bottom">
+                <table id="TableAccounts">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+    </div>
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liClients').addClass('active');
+            $('select').chosen();
+
+            $("#TableClients").jqGrid({
+                datatype: "clientSide",
+                sortname: 'status',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Activity', 'Category', 'Class', 'Account ID', 'First Name', 'Last Name', 'Company Name', 'Tags', 'IB Name', 'Status'],
+                colModel: [
+                    { name: 'activity', width: 75, fixed: true, align: 'center', title: false, search: false },
+                    { name: 'category', title: false },
+                    { name: 'class', title: false },
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false },
+                    { name: 'tags', title: false },
+                    { name: 'ibname', title: false },
+                    { name: 'status', title: false, stype: false }
+                ],
+                data: [
+                    {
+                        'activity': '<img src="../Images/activity-gray.png" alt="" title="Activity message here">',
+                        'category': 'Trader',
+                        'class': 'Individual',
+                        'account': '<a href="@Url.Action("TraderDetails", "Clients")">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'tags': '[tag], [tag], [tag]',
+                        'ibname': '<a href="">[ib name]</a>',
+                        'status': '[status]'
+                    },
+                    {
+                        'activity': '<img src="../Images/activity-green.png" alt="" title="Activity message here">',
+                        'category': 'Asset Manager',
+                        'class': 'Joint',
+                        'account': '<a href="@Url.Action("AssetManagerDetails", "Clients")">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'tags': '[tag], [tag], [tag]',
+                        'ibname': '--',
+                        'status': '[status]'
+                    },
+                    {
+                        'activity': '<img src="../Images/activity-red.png" alt="" title="Activity message here">',
+                        'category': 'Introducing Broker',
+                        'class': 'Corporate',
+                        'account': '<a href="@Url.Action("IntroducingBrokerDetails", "Clients")">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'tags': '[tag], [tag], [tag]',
+                        'ibname': '--',
+                        'status': '[status]'
+                    },
+                    {
+                        'activity': '<img src="../Images/activity-yellow.png" alt="" title="Activity message here">',
+                        'category': 'White Label',
+                        'class': 'Trust',
+                        'account': '<a href="">[account ID]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'tags': '[tag], [tag], [tag]',
+                        'ibname': '--',
+                        'status': '[status]'
+                    }
+                ]
+            });
+            $("#TableClients").filterToolbar({
+                searchOnEnter: true
+            });
+
+            $("#TableAccounts").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['Type', 'Account Number', 'First Name', 'Last Name', 'Company Name', 'Fee Group', 'Equity'],
+                colModel: [
+                    { name: 'type', width: 55, fixed: true, title: false, search: false, sortable: false },
+                    { name: 'account', title: false },
+                    { name: 'fname', title: false },
+                    { name: 'lname', title: false },
+                    { name: 'company', title: false },
+                    { name: 'group', title: false },
+                    { name: 'equity', title: false, search: false }
+                ],
+                data: [
+                    {
+                        'type': '<img src="../Images/account-metatrader.png" title="MetaTrader 4" alt="MetaTrader 4">',
+                        'account': '<a href="#">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'equity': '[equity]',
+                        'group': '[fee group]'
+                    },
+                    {
+                        'type': '<img src="../Images/account-managed.png" title="Managed Account" alt="Managed Account">',
+                        'account': '<a href="#">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'equity': '[equity]',
+                        'group': '[fee group]'
+                    },
+                    {
+                        'type': '<img src="../Images/account-landing.png" title="Landing Account" alt="Landing Account">',
+                        'account': '<a href="#">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'equity': '[equity]',
+                        'group': '[fee group]	'
+                    },
+                    {
+                        'type': '<img src="../Images/account-master.png" title="Master Account" alt="Master Account">',
+                        'account': '<a href="#">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'equity': '[equity]',
+                        'group': '[fee group]	'
+                    },
+                    {
+                        'type': '<img src="../Images/account-rebate.png" title="Fee/Rebate Account" alt="Fee/Rebate Account">',
+                        'account': '<a href="#">[account number]</a>',
+                        'fname': '[first name]',
+                        'lname': '[last name]',
+                        'company': '[company name]',
+                        'equity': '[equity]',
+                        'group': '[fee group]	'
+                    }
+                ]
+            });
+            $("#TableAccounts").filterToolbar({
+                searchOnEnter: true
+            });
+
+        });//End of ready
+    </script>
+}

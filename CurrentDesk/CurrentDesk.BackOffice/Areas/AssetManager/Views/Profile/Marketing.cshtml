@@ -1,0 +1,374 @@
+﻿@{
+    ViewBag.Title = "Marketing";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile :</span> Marketing Tools</h1>
+            </div>
+
+            <!-- Referral Links Section -->
+            <article id="artMarketing">
+                <h2 class="inline-block">Referral Links</h2>
+                <div class="content-section">
+
+                    <table class="column-table">
+                        <tr>
+                            <td class="text-left width-fifty">
+                                <h3 class="h3">Current Referral Link</h3>
+                                <a><strong><span id="spnReferralLink"></span></strong></a></td>
+                            <td class="text-left width-fifty">
+                                <h3 class="h3">Customized Link</h3>
+                                @if (ViewData["CustomizedLink"] != null)
+                                {
+                                    <a><strong><span id="spnCustomizedLink"></span></strong></a>
+                                }
+                                else
+                                {
+                                    <strong>
+                                        <input id="txtReferralLink" class="input-text width-thirty" type="text" /></strong><a onclick="saveReferralLink()" class="button-sm margin-left" href="#">Submit</a>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+
+            <!-- Marketing Section -->
+            <article class="row">
+
+                <div class="columns twelve" style="margin-right: -300px;">
+                    <h2 class="inline-block">Internal Marketing Campaigns</h2>
+                    <div class="content-section no-border-bottom" style="margin-right: 325px;">
+                        <table id="tblMarktImg">
+                            <tr>
+                                <td />
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Broker Promo -->
+                <div class="columns">
+                    <h2>Ad Preview</h2>
+                    <div class="promo-box text-center">
+                        <img id="imgAdPreview" src="../../Images/ad-preview.jpg" width="300" height="250" alt="" /><br />
+                        <a class="btn btn-mini" href="#adImageModal" role="button" data-toggle="modal">Upload New Ad Image</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_INDIVIDUAL)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PersonalInformation", "Profile")"><span class="arrow"></span><strong>Personal/Contact</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li class="active"><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_JOINT)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                    <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li class="active"><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_CORPORATE)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                    <li><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li class="active"><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- Begin Modal Upload Content -->
+<div id="adImageModal" class="modal hide fade medium">
+   
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add Image</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns">
+                <input id="fileUploader" type="file" name="file" accept="image/*" /></li>
+        </ul>
+    </div>
+    
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnUploadClose" class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnUpload" class="btn btn-primary">Upload</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/upload")
+
+    <script>
+        // jqGrid plugin for handling tabular data: http://www.trirand.com/blog/
+        $(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+            
+            //Set referral link in span
+            var referralLink = 'http://' + window.location.host + '/AccountSignUp/LiveAccountInitial?referralID=@ViewData["AccountNumber"]';
+            $('#spnReferralLink').text(referralLink);
+            
+            //Set customized link if available in span
+            @if (ViewData["CustomizedLink"] != null)
+            {
+            <text>
+            var customizedLink = 'http://' + window.location.host + '/AccountSignUp/LiveAccountInitial?referralID=@ViewData["CustomizedLink"]';
+            $('#spnCustomizedLink').text(customizedLink);
+            </text>
+            }
+
+            $("#tblMarktImg").jqGrid({
+                url: 'GetAllMarketingImageDetails',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: 'json',
+                sortname: 'status',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['Ad Name', 'Status', 'Actions', 'ID'],
+                colModel: [
+                    { name: 'ImageName', title: false },
+                    { name: 'Status', width: 120, align: 'right', title: false },
+                    { name: 'Actions', width: 120, align: 'right', title: false },
+                    { name: 'ImageID', width: 20, align: 'right', title: false, hidden: true }
+                ],
+                onSelectRow: function (rowId) {
+                    var imageID = $('#tblMarktImg').getCell(rowId, 'ImageID');
+                    var imageName = $('#tblMarktImg').getCell(rowId, 'ImageName');
+                    var newImageName = imageID + '.' + imageName.split('.').pop();
+                    $('#imgAdPreview').attr('src', '../../MarketingImages/' + newImageName);
+                }
+            });
+
+            //Click function of Upload image button
+            $('#btnUpload').click(function () {
+                if (validateUploadedFile()) {
+                    var url = 'http://' + window.location.host + '/AssetManager/Profile/AddMarketingImage';
+                    $('#fileUploader').upload(url, function (data) {
+                        $('#fileUploader').text = "";
+                        if (data) {
+                            $('#adImageModal').modal('hide');
+                            $('#artMarketing').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully uploaded an ad image.</div>');
+                            $("#tblMarktImg").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                        }
+                        else {
+                            $('#modalConfirmError').modal('show');
+                        }
+                    }, 'json');
+                }
+            });
+        });
+
+        //Function to validate file to be uploaded
+        function validateUploadedFile() {
+            $('#uploadErrorID').remove();
+            //Empty entry
+            if ($('#fileUploader').val().length == 0) {
+                $('#fileUploader').after('<span id="uploadErrorID" class="requiredError">*</span>');
+                return false;
+            }
+            //Check file format and size
+            else {
+                var fileName = $('#fileUploader').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if (fileName.indexOf(".") == -1 || fileExt != "jpg" && fileExt != "tif" && fileExt != "png" && fileExt != "gif") {
+                    $('#adImageModal').modal('hide');
+                    $('#artMarketing').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Image file type is not accepted; please upload jpg, tif, png or gif.</div>');
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+
+        //Function to delete image from Marketing Images grid list
+        function deleteMarketingImg(cntrl) {
+            if (window.confirm("Are you sure you want to delete image?")) {
+                $('#loading').show();
+
+                var value = {
+                    "imgID": $(cntrl).parent().next().text()
+                }
+
+                //Post request to delete marketing image
+                $.post("@Url.Action("DeleteMarketingImage", "Profile")", value, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $('#artMarketing').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully deleted an ad image.</div>');
+                        $("#tblMarktImg").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+        }
+
+        //Function to make a marketing image active for IB
+        function makeMarketingImgActive(cntrl) {
+            $('#loading').show();
+
+            var value = {
+                "imgID": $(cntrl).parent().next().text()
+            }
+
+            //Post request to make marketing image active
+            $.post("@Url.Action("MakeMarketingImageActive", "Profile")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //Function to disable marketing ad image
+        function disableMarketingAdImg(cntrl) {
+            $('#loading').show();
+
+            var value = {
+                "imgID": $(cntrl).parent().next().text()
+            }
+
+            //Post request to disable marketing ad image
+            $.post("@Url.Action("DisableMarketingImage", "Profile")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //Function to save referral link of IB
+        function saveReferralLink() {
+
+            //Reg expression to test presence of minimum one alphabet in cutomized keyword
+            var regExp = /^\d*[a-zA-Z][a-zA-Z0-9]*$/;
+
+            if ($('#txtReferralLink').val() != '' && regExp.test($('#txtReferralLink').val())) {
+                $('.requiredError').remove();
+                $('#loading').show();
+
+                var value = {
+                    "referralLink": $('#txtReferralLink').val()
+                }
+                //Post request to check if referral link already exists
+                $.post("@Url.Action("CheckDuplicateReferralLink", "Profile")", value, function (data) {
+                    if (data) {
+                        var refValue = {
+                            "referralLink": $('#txtReferralLink').val()
+                        }
+                        //Post request to save referral link in IB table
+                        $.post("@Url.Action("SaveReferralLink", "Profile")", refValue, function (data) {
+                            if (data) {
+                                $('#loading').hide();
+                                $('#artMarketing').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully created your customized referral link.</div>');
+                                window.location.reload();
+                            }
+                            else{
+                                $('#loading').hide();
+                                $('#modalConfirmError').modal('show');
+                            }
+                        });
+                    }
+                    else{
+                        $('#loading').hide();
+                        $('.requiredError').remove();
+                        $('#txtReferralLink').after('<span class="requiredError">Keyword already exists!</span>');
+                    }
+                });
+            }
+            else{
+                $('.requiredError').remove();
+                $('#txtReferralLink').after('<span class="requiredError">*</span>');
+            }
+        }
+
+	</script>
+
+}

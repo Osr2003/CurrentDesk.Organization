@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="title" content="FastQuote Back Office">
+    <meta name="author" content="CurrentDesk">
+    <meta name="Copyright" content="Copyright CurrentDesk 2013. All Rights Reserved.">
+    <meta name="DC.title" content="FastQuote Back Office">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <title>FastQuote - Back Office</title>
+
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/commonStyle")
+</head>
+<body>
+    <div class="wrapper">
+        <!-- BEGIN HEADER SECTION -->
+        <header>
+
+            <!-- Universal Top Bar Section -->
+            <div class="top-bar">
+                <!-- Client Logo with link to dashboard -->
+                <h1><a class="logo" href="#">Page Title</a></h1>
+                <!-- Notifications section -->
+                <div class="notifications"><a href="#" class="alert-linkMain"><span class="icon"></span><span class="alert">3</span>Notifications</a></div>
+                <!-- User and logout information -->
+                <div class="top-right">
+                    @*<img class="avatar"  src="@HttpContext.Current.Session["ImageURl"]" onerror="imgError(this);" alt=""><span class="user">@HttpContext.Current.Session["UserEmail"]</span><a class="logout" href="@Url.Action("LogOff", "Account")">Exit</a></div>*@
+                    <img class="avatar"  src="../@CurrentDesk.BackOffice.Security.SessionManagement.ImageURL" onerror="imgError(this);" alt="">
+                    <span class="user">@CurrentDesk.BackOffice.Security.SessionManagement.DisplayName</span><a class="logout" href="@Url.Action("LogOff", "Account", new { Area = "" })">Exit</a>
+                </div>
+            </div>
+
+            <!-- Universal Top Navigation Section -->
+            <nav class="top-nav">
+                <ul class="clearfix">
+                    <!-- The first <li> needs the class .first and is only here for styling purposes. No links should be added inside. -->
+                    <li class="first"><span></span></li>
+                    <li id="liDashboard"><a class="dashboard" href="@Url.Action("Index", "Dashboard")">Dashboard</a></li>
+                    <li id="liClients"><a class="clients" href="@Url.Action("Index", "Clients")">Clients</a></li>
+                    <li id="liReports"><a class="reports" href="@Url.Action("Index", "Reports")">Reports</a></li>
+                    <li id="liTransactions"><a class="transfers" href="@Url.Action("Index", "Transactions")">Transactions</a></li>
+                    <li><a class="tools" href="#">Tools</a></li>
+                    <li><a class="leads" href="#">Leads</a></li>
+				    <li id="liRequests"><a class="requests" href="@Url.Action("Index", "Requests")">Requests</a></li>
+                    <li id="liInbox"><a class="inbox" href="@Url.Action("Index", "Inbox")">Inbox</a></li>
+                    <li id="liSettings"><a class="settings" href="@Url.Action("Index", "Settings")">Settings</a></li>
+                    <!-- The last <li> needs the class .last and is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"><span></span></li>
+                </ul>
+            </nav>
+
+        </header>
+        <!-- END HEADER SECTION -->
+
+        @RenderBody()
+
+        <!-- BEGIN FOOTER SECTION -->
+        <footer>
+            <div class="left">
+                <p class="copyright">
+                    &copy; Copyright 2013 by CurrentDesk, Inc.<br>
+                    All Rights Reserved.
+                </p>
+            </div>
+            <div class="right"><span class="phone">1.888.349.2323</span><a class="help" href="#">Help</a></div>
+        </footer>
+        <!-- END FOOTER SECTION -->
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @RenderSection("scripts", required: true)
+    <!-- Grab Google CDN's jQuery. fall back to local if necessary -->
+
+    <div id="loading" class="loading-wrapper" style="display: none;"></div>
+
+    <!-- BEGIN NOTIFICATIONS SECTION -->
+    <div id="alertBox" class="alert-link alert-box">
+        <img class="top-arrow" src="/Images/notifications-arrow.png">
+        <div class="alert-box-wrapper">
+            <div class="scroll-table">
+                <table>
+                    <tbody>
+                        <tr class="header-row">
+                            <td colspan="2"><i class="icon-envelope icon-white"></i>MESSAGES</td>
+                        </tr>
+                        <tr>
+                            <td><i>You have <b><span id="spnNewMsgCount">0</span></b> unread messages.</i></td>
+                            <td class="text-center width-80"><a class="btn btn-small" href="@Url.Action("Index", "Inbox")">View All</a></td>
+                        </tr>
+                        <tr class="header-row yellow">
+                            <td colspan="2"><i class="icon-flag"></i>SYSTEM NOTIFICATIONS</td>
+                        </tr>
+                        <tr class="yellow-light">
+                            <td>We will be upgrading the system on Saturday between the hours of 01:00 - 03:00 GMT asdf asdf asdf asdfas df</td>
+                            <td class="text-center width-80"><a class="btn btn-small" href="#"><i class="icon-remove"></i></a></td>
+                        </tr>
+                        <tr class="yellow-light">
+                            <td>We will be upgrading the system on Saturday between the hours of 01:00 - 03:00 GMT asdf asdf asdf asdfas df</td>
+                            <td class="text-center width-80"><a class="btn btn-small" href="#"><i class="icon-remove"></i></a></td>
+                        </tr>
+                        <tr class="header-row red">
+                            <td colspan="2"><i class="icon-warning-sign icon-white"></i>&nbsp;ALERTS</td>
+                        </tr>
+                        <tr class="red-light">
+                            <td>[Asset Mananger] has requested [Amount] [Cur] be transferred from [Account #] to [Account #].</td>
+                            <td class="text-center width-80"><a class="btn btn-small" href="#"><i class="icon-ok"></i></a><a class="btn btn-small" href="#"><i class="icon-remove"></i></a></td>
+                        </tr>
+                        <tr class="red-light">
+                            <td>You have requested a leverage increase [Leverage] on account [Account #].  Please confirm you understand the risk involved with increased leverage, or contact a support member for more details.</td>
+                            <td class="text-center width-80"><a class="btn btn-small" href="#"><i class="icon-ok"></i></a><a class="btn btn-small" href="#"><i class="icon-remove"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- END MODAL CONTENT SECTION -->
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    //Display notification div
+    $(".alert-linkMain").click(function () {
+        $("#alertBox").toggle();
+        $("#alertBox").animate({ top: '54', opacity: 100 }, 100);
+        return false
+    });
+
+    //Check for new user messages every 5 secs and display in notification
+    @*setInterval(function () {
+        $.post("@Url.Action("CheckNewUserMessage", "Inbox")", function (data) {
+            if (data != null && data != undefined) {
+                $('#spnNewMsgCount').text(data);
+            }
+        });
+    }, 5000);*@
+
+</script>

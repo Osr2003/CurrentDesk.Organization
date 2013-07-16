@@ -1,0 +1,807 @@
+﻿@model CurrentDesk.BackOffice.Areas.SuperAdmin.Models.Transactions.InternalTransferModel
+@{
+    ViewBag.Title = "ConversionsRequests";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="transfers"><span class="normal">Transactions :</span> Conversion Requests</h1>
+            </div>
+
+            <!-- Broker Forms -->
+            <article id="artConvTransfers">
+                <ul class="button-bar">
+                    <li><a onclick="resetConversionSettingValues()" class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalSettings" data-backdrop="static"><i class="icon-cog"></i> Settings</a></li>
+                    <li><a onclick="resetNewConversionTransactionValues()" class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNew" data-backdrop="static">New Conversion</a></li>
+                </ul>
+                <h2 class="inline-block">Conversion Requests</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblConversions">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="fund" href="@Url.Action("Index", "Transactions")"><span class="arrow"></span><strong>Incoming</strong>Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("OutgoingFunds", "Transactions")"><span class="arrow"></span><strong>Outgoing</strong>Funds</a></li>
+                <li><a class="internal" href="@Url.Action("InternalTransfers", "Transactions")"><span class="arrow"></span><strong>Internal</strong>Transfers</a></li>
+                <li class="active"><a class="conversions" href="@Url.Action("ConversionsRequests", "Transactions")"><span class="arrow"></span><strong>Conversions</strong>Requests</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNew" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Conversion</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section" style="max-height: 395px;">
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">From Client <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.FromClientUserID, (IEnumerable<SelectListItem>)ViewData["Clients"], "", new { @id = "drpFromClients", @class = "width-250" })
+            </li>
+            <li class="columns six">
+                <label class="h3">Client Accounts <span class="required">*</span></label>
+                <select id="drpFromClientAccounts" class="chzn-select width-250" data-placeholder="Please select an account" disabled="">
+                    <option></option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">To Client <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ToClientUserID, (IEnumerable<SelectListItem>)ViewData["Clients"], "", new { @id = "drpToClients", @class = "width-250" })
+            </li>
+            <li class="columns six">
+                <label class="h3">Client Accounts <span class="required">*</span></label>
+                <select id="drpToClientAccounts" class="chzn-select width-250" data-placeholder="Please select an account" disabled="">
+                    <option></option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Amount <span class="required">*</span></label>
+                <input id="txtAmount" class="width-140" type="text" placeholder="enter amount">
+                <span id="spnFromAccCurr"></span>
+				<button id="btnCalculateRate" class="btn btn-small margin-left-20">Calculate Rate</button> <strong><span id="spnSecsLeft"></span></strong>
+                <small class="margin-top">Note: The currency exchange rate quote will be valid for 30 seconds from when you receive it. If you do not complete your transfer within 30 seconds, a new exchange rate will be calculated for you.</small>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">
+                <div class="padding-med">
+                    <label class="h3">This equates to:</label><strong><span id="spnExchangedAmt"></span> <span class="spnToCurr"></span></strong></div>
+            </li>
+            <li class="columns six">
+                <div class="dark-box">
+                    <label class="h3">Exchange Rate:</label>1 <span class="spnFromCurr"></span> = <span id="spnFromExchangeRate"></span> <span class="spnToCurr"></span><br>
+                    1 <span class="spnToCurr"></span> = <span id="spnToExchangeRate"></span> <span class="spnFromCurr"></span></div>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <label class="h3">Fee <span class="required">*</span></label>
+                <input id="txtFee" class="width-140" type="text" value="0.00">
+                <span id="spnFeeCurr"></span>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Transaction Notes</label>
+                <textarea id="txtNewNotes" class="width-full" style="height: 60px;"></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtNewTranPassword" class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnNewTransactionSubmit" class="btn btn-primary" onclick="createNewTransaction(this)" disabled="">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalSettings" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Settings</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns six">
+                <label class="h3">Conversion Fee <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.TransferCurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpSettingCurrency", @class = "width-150" })
+            </li>
+            <li class="columns six">
+                <input id="txtConversionFee" class="width-140 input-margin" type="text" placeholder="enter amount" />
+            </li>
+        </ul>
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="[need content]"></a>
+            <li class="columns six">
+                <label class="h3">Conversion Markup <span class="required">*</span></label>
+                <select id="drpConversionMarkupType" class="chzn-select width-150">
+                    <option></option>
+                    <option value="1">Points</option>
+                    <option value="2">Percentage</option>
+                </select>
+            </li>
+            <li class="columns six">
+                <input id="txtConversionMarkup" class="width-140 input-margin" type="text" />
+            </li>
+        </ul>
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="You can set a maximum immediate approval amount by selecting the LIMITED option and entering an amount."></a>
+            <li class="columns six">
+                <label class="h3">Approval Options <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ApprovalOptionID, (IEnumerable<SelectListItem>)ViewData["Approval"], "", new { @id = "drpApprovalOption", @class = "width-150" })
+            </li>
+            <li class="columns six">
+                <input id="txtLimitedAmt" class="width-140 input-margin" type="text" placeholder="enter amount" disabled="" />
+            </li>
+        </ul>
+        <ul class="row">
+            <a class="icn-sm help tip" href="#" title="Content unavailable"></a>
+            <li class="columns twelve">
+                <label class="h3">Minimum Margin Restriction <span class="required">*</span></label>
+                <input id="txtMarginRestriction" class="width-150" type="text" placeholder="enter margin restriction" /> %
+            </li>
+        </ul>
+        <ul class="row">
+            <a class="icn-sm help tip" href="#" title="[need content]"></a>
+            <li class="columns six">
+                <label class="h3">Hedging</label>
+                <select class="chzn-select width-150" disabled="">
+                    <option></option>
+                    <option>None</option>
+                    <option>Daily</option>
+                    <option>Volume</option>
+                    <option>Immediate</option>
+                </select>
+            </li>
+            <li class="columns six">
+                <input class="width-140 input-margin" type="text" / disabled="" />
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtSettingPassword" class=" width-150" type="password" /><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button onclick="saveConversionSettings()" class="btn btn-primary">Save</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalApprove" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Approve Conversion</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">From</li>
+            <li class="columns six text-right"><span id="spnAppvFromName"></span><br>
+                <span id="spnFromAcc"></span></li>
+            <li class="columns six">Amount</li>
+            <li class="columns six text-right"><span id="spnAmount"></span></li>
+            <li class="columns six">Exchange Rate</li>
+            <li class="columns six text-right"><span id="spnExchangeRate"></span></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">To</li>
+            <li class="columns six text-right"><span id="spnAppvToName"></span><br>
+                <span id="spnToAcc"></span></li>
+            <li class="columns six">Amount</li>
+            <li class="columns six text-right"><span id="spnExchangedAmount"></span></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Fee</li>
+            <li class="columns six text-right"><span id="spnFee"></span></li>
+            <li class="columns six margin-top-sm">Bank Rate</li>
+            <li class="columns six text-right">
+                <input class=" width-80" type="text" placeholder="enter rate"></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Transaction Notes</label>
+                <textarea id="txtAppvNotes" class="width-full" style="height: 40px;"></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtAppvPassword" class=" width-150" type="password"><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnApproveTransaction" class="btn btn-primary">Approve</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/tip")
+    <script>
+        var interval;
+        
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liTransactions').addClass('active');
+            $('select').chosen();
+
+            $("#tblConversions").jqGrid({
+                url: 'GetAllConversionRequest',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date', 'Trans ID', 'From', 'CUR', 'Amount', 'Rate', 'To', 'CUR', 'Amount', 'Fee', ''],
+                colModel: [
+                    { name: 'TransactionDate', width: 100, fixed: true, title: false },
+                    { name: 'PK_TransactionID', width: 70, fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', width: 130, fixed: true, title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Currency', width: 55, fixed: true, align: 'center', title: false },
+                    {
+                        name: 'TransactionAmount', width: 110, fixed: true, title: false, align: 'right', formatter: function (cellValue, options, rowObject) {
+                            return "<input id='txtTranAmt" + rowObject["PK_TransactionID"] + "' class='width-80 text-right' type='text' value='" + cellValue + "'>";
+                        }
+                    },
+                    { name: 'ExchangeRate', width: 68, fixed: true, align: 'right', title: false },
+                    {
+                        name: 'ToAccount', width: 130, fixed: true, title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ToClientName"];
+                        }
+                    },
+                    { name: 'ToCurrency', width: 55, fixed: true, align: 'center', title: false },
+                    { name: 'ExchangedAmount', title: false, align: 'right' },
+                    {
+                        name: 'TransactionFee', width: 80, fixed: true, align: 'right', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<input id='txtFeeAmt" + rowObject["PK_TransactionID"] + "' class='width-45 text-right' type='text' value='" + cellValue + "'>";
+                        }
+                    },
+                    { name: 'Actions', width: 105, fixed: true, align: 'center', title: false, sortable: false }
+                ]
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+            $('button[data-modal="modalApprove"]').click(function (e) {
+                e.preventDefault();
+                $('#modalApprove').modal();
+            });
+
+        });//End of ready
+
+        //Change event of approval options dropdown
+        $('#drpApprovalOption').change(function () {
+            if ($(this).val() == 3) {
+                $('#txtLimitedAmt').removeAttr('disabled');
+            }
+            else {
+                $('#txtLimitedAmt').attr('disabled', 'disabled');
+                $('#txtLimitedAmt').val('');
+            }
+        });
+
+        //Function to save conversion settings
+        function saveConversionSettings() {
+            if (validateSettingValues()) {
+                $('#loading').show();
+
+                var values = {
+                    "currencyID": $('#drpSettingCurrency').val(),
+                    "convFeeAmt": $('#txtConversionFee').val(),
+                    "approvalOption": $('#drpApprovalOption').val(),
+                    "limitedAmt": $('#txtLimitedAmt').val(),
+                    "convMarkupType": $('#drpConversionMarkupType').val(),
+                    "convMarkupValue": $('#txtConversionMarkup').val(),
+                    "marginRestriction": $('#txtMarginRestriction').val(),
+                    "adminPassword": $('#txtSettingPassword').val()
+                };
+
+                //Post request to save settings
+                $.post("@Url.Action("SaveConversionSettings", "Transactions")", values, function (data) {
+                    if (data.status) {
+                        $('#loading').hide();
+                        $('#modalSettings').modal('hide');
+                        $('#artConvTransfers').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Settings saved successfully.</div>');
+                        window.location.reload();
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalSettings').modal('hide');
+                        $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                    }
+                });
+            }
+        }
+
+        //Function to validate conversion settings values and display error
+        function validateSettingValues() {
+            $('.requiredError').remove();
+            var regMoney = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var regFloat = /^(?:[1-9]\d*|0)?(?:\.\d+)?$/;
+            var valid = true;
+
+            if ($('#drpSettingCurrency').val() == '') {
+                $('#drpSettingCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtConversionFee').val() == '' || !regMoney.test($('#txtConversionFee').val())) {
+                $('#txtConversionFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpApprovalOption').val() == '') {
+                $('#drpApprovalOption_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpApprovalOption').val() == 3 && ($('#txtLimitedAmt').val() == '' || !regMoney.test($('#txtLimitedAmt').val()))) {
+                $('#txtLimitedAmt').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpConversionMarkupType').val() == '') {
+                $('#drpConversionMarkupType_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtConversionMarkup').val() == '' || !regFloat.test($('#txtConversionMarkup').val())) {
+                $('#txtConversionMarkup').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtMarginRestriction').val() == '' || !regFloat.test($('#txtMarginRestriction').val())) {
+                $('#txtMarginRestriction').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtSettingPassword').val() == '') {
+                $('#txtSettingPassword').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Function to reset conversion settings values
+        function resetConversionSettingValues() {
+            $('#drpSettingCurrency').val(@Model.TransferCurrencyID);
+            $("#drpSettingCurrency").trigger("liszt:updated");
+            $('#txtConversionFee').val(@Model.TransferFee);
+            $('#drpApprovalOption').val(@Model.ApprovalOptionID);
+            $("#drpApprovalOption").trigger("liszt:updated");
+            $('#txtLimitedAmt').val(@Model.LimitedAmount);
+            $('#drpConversionMarkupType').val(@Model.ConversionMarkupType);
+            $("#drpConversionMarkupType").trigger("liszt:updated");
+            $('#txtConversionMarkup').val(@Model.ConversionMarkupValue);
+            $('#txtMarginRestriction').val(@Model.MarginRestriction);
+            $('#txtSettingPassword').val('');
+        }
+
+        //This function opens modal approve dialog with all required data
+        function showModalApprove(pkTransactionId) {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            
+            //If valid amounts are entered
+            if ($('#txtTranAmt' + pkTransactionId).val() != '' && regNumeric.test($('#txtTranAmt' + pkTransactionId).val()) && $('#txtFeeAmt' + pkTransactionId).val() != '' && regNumeric.test($('#txtFeeAmt' + pkTransactionId).val())) {
+                //Check amount size
+                if (checkAmountSize($('#txtTranAmt' + pkTransactionId)) && checkAmountSize($('#txtFeeAmt' + pkTransactionId))) {
+                    $('#loading').show();
+
+                    var value = {
+                        "pkTransactionId": pkTransactionId,
+                        "amount": $('#txtTranAmt' + pkTransactionId).val()
+                    };
+
+                    //Fetch transaction details
+                    $.getJSON("@Url.Action("GetConversionRequestDetails", "Transactions")", value, function(data) {
+                        if (data != null) {
+                            $('#spnAppvFromName').text(data.ClientName);
+                            $('#spnFromAcc').text(data.AccountNumber);
+                            $('#spnAmount').text(data.Currency + ' ' + $('#txtTranAmt' + pkTransactionId).val());
+                            $('#spnExchangeRate').text(data.ExchangeRate);
+                            $('#spnAppvToName').text(data.ToClientName);
+                            $('#spnToAcc').text(data.ToAccount);
+                            $('#spnExchangedAmount').text(data.ToCurrency + ' ' + data.ExchangedAmount);
+                            $('#spnFee').text(data.Currency + ' ' + $('#txtFeeAmt' + pkTransactionId).val());
+                            $('#txtAppvNotes').text(data.Notes);
+                            $('#btnApproveTransaction').attr('data-pkTransactionId', data.PK_TransactionID);
+                            $('#txtAppvPassword').val('');
+
+                            $('#loading').hide();
+                            $('#modalApprove').modal();
+                        }
+                        else {
+                            $('#loading').hide();
+                            $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                        }
+                    });
+                }
+                else {
+                    $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Amount or Fee is too large!</div>');
+                }
+            }
+            else {
+                $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Enter correct transaction and fee amount!</div>');
+            }
+        }
+
+        //Function to check amount size(max 10 digits)
+        function checkAmountSize(cntrl) {
+            if ($(cntrl).val().split(',').join('').split('.')[0].length <= 10) {
+                return true;
+            }
+            return false;
+        }
+        
+        //Function to delete a transaction
+        function deleteTransaction(transactionId) {
+            if (window.confirm("Are you sure you want to delete this transaction?")) {
+                $('#loading').show();
+
+                var value = {
+                    "transactionID": transactionId
+                };
+
+                //Post request to delete a transaction
+                $.post("@Url.Action("DeleteTransaction", "Transactions")", value, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $("#tblConversions").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                    }
+                });
+            }
+        }
+
+        //Approve button click event to approve a conversion transaction
+        $('#btnApproveTransaction').click(function () {
+            $('#btnApproveTransaction').attr('disabled', 'disabled');
+            $('#loading').show();
+
+            var pkTransactionId = $(this).attr('data-pkTransactionId');
+
+            var value = {
+                "PK_TransactionID": pkTransactionId,
+                "TransactionAmount": $('#txtTranAmt' + pkTransactionId).val().split(',').join(''),
+                "FeeAmount": $('#txtFeeAmt' + pkTransactionId).val().split(',').join(''),
+                "Notes": $('#txtAppvNotes').val(),
+                "ClientName": $('#txtAppvPassword').val()
+            };
+
+            //Post request to approve conversion transaction
+            $.post("@Url.Action("ApproveConversionTransaction", "Transactions")", value, function (data) {
+                if (data.status) {
+                    $('#loading').hide();
+                    $('#modalApprove').modal('hide');
+                    $('#btnApproveTransaction').removeAttr('disabled');
+                    $("#tblConversions").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                }
+                else {
+                    $('#btnApproveTransaction').removeAttr('disabled');
+                    $('#loading').hide();
+                    $('#modalApprove').modal('hide');
+                    $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                }
+            });
+        });
+
+        //From Client dropdown change event to load client all accs
+        $('#drpFromClients').change(function () {
+            $('#loading').show();
+
+            //Remove previous options
+            $("select#drpFromClientAccounts option").each(function () {
+                $(this).remove();
+            });
+            $("select#drpFromClientAccounts optgroup").each(function () {
+                $(this).remove();
+            });
+            $('#drpFromClientAccounts').append('<option></option>');
+
+            var values = {
+                "pkClientUserID": $('#drpFromClients').val()
+            };
+
+            //Get request to fetch all accs of client
+            $.getJSON("@Url.Action("GetAllUserAccountsWithBalance", "Transactions")", values, function (data) {
+                if (data) {
+                    $.each(data, function (key, value) {
+                        $('#drpFromClientAccounts').append('<optgroup id="optGrp' + key + '" label="' + value.TradingCurrency + ' Accounts">');
+                        $.each(value.TradingAccountList, function (keyInner, valueInner) {
+                            $('#optGrp' + key).append('<option value="' + valueInner.LandingAccount + '/' + valueInner.LandingCurrency + '">' + valueInner.LandingAccount + ' - ' + valueInner.LandingBalance + '</option>');
+                        });
+                    });
+                    $('#drpFromClientAccounts').removeAttr('disabled');
+                    $("#drpFromClientAccounts").trigger("liszt:updated");
+
+                    $('#loading').hide();
+                }
+                else {
+                    $('#loading').hide();
+                }
+            });
+        });
+        
+        //To Client dropdown change event to load client all accs
+        $('#drpToClients').change(function () {
+            $('#loading').show();
+
+            //Remove previous options
+            $("select#drpToClientAccounts option").each(function () {
+                $(this).remove();
+            });
+            $("select#drpToClientAccounts optgroup").each(function () {
+                $(this).remove();
+            });
+            $('#drpToClientAccounts').append('<option></option>');
+
+            var values = {
+                "pkClientUserID": $('#drpToClients').val()
+            };
+
+            //Get request to fetch all accs of client
+            $.getJSON("@Url.Action("GetAllUserAccountsWithBalance", "Transactions")", values, function (data) {
+                if (data) {
+                    $.each(data, function (key, value) {
+                        $('#drpToClientAccounts').append('<optgroup id="opt' + key + '" label="' + value.TradingCurrency + ' Accounts">');
+                        $.each(value.TradingAccountList, function (keyInner, valueInner) {
+                            $('#opt' + key).append('<option value="' + valueInner.LandingAccount + '/' + valueInner.LandingCurrency + '">' + valueInner.LandingAccount + ' - ' + valueInner.LandingBalance + '</option>');
+                        });
+                    });
+                    $('#drpToClientAccounts').removeAttr('disabled');
+                    $("#drpToClientAccounts").trigger("liszt:updated");
+
+                    $('#loading').hide();
+                }
+                else {
+                    $('#loading').hide();
+                }
+            });
+        });
+        
+        //FromClientAccounts drp change event to display selected account currency symbol
+        $('#drpFromClientAccounts').change(function () {
+            $('#spnFromAccCurr, #spnFeeCurr').text($(this).val().split('/')[1]);
+        });
+        
+        //Click function of Calculate Rate button
+        $('#btnCalculateRate').click(function() {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            
+            if ($('#txtAmount').val() != '' && regNumeric.test($('#txtAmount').val()) && parseInt($('#txtAmount').val()) != 0 && $('#drpFromClientAccounts').val() != '' && $('#drpToClientAccounts').val() != '' && $('#drpFromClientAccounts').val().split('/')[1] != $('#drpToClientAccounts').val().split('/')[1]) {
+                if (checkAmountSize($('#txtAmount'))) {
+                    $('#loading').show();
+
+                    var fromCurr = $('#drpFromClientAccounts').val().split('/')[1];
+                    var toCurr = $('#drpToClientAccounts').val().split('/')[1];
+                    var values = {
+                        "fromCurr": fromCurr,
+                        "toCurr": toCurr
+                    };
+
+                    //Post request to get exchange rate and broker spread
+                    $.post("@Url.Action("GetExchangeRates", "Transactions")", values, function(data) {
+                        if (data != null) {
+                            $("#loading").hide();
+
+                            $('.spnFromCurr').text(fromCurr);
+                            $('.spnToCurr').text(toCurr);
+                            $('#spnFromExchangeRate').text(data);
+                            $('#spnToExchangeRate').text((1 / data).toFixed(4));
+                            $('#spnExchangedAmt').text(($('#txtAmount').val().split(',').join('') * data).toFixed(2));
+                            $('#btnNewTransactionSubmit').removeAttr('disabled');
+
+                            //Set timer
+                            timer(
+                                30000, // milliseconds
+                                function(timeleft) { // called every step to update the visible countdown
+                                    document.getElementById('spnSecsLeft').innerHTML = timeleft + " second(s)";
+                                },
+                                function() { // what to do after
+                                    $('#btnNewTransactionSubmit').attr('disabled', 'disabled');
+                                }
+                            );
+                        } else {
+                            $("#loading").hide();
+                            alert('Some error occurred!');
+                        }
+                    });
+                }
+                else {
+                    alert('Amount is too large!');
+                }
+            }
+            else {
+                alert('Enter correct amount and select proper accounts of different currency!');
+            }
+        });
+        
+        //Timer function to count each sec and fire event after completion of time period
+        function timer(time, update, complete) {
+            var start = new Date().getTime();
+            interval = setInterval(function () {
+                var now = time - (new Date().getTime() - start);
+                if (now <= 0) {
+                    clearInterval(interval);
+                    complete();
+                }
+                else update(Math.floor(now / 1000));
+            }, 100); // the smaller this number, the more accurate the timer will be
+        }
+
+        //Function to create a new conversion transaction
+        function createNewTransaction(btnCntrl) {
+            if (validateNewTransactionValues()) {
+                if (checkAmountSize($('#txtFee'))) {
+                    $(btnCntrl).attr('disabled', 'disabled');
+                    $('#loading').show();
+
+                    var values = {
+                        "FromClientUserID": $('#drpFromClients').val(),
+                        "ToClientUserID": $('#drpToClients').val(),
+                        "FromClientAccount": $('#drpFromClientAccounts').val().split('/')[0],
+                        "ToClientAccount": $('#drpToClientAccounts').val().split('/')[0],
+                        "TransactionAmount": $('#txtAmount').val(),
+                        "TransactionFee": $('#txtFee').val(),
+                        "Notes": $('#txtNewNotes').val(),
+                        "FromClientName": $('#drpFromClients option:selected').html().split('-')[0].substring(0, $('#drpFromClients option:selected').html().split('-')[0].length - 1),
+                        "ToClientName": $('#drpToClients option:selected').html().split('-')[0].substring(0, $('#drpToClients option:selected').html().split('-')[0].length - 1),
+                        "Currency": $('#drpFromClientAccounts').val().split('/')[1],
+                        "ToCurrency": $('#drpToClientAccounts').val().split('/')[1],
+                        "ExchangeRate": $('#spnFromExchangeRate').text(),
+                        "AdminPassword": $('#txtNewTranPassword').val()
+                    };
+
+                    $.post("@Url.Action("CreateNewConversionTransaction", "Transactions")", values, function (data) {
+                        if (data.status) {
+                            $('#loading').hide();
+                            $(btnCntrl).removeAttr('disabled');
+                            $('#modalNew').modal('hide');
+                            $("#tblConversions").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                        }
+                        else {
+                            $('#loading').hide();
+                            $(btnCntrl).removeAttr('disabled');
+                            $('#modalNew').modal('hide');
+                            $('#artConvTransfers').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                        }
+                    });
+                }
+                else {
+                    alert('Fee is too large!');
+                }
+            }
+        }
+        
+        //Function to validate new transaction fields
+        function validateNewTransactionValues() {
+            $('.requiredError').remove();
+            var regMoney = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var valid = true;
+            
+            if ($('#txtFee').val() == '' || !regMoney.test($('#txtFee').val())) {
+                $('#txtFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtNewTranPassword').val() == '') {
+                $('#txtNewTranPassword').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+
+            return valid;
+        }
+        
+        //Function to reset new conversion transaction values
+        function resetNewConversionTransactionValues() {
+            $('#txtAmount').val('');
+            $('#txtFee').val('0.00');
+            $('#txtNewTranPassword').val('');
+            $('#drpFromClients').val('');
+            $("#drpFromClients").trigger("liszt:updated");
+            $('#drpToClients').val('');
+            $("#drpToClients").trigger("liszt:updated");
+            $('#drpFromClientAccounts').val('');
+            $("#drpFromClientAccounts").trigger("liszt:updated");
+            $('#drpToClientAccounts').val('');
+            $("#drpToClientAccounts").trigger("liszt:updated");
+            $('#txtNewNotes').val('');
+            $('#spnExchangedAmt').text('');
+            $('.spnToCurr').text('');
+            $('.spnFromCurr').text('');
+            $('#spnFromExchangeRate').text('');
+            $('#spnToExchangeRate').text('');
+            $('#btnNewTransactionSubmit').attr('disabled', 'disabled');
+            clearInterval(interval);
+            $('#spnSecsLeft').text('');
+            $('#spnFromAccCurr, #spnFeeCurr').text('');
+        }
+    </script>
+}

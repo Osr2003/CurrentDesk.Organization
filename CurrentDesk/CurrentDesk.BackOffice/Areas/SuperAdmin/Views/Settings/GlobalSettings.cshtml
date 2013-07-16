@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "GlobalSettings";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="settings"><span class="normal">Settings :</span> Global Settings</h1>
+            </div>
+
+            <!-- Platform Servers -->
+            <article>
+                <h2 class="inline-block">Platform Servers</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tableDocs">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="platforms" href="@Url.Action("Index", "Settings")"><span class="arrow"></span><strong>Platform</strong>Management</a></li>
+                <li><a class="roles" href="@Url.Action("UserRoleSettings", "Settings")"><span class="arrow"></span><strong>User Role</strong>Settings</a></li>
+                <li><a class="agreements single" href="@Url.Action("ClientAgreement", "Settings")"><span class="arrow"></span><strong>Client Agreements</strong></a></li>
+                <li><a class="funding" href="@Url.Action("FundingSourceManagement", "Settings")"><span class="arrow"></span><strong>Funding Source</strong>Management</a></li>
+                <li><a class="forms" href="@Url.Action("BrokerFormsManagement", "Settings")"><span class="arrow"></span><strong>Broker Forms</strong>Management</a></li>
+                <li><a class="documents" href="@Url.Action("KYCDocManagement", "Settings")"><span class="arrow"></span><strong>KYC Document</strong>Management</a></li>
+                <li><a class="fees" href="@Url.Action("FeeGroupManagement", "Settings")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="symbols" href="@Url.Action("SymbolManagement", "Settings")"><span class="arrow"></span><strong>Symbol</strong>Management</a></li>
+                <li class="active"><a class="settings single" href="@Url.Action("GlobalSettings", "Settings")"><span class="arrow"></span><strong>Global Settings</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalEditServer" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Edit Server</h2>
+    </div>
+
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns twelve">
+                <label class="h3">Platform Name <span class="required">*</span></label>
+                <input class=" width-250" type="text" value="[platform name]">
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Primary Server <span class="required">*</span></label>
+                <input class=" width-150" type="text" value="[server address]">
+            </li>
+            <li class="columns four">
+                <label class="h3">Login <span class="required">*</span></label>
+                <input class=" width-150" type="text" value="[login]">
+            </li>
+            <li class="columns four">
+                <label class="h3">Password <span class="required">*</span></label>
+                <input class=" width-150" type="text" value="[password]">
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Secondary Server</label>
+                <input class=" width-150" type="text" value="[server address]">
+            </li>
+            <li class="columns four">
+                <label class="h3">Login</label>
+                <input class=" width-150" type="text" value="[login]">
+            </li>
+            <li class="columns four">
+                <label class="h3">Password</label>
+                <input class=" width-150" type="text" value="[password]">
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/tip")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liSettings').addClass('active');
+            
+            $("#tableDocs").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Platform', 'Primary Server', 'Backup Server', ''],
+                colModel: [
+                    { name: 'platform', title: false },
+                    { name: 'primary', title: false },
+                    { name: 'backup', title: false },
+                    { name: 'actions', width: 50, fixed: true, align: 'center', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'name': '[platform name]',
+                        'link': '<a href="">http://[platform link]</a>',
+                        'actions': '<input class="icon view-edit tip" data-modal="modalEdit" title="View/Edit" type="button" value="View/Edit">'
+                    }
+                ]
+            });
+
+            $('input[data-modal="modalEdit"]').click(function (e) {
+                e.preventDefault();
+                $('#modalEditServer').modal();
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+        });//End of ready
+    </script>
+}

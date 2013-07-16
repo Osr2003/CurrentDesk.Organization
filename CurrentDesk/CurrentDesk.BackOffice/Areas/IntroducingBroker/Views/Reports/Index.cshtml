@@ -1,0 +1,203 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="reports"><span class="normal">Reports :</span> Account Reports</h1>
+            </div>
+
+            <!-- Report Settings Section -->
+            <article>
+                <h2 class="inline-block">Report Settings</h2>
+                <div class="content-section">
+                    <ul class="row">
+                        <li class="columns left margin-right">
+                            <label class="h3">Account/Group</label>
+                            <select class="chzn-select width-300" data-placeholder="Select Account or Group">
+                                <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                <option></option>
+                                <optgroup label="Reporting Groups">
+                                    <option>[group 1]</option>
+                                    <option>[group 2]</option>
+                                </optgroup>
+                                <optgroup label="My Accounts">
+                                    <option>100-000-1010000 - Trading Account</option>
+                                    <option>100-000-1010000 - Managed Account</option>
+                                    <option>100-000-1010000 - Managed Account</option>
+                                </optgroup>
+                            </select>
+                        </li>
+                        <li class="columns left margin-right">
+                            <label class="h3">Report Type</label>
+                            <select class="chzn-select width-175">
+                                <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                <option></option>
+                                <option>Summary Report</option>
+                                <option>Deposit/Withdraw</option>
+                                <option>Commission</option>
+                                <option>Equity</option>
+                                <option>Detailed Statement</option>
+                            </select>
+                        </li>
+                        <li class="columns left">
+                            <label class="h3">Date Range</label>
+                            <div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+                                <input class="width-80" size="16" type="text" readonly="" />
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                            <h3 class="h3 inline margin-horizontal">to</h3>
+                            <div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+                                <input class="width-80" size="16" type="text" readonly="" />
+                                <span class="add-on"><i class="icon-calendar"></i></span>
+                            </div>
+                        <li class="columns"></li>
+                    </ul>
+                </div>
+                <div class="row button-box">
+                    <div class="columns twelve text-right">
+                        <button type="button" class="btn btn-primary">Run Report</button></div>
+                </div>
+            </article>
+
+            <!-- Report Details Section -->
+            <article>
+                <ul class="button-bar">
+                    <li>
+                        <button type="button" class="btn btn-mini" disabled="">Save as PDF</button></li>
+                </ul>
+                <h2 class="inline-block">[report type]</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="TableReports">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="single reports" href="@Url.Action("Index", "Reports")"><span class="arrow"></span><strong>Account Reports</strong></a></li>
+                <li><a class="groups" href="@Url.Action("ReportGroups", "Reports")"><span class="arrow"></span><strong>Reporting</strong>Groups</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liReports').addClass('active');
+            $('select').chosen();
+
+            //Set current date in datepicker
+            var today = new Date();
+            $('.date').attr("data-date", today.getDate() + '/' + today.getMonth() + '/' + today.getYear());
+
+            // Bootstrap jQuery datepicker plugin: http://www.eyecon.ro/bootstrap-datepicker/
+            $('.date').datepicker();
+
+            $("#TableReports").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Date', 'Account', 'Deposit', 'Closed P/L', 'Balance', 'Credit', 'Floating P/L', 'Equity', 'Used Margin', 'Free Margin'],
+                colModel: [
+                    { name: 'date', title: false },
+                    { name: 'account', title: false },
+                    { name: 'deposit', align: 'right', title: false },
+                    { name: 'closed', align: 'right', title: false },
+                    { name: 'balance', align: 'right', title: false },
+                    { name: 'credit', align: 'right', title: false },
+                    { name: 'floating', align: 'right', title: false },
+                    { name: 'equity', align: 'right', title: false },
+                    { name: 'used', align: 'right', title: false },
+                    { name: 'free', align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'date': '2013.04.30',
+                        'account': '100-001-1010000',
+                        'deposit': '0.00',
+                        'closed': '500.00',
+                        'balance': '5,000.00',
+                        'credit': '0.00',
+                        'floating': '-250.00',
+                        'equity': '5,250.00',
+                        'used': '10,000.00',
+                        'free': '50,000.00'
+                    },
+                    {
+                        'date': '2013.04.30',
+                        'account': '100-001-1010000',
+                        'deposit': '0.00',
+                        'closed': '500.00',
+                        'balance': '5,000.00',
+                        'credit': '0.00',
+                        'floating': '-250.00',
+                        'equity': '5,250.00',
+                        'used': '10,000.00',
+                        'free': '50,000.00'
+                    },
+                    {
+                        'date': '2013.04.30',
+                        'account': '100-001-1010000',
+                        'deposit': '0.00',
+                        'closed': '500.00',
+                        'balance': '5,000.00',
+                        'credit': '0.00',
+                        'floating': '-250.00',
+                        'equity': '5,250.00',
+                        'used': '10,000.00',
+                        'free': '50,000.00'
+                    },
+                    {
+                        'date': '2013.04.30',
+                        'account': '100-001-1010000',
+                        'deposit': '0.00',
+                        'closed': '500.00',
+                        'balance': '5,000.00',
+                        'credit': '0.00',
+                        'floating': '-250.00',
+                        'equity': '5,250.00',
+                        'used': '10,000.00',
+                        'free': '50,000.00'
+                    }
+                ]
+            });
+
+        });//End of ready
+    </script>
+}
+

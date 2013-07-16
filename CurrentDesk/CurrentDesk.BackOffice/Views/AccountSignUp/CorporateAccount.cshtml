@@ -1,0 +1,358 @@
+﻿@model CurrentDesk.BackOffice.Models.CorporateAccountModel
+
+@{
+    ViewBag.Title = "CorporateForm";
+}
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+    <div class="content-section">
+        <div class="wrapper">
+            <h1>Enter Corporate Account Information - Step 2</h1>
+                      
+            <!-- Company Information -->
+            <h2><span class="right required">*Required Fields</span>Company Information</h2>
+            <div class="form-box">
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Company Name</label></dt>
+                    <dt class="columns seven">
+                        <label>Company Type</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.CompanyName, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.CompanyName)</dd>
+                    <dd class="columns seven">                       
+                        @Html.DropDownListFor(model => model.CompanyType, (IEnumerable<SelectListItem>)ViewData["CompanyTypes"], "Select Type", new { @id = "companyType" })                            
+                        @Html.ValidationMessageFor(model => model.CompanyType)
+                    </dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns twelve">
+                        <label>Company Address:</label><small><i>(P.O. Box Addresses are not acceptable.)</i></small></dt>
+                    <dd class="columns twelve">@Html.TextBoxFor(model => model.CompanyAddLine1, new { @class = "input-text width-long", @placeholder = "address line 1" })
+                        @Html.ValidationMessageFor(model => model.CompanyAddLine1)</dd>
+                    <dd class="columns twelve">@Html.TextBoxFor(model => model.CompanyAddLine2, new { @class = "input-text width-long", @placeholder = "address line 2" })
+                        @Html.ValidationMessageFor(model => model.CompanyAddLine2)</dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>City:</label></dt>
+                    <dt class="columns three">
+                        <label>Country:</label></dt>
+                    <dt class="columns four">
+                        <label>Postal Code:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.CompanyCity, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.CompanyCity)</dd>
+                    <dd class="columns three">                    
+                        @Html.DropDownListFor(model => model.CompanyCountry, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "companyCountry" })                           
+                        @Html.ValidationMessageFor(model => model.CompanyCountry)
+                    </dd>
+                    <dd class="columns four">@Html.TextBoxFor(model => model.CompanyPostalCode, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.CompanyPostalCode)</dd>
+                </dl>
+            </div>
+            <!-- End of Company Information -->
+
+            <!-- Authorized Officer Information -->
+            <h2><span class="right required">*Required Fields</span>Authorized Officer</h2>
+            <div class="form-box">
+                <dl class="form-list row">
+                    <dt class="columns two">
+                        <label>Title:</label></dt>
+                    <dt class="columns three">
+                        <label>First Name:</label></dt>
+                    <dt class="columns three">
+                        <label>Middle Name:</label></dt>
+                    <dt class="columns four">
+                        <label>Last Name:</label></dt>
+                    <dd class="columns two">                     
+                        @Html.DropDownListFor(model => model.AuthOfficerTitle, (IEnumerable<SelectListItem>)ViewData["Titles"], "Select Title", new { @id = "authOfficerTitle" })                           
+                        @Html.ValidationMessageFor(model => model.AuthOfficerTitle)
+                    </dd>
+                    <dd class="columns three">@Html.TextBoxFor(model => model.AuthOfficerFirstName, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerFirstName)</dd>
+                    <dd class="columns three">@Html.TextBoxFor(model => model.AuthOfficerMiddleName, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerMiddleName)</dd>
+                    <dd class="columns four">@Html.TextBoxFor(model => model.AuthOfficerLastName, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerLastName)</dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Date of Birth:</label></dt>
+                    <dt class="columns seven">
+                        <label>Gender:</label></dt>
+                    <dd class="columns">
+                        @Html.DropDownListFor(model => model.AuthOfficerDobDay, (IEnumerable<SelectListItem>)ViewData["Days"], "Day", new { @id = "authOfficerDobDay" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerDobDay)
+                    </dd>
+                    <dd class="columns">
+                        @Html.DropDownListFor(model => model.AuthOfficerDobMonth, (IEnumerable<SelectListItem>)ViewData["Months"], "Month", new { @id = "authOfficerDobMonth" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerDobMonth)</dd>
+                    <dd class="columns">
+                        @Html.DropDownListFor(model => model.AuthOfficerDobYear, (IEnumerable<SelectListItem>)ViewData["Years"], "Year", new { @id = "authOfficerDobYear" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerDobYear)
+                    </dd>
+                    <dd class="columns seven">
+                        <label class="">Male</label>@Html.RadioButtonFor(model => model.AuthOfficerGender, "true", new { id = "male" })<label class="">Female</label>@Html.RadioButtonFor(model => model.AuthOfficerGender, "false", new { id = "female" })@Html.ValidationMessageFor(model => model.AuthOfficerGender)</dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Citizenship:</label></dt>
+                    <dt class="columns seven">
+                        <label>ID Information:</label></dt>
+                    <dd class="columns five">                   
+                        @Html.DropDownListFor(model => model.AuthOfficerCitizenship, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "authOfficerCitizenship" })                            
+                        @Html.ValidationMessageFor(model => model.AuthOfficerCitizenship)
+                    </dd>
+                    <dd class="columns seven">                      
+                        @Html.DropDownListFor(model => model.AuthOfficerIdInfo, (IEnumerable<SelectListItem>)ViewData["IdInfo"], "Select Type", new { @id = "authOfficerIdInfo" })                            
+                        @Html.ValidationMessageFor(model => model.AuthOfficerIdInfo)
+                        @Html.TextBoxFor(model => model.AuthOfficerIdNumber, new { @class = "input-text width-default", @placeholder = "ID Number" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerIdNumber)<em>No dashes or spaces</em>
+                    </dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns twelve">
+                        <label>Country of Residence:</label></dt>
+                    <dd class="columns twelve">                        
+                        @Html.DropDownListFor(model => model.AuthOfficerResidenceCountry, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "authOfficerResidenceCountry" })                           
+                        @Html.ValidationMessageFor(model => model.AuthOfficerResidenceCountry)
+                    </dd>
+                </dl>
+            </div>
+            <!-- End of Auth Officer Information -->
+
+            <!-- Authorized Officer Contact Information -->
+            <h2><span class="right required">*Required Fields</span>Authorized Officer Contact Information</h2>
+            <div class="form-box">
+
+                <dl class="form-list row">
+                    <dt class="columns twelve">
+                        <label>Authorized Officer Address:</label><small><i>(P.O. Boxes are not acceptable.)</i></small></dt>
+                    <dd class="columns twelve">@Html.TextBoxFor(model => model.AuthOfficerAddLine1, new { @class = "input-text width-long", @placeholder = "address line 1" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerAddLine1)</dd>
+                    <dd class="columns twelve">@Html.TextBoxFor(model => model.AuthOfficerAddLine2, new { @class = "input-text width-long", @placeholder = "address line 2" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerAddLine2)</dd>
+                </dl>
+
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>City:</label></dt>
+                    <dt class="columns three">
+                        <label>Country:</label></dt>
+                    <dt class="columns four">
+                        <label>Postal Code:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.AuthOfficerCity, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerCity)</dd>
+                    <dd class="columns three">                      
+                        @Html.DropDownListFor(model => model.AuthOfficerCountry, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "authOfficerCountry" })                           
+                        @Html.ValidationMessageFor(model => model.AuthOfficerCountry)
+                    </dd>
+                    <dd class="columns four">@Html.TextBoxFor(model => model.AuthOfficerPostalCode, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerPostalCode)</dd>
+                </dl>
+
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Telephone Number:</label><small><i>(Country Code + Number)</i></small></dt>
+                    <dt class="columns seven">
+                        <label>Mobile Number:</label><small><i>(Country Code + Number)</i></small></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.AuthOfficerTelNumberCountryCode, new { @class = "input-text width-short" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerTelNumberCountryCode, "*") @Html.TextBoxFor(model => model.AuthOfficerTelNumber, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerTelNumber, "*")</dd>
+                    <dd class="columns seven">@Html.TextBoxFor(model => model.AuthOfficerMobileNumberCountryCode, new { @class = "input-text width-short" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerMobileNumberCountryCode, "*") @Html.TextBoxFor(model => model.AuthOfficerMobileNumber, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerMobileNumber, "*")</dd>
+                </dl>
+                @*<dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Email Address:</label></dt>
+                    <dt class="columns seven">
+                        <label>Confirm Email Address:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.AuthOfficerEmailAddress, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerEmailAddress,"*")</dd>
+                    <dd class="columns seven">@Html.TextBoxFor(model => model.AuthOfficerConfirmEmailAddress, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.AuthOfficerConfirmEmailAddress,"*")</dd>
+                </dl>*@
+            </div>
+            <!-- End of Auth Officer Contact Information -->
+
+            <!-- Banking Information -->
+            <h2><span class="right required">*Required Fields</span>Banking Information</h2>
+            <div class="form-box">
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Bank Name:</label></dt>
+                    <dt class="columns three">
+                        <label>Account Number:</label></dt>
+                    <dt class="columns four">
+                        <label>Bic Number/SWIFT Code:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.BankName, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.BankName)</dd>
+                    <dd class="columns three">@Html.TextBoxFor(model => model.AccountNumber, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.AccountNumber)</dd>
+                    <dd class="columns four">@Html.TextBoxFor(model => model.BicOrSwiftCode, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.BicOrSwiftCode)</dd>
+                </dl>
+
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>Bank Address:</label></dt>
+                    <dt class="columns seven">
+                        <label>Receiving Bank Information:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.BankAddLine1, new { @class = "input-text width-long", @placeholder = "address line 1" })
+                        @Html.ValidationMessageFor(model => model.BankAddLine1)@Html.TextBoxFor(model => model.BankAddLine2, new { @class = "input-text width-long", @placeholder = "address line 2" })
+                        @Html.ValidationMessageFor(model => model.BankAddLine2)</dd>
+                    <dd class="columns seven">                        
+                        @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], "Please Select", new { @id = "receivingBankInfoId" })                        
+                        @Html.ValidationMessageFor(model => model.ReceivingBankInfoId)
+                        @Html.TextBoxFor(model => model.ReceivingBankInfo, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.ReceivingBankInfo)
+                    </dd>
+                </dl>
+
+                <dl class="form-list row">
+                    <dt class="columns five">
+                        <label>City:</label></dt>
+                    <dt class="columns three">
+                        <label>Country:</label></dt>
+                    <dt class="columns four">
+                        <label>Postal Code:</label></dt>
+                    <dd class="columns five">@Html.TextBoxFor(model => model.BankCity, new { @class = "input-text width-long" })
+                        @Html.ValidationMessageFor(model => model.BankCity)</dd>
+                    <dd class="columns three">                        
+                        @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country", new { @id = "bankCountry" })                        
+                        @Html.ValidationMessageFor(model => model.BankCountry)
+                    </dd>
+                    <dd class="columns four">@Html.TextBoxFor(model => model.BankPostalCode, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.BankPostalCode)</dd>
+                </dl>
+
+            </div>
+            <!--End of Banking Information -->
+
+            <!-- Financial Information -->
+            <h2><span class="right required">*Required Fields</span>Financial Information</h2>
+            <div class="form-box">
+                <dl class="form-list row">
+                    <dt class="columns four">
+                        <label>Estimate Annual Income?</label><br/>
+                        <small><i>(How much you make)</i></small></dt>
+                    <dt class="columns four">
+                        <label>Liquid Assets:</label><br/>
+                        <small><i>(Assets easily converted to cash) </i></small></dt>
+                    <dt class="columns four">
+                        <label>Total net worth in Euros:</label><br/>
+                        <small><i>(Everything you own minus what you owe)</i></small></dt>
+                    <dd class="columns four">                        
+                        @Html.DropDownListFor(model => model.EstimatedAnnualIncome, (IEnumerable<SelectListItem>)ViewData["EstimatedAnnualIncome"], "Please Select", new { @id = "estimatedAnnualIncome" })                        
+                        @Html.ValidationMessageFor(model => model.EstimatedAnnualIncome)
+                    </dd>
+                    <dd class="columns four">                       
+                        @Html.DropDownListFor(model => model.LiquidAssets, (IEnumerable<SelectListItem>)ViewData["LiquidAssets"], "Please Select", new { @id = "liquidAssets" })                        
+                        @Html.ValidationMessageFor(model => model.LiquidAssets)
+                    </dd>
+                    <dd class="columns four">                        
+                        @Html.DropDownListFor(model => model.NetWorthEuros, (IEnumerable<SelectListItem>)ViewData["NetWorthEuros"], "Please Select", new { @id = "netWorthEuros" })                        
+                        @Html.ValidationMessageFor(model => model.NetWorthEuros)
+                    </dd>
+                </dl>
+
+            </div>
+            <!--End of Financial Information -->
+
+            <!-- Trading Experience -->
+            <h2><span class="right required">*Required Fields</span>Trading Experience</h2>
+            <div class="form-box">
+                <dl class="form-list row">
+                    <dt class="columns four">
+                        <label>Do you have experience trading securities?</label></dt>
+                    <dt class="columns four">
+                        <label>Do you have experience trading options?</label></dt>
+                    <dt class="columns four">
+                        <label>Do you have experience trading foreign exchange?</label></dt>
+                    <dd class="columns four">                        
+                        @Html.DropDownListFor(model => model.DrpHaveExperienceTradingSecurities, (IEnumerable<SelectListItem>)ViewData["TradingExp"], "Please Select", new { @id = "haveExpTradingSecurities" })                       
+                        @Html.ValidationMessageFor(model => model.DrpHaveExperienceTradingSecurities)
+                    </dd>
+                    <dd class="columns four">                        
+                        @Html.DropDownListFor(model => model.DrpHaveExperienceTradingOptions, (IEnumerable<SelectListItem>)ViewData["TradingExp"], "Please Select", new { @id = "haveExpTradingOptions" })                        
+                        @Html.ValidationMessageFor(model => model.DrpHaveExperienceTradingOptions)
+                    </dd>
+                    <dd class="columns four">                       
+                        @Html.DropDownListFor(model => model.DrpHaveExperienceTradingForeignExchange, (IEnumerable<SelectListItem>)ViewData["TradingExp"], "Please Select", new { @id = "haveExpTradingForeignExchange" })                        
+                        @Html.ValidationMessageFor(model => model.DrpHaveExperienceTradingForeignExchange)
+                    </dd>
+                </dl>
+
+            </div>
+            <!-- End of Trading Experience-->
+
+            <!-- Other Information -->
+            <h2><span class="right required">*Required Fields</span>Other Information</h2>
+            <div class="form-box">
+
+               <dl class="form-list row">
+                    <dt class="columns six">
+                        <label>Do you have or have you ever held and other account with FQ Securities?</label></dt>
+                    <dt class="columns six">
+                        <label>Have you ever been a registered person/entity with CFTC, NFA, SEC, FINRA, FSA, BaFin, etc?</label></dt>
+                    <dd class="columns six">
+                        <label class="">No</label>@Html.RadioButtonFor(model => model.HaveAccWithFqSecurities, "false", new { id = "HaveAccWithFqSecuritiesNo" })
+                        <label class="">Yes</label>@Html.RadioButtonFor(model => model.HaveAccWithFqSecurities, "true", new { id = "HaveAccWithFqSecuritiesYes" })
+                        @Html.ValidationMessageFor(model => model.HaveAccWithFqSecurities, "*")
+                    </dd>
+                    <dd class="columns six">
+                    <label class="">No</label>@Html.RadioButtonFor(model => model.RegisteredPerson, "false", new { id = "RegisteredPersonNo" })
+                    <label class="">Yes</label>@Html.RadioButtonFor(model => model.RegisteredPerson, "true", new { id = "RegisteredPersonYes" })
+                         @Html.ValidationMessageFor(model => model.RegisteredPerson, "*")</dd>
+                </dl>
+
+                <dl class="form-list row">
+                    <dt class="columns six">
+                        <label>Are you required to be registered with a regulator?</label></dt>
+                    <dt class="columns six">
+                        <label>Are you an employee of an exchange or regulator organization?</label></dt>
+                    <dd class="columns six">
+                    <label class="">No</label>@Html.RadioButtonFor(model => model.RequiredToBeRegisteredWithRegulator, "false", new { id = "RequiredToBeRegisteredWithRegulatorNo" })
+                    <label class="">Yes</label>@Html.RadioButtonFor(model => model.RequiredToBeRegisteredWithRegulator, "true", new { id = "RequiredToBeRegisteredWithRegulatorYes" })
+                        @Html.ValidationMessageFor(model => model.RequiredToBeRegisteredWithRegulator, "*")
+                    </dd>
+
+
+                    <dd class="columns six">
+                        <label class="">No</label>@Html.RadioButtonFor(model => model.EmployeeOfExchangeOrRegulatorOperator, "false", new { id = "EmployeeOfExchangeOrRegulatorOperatorNo" })
+                        <label class="">Yes</label>@Html.RadioButtonFor(model => model.EmployeeOfExchangeOrRegulatorOperator, "true", new { id = "EmployeeOfExchangeOrRegulatorOperatorYes" })
+                        @Html.ValidationMessageFor(model => model.EmployeeOfExchangeOrRegulatorOperator, "*")</dd>
+                </dl>
+                <dl class="form-list row">
+                    <dt class="columns twelve">
+                        <label>Have you ever declared bankruptcy?</label></dt>
+                    <dd class="columns twelve"><label class="">No</label>@Html.RadioButtonFor(model => model.EverDeclaredBankruptcy, "false", new { id = "DeclaredBankruptcyNo" })
+                        <label class="">Yes</label>@Html.RadioButtonFor(model => model.EverDeclaredBankruptcy, "true", new { id = "DeclaredBankruptcyYes" })
+                         @Html.ValidationMessageFor(model => model.EverDeclaredBankruptcy, "*")
+                        </dd>
+                </dl>
+            </div>
+            <!--End of Other Information -->
+
+            <!-- Button Box -->
+            <div class="button-box">
+                <input id="live-submit-2-individual" class="button submit right" type="submit" value="Continue" />
+            </div>
+
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+     <script type="text/javascript">
+         $(document).ready(function () {
+             $("select").uniform();
+         });
+    </script>
+}

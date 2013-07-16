@@ -1,0 +1,620 @@
+﻿@model CurrentDesk.BackOffice.Areas.SuperAdmin.Models.Transactions.NewTransactionModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="transfers"><span class="normal">Transactions :</span> Incoming Funds</h1>
+            </div>
+
+            <!-- Broker Forms -->
+            <article id="artIncTransactions">
+                <ul class="button-bar">
+                    <li><a onclick="resetSettingsDialog()" class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalSettings" data-backdrop="static"><i class="icon-cog"></i> Settings</a></li>
+                    <li><a onclick="resetNewTransactionDialog()" class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNew" data-backdrop="static">New Transaction</a></li>
+                </ul>
+                <h2 class="inline-block">Incoming Transactions</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblIncoming">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="fund" href="@Url.Action("Index", "Transactions")"><span class="arrow"></span><strong>Incoming</strong>Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("OutgoingFunds", "Transactions")"><span class="arrow"></span><strong>Outgoing</strong>Funds</a></li>
+                <li><a class="internal" href="@Url.Action("InternalTransfers", "Transactions")"><span class="arrow"></span><strong>Internal</strong>Transfers</a></li>
+                <li><a class="conversions" href="@Url.Action("ConversionsRequests", "Transactions")"><span class="arrow"></span><strong>Conversions</strong>Requests</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNew" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Transaction</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Broker Funding Source <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.FundingSourceID, (IEnumerable<SelectListItem>)ViewData["FundingSource"], "", new { @id = "drpFundingSource", @class = "width-250" })
+
+            </li>
+            <li class="columns four">
+                <label class="h3">Label</label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Label 1</option>
+                    <option>Label 2</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Select Currency <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpCurrency", @class = "width-150" })
+            </li>
+            <li class="columns four">
+                <label class="h3">Amount <span class="required">*</span></label>
+                <input id="txtAmount" class="width-140" type="text" placeholder="enter amount" />
+            </li>
+            <li class="columns four">
+                <label class="h3">Fee <span class="required">*</span></label>
+                <input id="txtFee" class="width-140" type="text" value="0.00" />
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">Select Client <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ClientUserID, (IEnumerable<SelectListItem>)ViewData["Clients"], "", new { @id = "drpClients", @class = "width-250" })
+            </li>
+            <li class="columns six">
+                <label class="h3">Client Accounts <span class="required">*</span></label>
+                <select id="drpClientAccounts" class="chzn-select width-250" data-placeholder="Please select a landing account" disabled="">
+                    <option></option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Transaction Notes</label>
+                <textarea id="txtNewTranNotes" class="width-full" style="height: 60px;"></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtNewTranPassword" class=" width-150" type="password" /><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="createNewTransaction(this)">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalSettings" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Settings</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns six">
+                <label class="h3">Minimum Deposit <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["Currency"], "", new { @id = "drpMinDepositCurrency", @class = "width-150" })
+            </li>
+            <li class="columns six">
+                <input id="txtMinDepositAmount" class="width-140 input-margin" type="text" placeholder="enter amount" />
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtSettingsPassword" class=" width-150" type="password" /><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalApprove" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Approve Transaction</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right" id="liClientName"></li>
+            <li class="columns six">Amount</li>
+            <li class="columns six text-right" id="liAmount"></li>
+            <li class="columns six">Fee</li>
+            <li class="columns six text-right" id="liFees"></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Transaction Notes</label>
+                <textarea id="txtNotes" class="width-full" style="height: 40px;"></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input id="txtPassword" class=" width-150" type="password" /><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnApproveTransaction" class="btn btn-primary">Approve</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/tip")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liTransactions').addClass('active');
+            $('#drpCurrency').attr('disabled', 'disabled');
+            $('#drpClients').attr('data-placeholder', 'Please select a client');
+            $('select').chosen();
+
+            $("#tblIncoming").jqGrid({
+                url: 'Transactions/GetAllIncomingFundRequests',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date', 'Trans ID', 'Client', 'Receiving Source', 'CUR', 'Amount', 'Fee', 'Labels', '', 'ClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: 100, fixed: true, title: false },
+                    { name: 'TransactionID', title: false },
+                    {
+                        name: 'AccountNumber', width: 130, fixed: true, title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'FundingSourceName', width: 145, fixed: true, title: false },
+                    { name: 'Currency', width: 60, fixed: true, align: 'center', title: false },
+                    {
+                        name: 'TransactionAmount', width: 115, fixed: true, title: false, align: 'right', formatter: function (cellValue, options, rowObject) {
+                            return "<input id='txtTranAmt" + rowObject["TransactionID"] + "' class='width-80 text-right' type='text' value='" + cellValue + "'>";
+                        }
+                    },
+                    {
+                        name: 'TransactionFee', width: 80, fixed: true, align: 'right', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<input id='txtFeeAmt" + rowObject["TransactionID"] + "' class='width-45 text-right' type='text' value='" + cellValue + "'>";
+                        }
+                    },
+                    { name: 'labels', title: false, sortable: false },
+                    { name: 'Actions', width: 105, fixed: true, align: 'center', title: false, sortable: false },
+                    { name: 'ClientName', hidden: true}
+                ],
+                gridComplete: function () {
+                    //Display tooltip
+                    $('.tip').tipTip({ defaultPosition: 'top' });
+
+                    //Open modal approve
+                    $('button[data-modal="modalApprove"]').click(function (e) {
+                        e.preventDefault();
+                    });
+                }
+            });
+
+        });//End of ready
+
+        //Function to delete a transaction
+        function deleteTransaction(transactionID) {
+            if(window.confirm("Are you sure you want to delete this transaction?")){
+                $('#loading').show();
+
+                var value = {
+                    "transactionID": transactionID
+                }
+
+                //Post request to delete a transaction
+                $.post("@Url.Action("DeleteTransaction", "Transactions")", value, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $("#tblIncoming").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                    }
+                });
+            }
+        }
+
+        //This function opens modal approve dialog with all required data
+        function showModalApprove(pkTransactionID) {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+
+            //If valid amounts are entered
+            if ($('#txtTranAmt' + pkTransactionID).val() != '' && regNumeric.test($('#txtTranAmt' + pkTransactionID).val()) && $('#txtFeeAmt' + pkTransactionID).val() != '' && regNumeric.test($('#txtFeeAmt' + pkTransactionID).val())) {
+                //Check size of amount and fee
+                if (checkAmountSize($('#txtTranAmt' + pkTransactionID)) && checkAmountSize($('#txtFeeAmt' + pkTransactionID))) {
+                    $('#loading').show();
+
+                    var value = {
+                        "pkTransactionID": pkTransactionID
+                    }
+
+                    //Fetch transaction details
+                    $.getJSON("@Url.Action("GetIncomingTransactionDetails", "Transactions")", value, function (data) {
+                        if (data != null) {
+                            $('#liClientName').text(data.ClientName);
+                            $('#liAmount').text(data.Currency + " " + $('#txtTranAmt' + data.PK_TransactionID).val());
+                            $('#liFees').text(data.FeeCurrency + " " + $('#txtFeeAmt' + data.PK_TransactionID).val());
+                            $('#txtNotes').text(data.Notes);
+                            $('#btnApproveTransaction').attr('data-pkTransactionId', data.PK_TransactionID);
+                            $('#txtPassword').val('');
+
+                            $('#loading').hide();
+                            $('#modalApprove').modal();
+                        }
+                        else {
+                            $('#loading').hide();
+                            $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                        }
+                    });
+                }
+                else {
+                    $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Amount or Fee is too large!</div>');
+                }
+            }
+            else {
+                $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Enter correct transaction and fee amount!</div>');
+            }
+        }
+
+        //Approve button click event to approve a transaction
+        $('#btnApproveTransaction').click(function () {
+            $('#btnApproveTransaction').attr('disabled', 'disabled');
+            $('#loading').show();
+
+            var pkTransactionID = $(this).attr('data-pkTransactionId');
+
+            var value = {
+                "PK_TransactionID": pkTransactionID,
+                "TransactionAmount": $('#txtTranAmt' + pkTransactionID).val().split(',').join(''),
+                "FeeAmount": $('#txtFeeAmt' + pkTransactionID).val().split(',').join(''),
+                "Notes": $('#txtNotes').val(),
+                "ClientName": $('#txtPassword').val()
+            }
+
+            $.post("@Url.Action("ApproveIncomingTransaction", "Transactions")", value, function (data) {
+                if (data) {
+                    $('#loading').hide();
+                    $('#modalApprove').modal('hide');
+                    $('#btnApproveTransaction').removeAttr('disabled');
+                    $("#tblIncoming").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                }
+                else {
+                    $('#btnApproveTransaction').removeAttr('disabled');
+                    $('#loading').hide();
+                    $('#modalApprove').modal('hide');
+                    $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Invalid password!</div>');
+                }
+            });
+        });
+
+        //Funding source drp change event in New Transaction dialog
+        $('#drpFundingSource').change(function () {
+            $('#loading').show();
+
+            var value = {
+                "pkFundingSourceID": $('#drpFundingSource').val()
+            }
+
+            $.getJSON("@Url.Action("GetFundingSourceDetails", "Settings")", value, function (data) {
+                if (data != null) {
+                    //Set fee amount in text box
+                    $('#txtFee').val(data.IncomingWireFeeAmount);
+
+                    //Make accepted currency enabled in dropdown
+                    var arrAcceptedCurr = data.AcceptedCurr.split(' ').join('').split(',');
+
+                    //Make all options disabled
+                    $("select#drpCurrency option").each(function () {
+                        $(this).attr('disabled', 'disabled');
+                    });
+
+                    //Make accepted option enabled
+                    $.each(arrAcceptedCurr, function (key, value) {
+                        $("select#drpCurrency option").each(function () {
+                            if ($(this).text() == value) {
+                                $(this).removeAttr('disabled');
+                            }
+                        });
+                    });
+
+                    $('#drpCurrency').val('').removeAttr('disabled');
+                    $("#drpCurrency").trigger("liszt:updated");
+
+                    $('#loading').hide();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Some error occurred!</div>');
+                }
+            });
+        });
+
+        //Client dropdown change event to load client all landing accs
+        $('#drpClients').change(function () {
+            $('#loading').show();
+
+            //Remove previous options
+            $("select#drpClientAccounts option").each(function () {
+                $(this).remove();
+            });
+            $('#drpClientAccounts').append('<option></option>');
+
+            var value = {
+                "pkClientUserID": $('#drpClients').val()
+            }
+
+            //Get request to fetch all landing accs of client
+            $.getJSON("@Url.Action("GetUserAllLandingAccounts", "Transactions")", value, function (data) {
+                if (data) {
+                    $.each(data, function (key, value) {
+                        $('#drpClientAccounts').append('<optgroup label="' + value.LandingCurrency + ' Landing Account"><option value="' + value.LandingAccount + '">' + value.LandingAccount + '</option></optgroup>');
+                    });
+                    $('#drpClientAccounts').removeAttr('disabled');
+                    $("#drpClientAccounts").trigger("liszt:updated");
+
+                    $('#loading').hide();
+                }
+                else {
+                    $('#loading').hide();
+                }
+            });
+        });
+
+        //Function to create new incoming transaction for client
+        function createNewTransaction(btnCntrl) {
+
+            //Validate all fields
+            if (validateNewTransactionValues()) {
+
+                //Validate amount and fee size
+                if (checkAmountSize($('#txtAmount')) && checkAmountSize($('#txtFee'))) {
+                    $(btnCntrl).attr('disabled', 'disabled');
+                    $('#loading').show();
+
+                    var values = {
+                        "FundingSourceID": $('#drpFundingSource').val(),
+                        "CurrencyID": $('#drpCurrency').val(),
+                        "Amount": $('#txtAmount').val(),
+                        "Fee": $('#txtFee').val(),
+                        "ClientUserID": $('#drpClients').val(),
+                        "ClientAccountNumber": $('#drpClientAccounts').val(),
+                        "Notes": $('#txtNewTranNotes').val(),
+                        "ClientName": $('#drpClients option:selected').html().split('-')[0].substring(0, $('#drpClients option:selected').html().split('-')[0].length - 1),
+                        "AdminPassword": $('#txtNewTranPassword').val()
+                    }
+
+                    $.post("@Url.Action("CreateNewIncomingTransactionForClient", "Transactions")", values, function (data) {
+                        if (data) {
+                            $('#loading').hide();
+                            $(btnCntrl).removeAttr('disabled');
+                            $('#modalNew').modal('hide');
+                            $("#tblIncoming").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                        }
+                        else {
+                            $('#loading').hide();
+                            $(btnCntrl).removeAttr('disabled');
+                            $('#modalNew').modal('hide');
+                            $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Invalid password!</div>');
+                        }
+                    });
+                }
+                else {
+                    alert('Amount or Fee is too large!');
+                }
+            }
+        }
+
+        //Function to validate new transaction fields
+        function validateNewTransactionValues() {
+            $('.requiredError').remove();
+            var regMoney = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var valid = true;
+
+            if ($('#txtAmount').val() == '' || !regMoney.test($('#txtAmount').val())) {
+                $('#txtAmount').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtFee').val() == '' || !regMoney.test($('#txtFee').val())) {
+                $('#txtFee').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtNewTranPassword').val() == '') {
+                $('#txtNewTranPassword').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpFundingSource').val() == '') {
+                $('#drpFundingSource_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpCurrency').val() == '') {
+                $('#drpCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpClients').val() == '') {
+                $('#drpClients_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpClientAccounts').val() == '') {
+                $('#drpClientAccounts_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Function to reset new transaction dialog values
+        function resetNewTransactionDialog() {
+            $('#txtAmount').val('');
+            $('#txtFee').val('0.00');
+            $('#txtNewTranPassword').val('');
+            $('#txtNewTranNotes').val('');
+            $('#drpFundingSource').val('');
+            $('#drpCurrency').val('').attr('disabled', 'disabled');
+            $('#drpClients').val('');
+            $('#drpClientAccounts').val('').attr('disabled', 'disabled');
+            $("#drpFundingSource").trigger("liszt:updated");
+            $("#drpCurrency").trigger("liszt:updated");
+            $("#drpClients").trigger("liszt:updated");
+            $("#drpClientAccounts").trigger("liszt:updated");
+        }
+
+        //Function to save incoming transaction settings
+        function saveSettings() {
+            if (validateSettingsValues()) {
+                $('#loading').show();
+                var settValues = {
+                    "currencyID": $('#drpMinDepositCurrency').val(),
+                    "minDepositAmt": $('#txtMinDepositAmount').val().split(',').join(''),
+                    "adminPassword": $('#txtSettingsPassword').val()
+                }
+
+                //Post request to save transaction settings
+                $.post("@Url.Action("SaveIncomingTransactionSettings", "Transactions")", settValues, function (data) {
+                    if (data.status) {
+                        $('#loading').hide();
+                        $('#modalSettings').modal('hide');
+                        $('#artIncTransactions').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Settings saved successfully.</div>');
+                        window.location.reload();
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalSettings').modal('hide');
+                        $('#artIncTransactions').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                    }
+                });
+            }
+        }
+
+        //Function to validate settings values and show validation errors
+        function validateSettingsValues() {
+            $('.requiredError').remove();
+            var regMoney = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            var valid = true;
+
+            if ($('#drpMinDepositCurrency').val() == '') {
+                $('#drpMinDepositCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtMinDepositAmount').val() == '' || !regMoney.test($('#txtMinDepositAmount').val())) {
+                $('#txtMinDepositAmount').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtSettingsPassword').val() == '') {
+                $('#txtSettingsPassword').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        //Function to reset transaction settings dialog values
+        function resetSettingsDialog() {
+            $('#drpMinDepositCurrency').val(@ViewData["SettingCurrency"]);
+            $('#txtMinDepositAmount').val(@ViewData["MinAmount"]);
+            $("#drpMinDepositCurrency").trigger("liszt:updated");
+            $('#txtSettingsPassword').val('');
+        }
+
+        //Function to check amount size(max 10 digits)
+        function checkAmountSize(cntrl) {
+            if ($(cntrl).val().split(',').join('').split('.')[0].length <= 10) {
+                return true;
+            }
+            return false;
+        }
+    </script>
+}

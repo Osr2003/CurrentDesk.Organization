@@ -1,0 +1,244 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientAccountsModel
+@{
+    ViewBag.Title = "ClientAccounts";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="@Url.Action("Index", "IntroducingBrokerClients")">My Clients</a> : <a href="@Url.Action("ClientDetails", "IntroducingBrokerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })">@Model.ClientName.Replace('@', ' ')</a> :</span> Client Accounts</h1>
+            </div>
+
+            <div id="divAccountList">
+
+                @foreach (var item in Model.CurrencyAccountDetails)
+                {
+                    <article class="overflow">
+                        <div class="landing-header @item.CurrencyImage clearfix">
+                            <div class="left">
+                                <h2>@item.LandingAccount</h2>
+                                <h3>@item.CurrencyName Landing Account</h3>
+                            </div>
+                            <div class="right">
+                                <h3>Balance:<span class="balance"><small></small>@item.LAccBalance</span></h3>
+                            </div>
+                        </div>
+                        <table id="@item.CurrencyName">
+                            <tr>
+                                <td />
+                            </tr>
+                        </table>
+                        <div class="button-box text-right">
+                            <button class="btn" data-toggle="modal" data-target="#modalAddAccount" onclick="addNewCurrAcc('@item.CurrencyName')"><i class="icon-plus-sign"></i>Add @item.CurrencyName Account</button>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })"><span class="arrow"></span><strong>@Model.ClientName.Replace('@', ' ')</strong>@Model.AccountID</a></li>
+                <li class="active"><a class="single accounts" href="@Url.Action("ClientAccounts", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="@Url.Action("ClientDocuments", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li><a class="single history" href="@Url.Action("ClientActivity", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li><a class="notes" href="@Url.Action("ClientNoteHistory", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <li><a class="fund" href="@Url.Action("DepositClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Deposit</strong>Client Funds</a></li>
+                <li><a class="internal" href="@Url.Action("TransferClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Transfer</strong>Client Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("WithdrawClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Withdraw</strong>Client Funds</a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAccount", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalAddAccount" class="modal hide fade1 large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add New Account</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Account Type <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.AccountCode, (IEnumerable<SelectListItem>)ViewData["AccountCode"], "", new { @id = "drpAccountType", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">Select Program <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"], "", new { @id = "drpProgram", })
+            </li>
+            <li class="columns six">
+                <label class="h3">Select Currency <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.Currency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], new { @id = "drpCurrencyPopUp", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <div class="scroll-box" style="height: 160px;">
+                    <h2>TERMS OF BUSINESS</h2>
+                    <h3>MetaTrader</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <small>The Electronic Signature eliminates paper use and expedites the overall application process.To submit an electronic signature, simply type your name into the “Enter Electronic Signature” text field and click “Confirm Signature.”</small>
+                <label class="h3" for="modalSignature">Enter Electronic Signature <span class="required">*</span></label>
+                <input id="modalSignaturePopUp" class="width-250" type="text" placeholder="type your full name here" /><button class="btn btn-small margin-left">Confirm Signature</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="addAccountInModal(this)">Add Account</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+            $('#drpAccountCurrency, #drpAccountType, #drpProgram').attr("data-placeholder", "Please Select");
+            $('#drpAccountCurrency, #drpProgram, #drpAccountType, #drpCurrencyPopUp').css("width", "200px");
+            $('#drpAccountCurrency, #drpProgram, #drpAccountType, #drpCurrencyPopUp').chosen();
+
+            @foreach (var item in Model.CurrencyAccountDetails)
+            {
+                <text>
+            $("#@item.CurrencyName").jqGrid({
+                url: 'GetAccountInformtion?currencyID=@item.CurrencyID' + '&clientID=@Model.ClientID',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: 'json',
+                sortname: 'Account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                sortable: true,
+                loadonce: true,
+                colNames: ['Type', 'Account', 'Balance', 'Floating P/L', 'Equity', 'Latest Change', 'Fee Structure'],
+                colModel: [
+                    { name: 'Type', width: 55, fixed: true, title: false },
+                    {
+                        name: 'Account', formatter: function (cellValue, options, rowObject) {
+                            return "<a href='ClientAccountDetails?clientID=@Model.ClientID&accountNumber=" + cellValue.substring(0, 15) + "&clientName=@Model.ClientName'>" + cellValue.substring(0, 15) + "</a>" + cellValue.substring(15, cellValue.length);
+                        }, width: 120, title: false
+                    },
+                    { name: 'Balance', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Floating', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Equity', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Change', width: 100, align: 'right', sorttype: 'number', title: false },
+                    { name: 'FeeStructure', width: 170, fixed: true, classes: 'overflow', title: false, sortable: false }
+                ],
+                loadComplete: function (data) {
+                    $('.chzn-select').chosen();
+                }
+            });
+            </text>    
+        }
+
+        });//End of ready
+
+        //Function to select currency in pop-up on click of Add New Currency Account button
+        function addNewCurrAcc(curr) {
+            var drpCurr = document.getElementById('drpCurrencyPopUp');
+            for (var ctOption = 0; ctOption < drpCurr.options.length; ctOption++) {
+                if (drpCurr.options[ctOption].text === curr) {
+                    drpCurr.selectedIndex = ctOption;
+                    break;
+                }
+            }
+            //Update chosen list
+            $('#drpCurrencyPopUp').attr("disabled", "disabled");
+            $("#drpCurrencyPopUp").trigger("liszt:updated");
+        }
+
+        //Function to update fee structure of client account
+        function accFeeStructureChange(drpFee, pkClientAccID) {
+            $('#loading').show();
+
+            var value = {
+                "feeValue": $(drpFee).val(),
+                "pkClientAccID": pkClientAccID
+            }
+
+            //Post request to update fee structure of client account
+            $.post("@Url.Action("UpdateClientAccFeeStructure", "AssetManagerClients")", value, function (data) {
+                if (data) {
+                    $('#loading').hide();
+                    $('#divAccountList').prepend('<div class="alert alert-success" style="margin:25px 25px 0;"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Fee Group has been successfully changed.</div>');
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+    </script>
+}

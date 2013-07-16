@@ -1,0 +1,441 @@
+﻿@{
+    ViewBag.Title = "FeeGroupManagement";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="settings"><span class="normal">Settings :</span> Fee Group Management</h1>
+            </div>
+
+            <!-- Fee Groups -->
+            <article>
+                <ul class="button-bar">
+                    <li><a class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalExport" data-backdrop="static"><i class="icon-download-alt"></i> Export</a></li>
+                    <li><a class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNewGroup" data-backdrop="static">New Fee Group</a></li>
+                </ul>
+                <h2 class="inline-block">Fee Groups</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tableFees">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="platforms" href="@Url.Action("Index", "Settings")"><span class="arrow"></span><strong>Platform</strong>Management</a></li>
+                <li><a class="roles" href="@Url.Action("UserRoleSettings", "Settings")"><span class="arrow"></span><strong>User Role</strong>Settings</a></li>
+                <li><a class="agreements single" href="@Url.Action("ClientAgreement", "Settings")"><span class="arrow"></span><strong>Client Agreements</strong></a></li>
+                <li><a class="funding" href="@Url.Action("FundingSourceManagement", "Settings")"><span class="arrow"></span><strong>Funding Source</strong>Management</a></li>
+                <li><a class="forms" href="@Url.Action("BrokerFormsManagement", "Settings")"><span class="arrow"></span><strong>Broker Forms</strong>Management</a></li>
+                <li><a class="documents" href="@Url.Action("KYCDocManagement", "Settings")"><span class="arrow"></span><strong>KYC Document</strong>Management</a></li>
+                <li class="active"><a class="fees" href="@Url.Action("FeeGroupManagement", "Settings")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="symbols" href="@Url.Action("SymbolManagement", "Settings")"><span class="arrow"></span><strong>Symbol</strong>Management</a></li>
+                <li><a class="settings single" href="@Url.Action("GlobalSettings", "Settings")"><span class="arrow"></span><strong>Global Settings</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewGroup" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Fee Group</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Group Name <span class="required">*</span></label>
+                <input class="width-250" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Currency <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>1:1</option>
+                    <option>1:10</option>
+                    <option>1:25</option>
+                    <option>1:50</option>
+                    <option>1:100</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns ten">
+                <label class="h3">Margin Call Level <span class="required">*</span></label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns three"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns ten">
+                <label class="h3">Stopout Level <span class="required">*</span></label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns three"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Min Lot Size <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Step <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Max Lot Size <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Leverage <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>1:1</option>
+                    <option>1:10</option>
+                    <option>1:25</option>
+                    <option>1:50</option>
+                    <option>1:100</option>
+                </select>
+            </li>
+            <li class="columns four">
+                <label class="h3">B-Book <span class="required">*</span></label>
+                <input type="radio" name="bbook">
+                <label class="h3 inline margin-right-20">Yes</label>
+                <input type="radio" name="bbook">
+                <label class="h3 inline">No</label>
+            </li>
+            <li class="columns four">
+                <label class="h3">Swaps <span class="required">*</span></label>
+                <input type="radio" name="swaps">
+                <label class="h3 inline margin-right-20">Yes</label>
+                <input type="radio" name="swaps">
+                <label class="h3 inline">No</label>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Spread Markup <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns eight">
+                <label class="h3">Spread Rebate <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3">Commission <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns eight">
+                <label class="h3">Commission Rebate <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalEditGroup" class="modal hide fade large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Edit Fee Group</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Group Name <span class="required">*</span></label>
+                <input class="width-250" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Currency <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>1:1</option>
+                    <option>1:10</option>
+                    <option>1:25</option>
+                    <option>1:50</option>
+                    <option>1:100</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns ten">
+                <label class="h3">Margin Call Level <span class="required">*</span></label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns three"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns ten">
+                <label class="h3">Stopout Level <span class="required">*</span></label>
+                <input type="text" value="0" data-slider="true" data-slider-range="0,100">
+            </li>
+            <li class="columns three"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Min Lot Size <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Step <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns four">
+                <label class="h3">Max Lot Size <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Leverage <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>1:1</option>
+                    <option>1:10</option>
+                    <option>1:25</option>
+                    <option>1:50</option>
+                    <option>1:100</option>
+                </select>
+            </li>
+            <li class="columns four">
+                <label class="h3">B-Book <span class="required">*</span></label>
+                <input type="radio" name="bbook">
+                <label class="h3 inline margin-right-20">Yes</label>
+                <input type="radio" name="bbook">
+                <label class="h3 inline">No</label>
+            </li>
+            <li class="columns four">
+                <label class="h3">Swaps <span class="required">*</span></label>
+                <input type="radio" name="swaps">
+                <label class="h3 inline margin-right-20">Yes</label>
+                <input type="radio" name="swaps">
+                <label class="h3 inline">No</label>
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Spread Markup <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns eight">
+                <label class="h3">Spread Rebate <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3">Commission <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+            <li class="columns eight">
+                <label class="h3">Commission Rebate <span class="required">*</span></label>
+                <input class="width-80" type="text">
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">You must enter your password to submit this request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/tip")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/slider")
+    <script src="~/Scripts/simple-slider.min.js"></script>
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liSettings').addClass('active');
+            $('select').chosen();
+
+            $("[data-slider]").each(function () {
+                var input = $(this);
+                $('<input type="text" value="0">').addClass('output width-25 text-center margin-left').insertAfter($(this));
+            }).bind('slider:ready slider:changed', function (event, data) {
+                $(this).nextAll('.output:first').val(data.value.toFixed(0));
+            });
+
+            $('.output').keyup(function () {
+                var value = $(this).val();
+                $(this).prevAll('[data-slider]').simpleSlider('setValue', value);
+            });
+
+            $("#tableFees").jqGrid({
+                datatype: "clientSide",
+                sortname: 'account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['Name', 'Leverage', 'Margin Call', 'Stopout', 'Min Lot Size', 'Step', 'Max Lot Size', 'B-Book', 'Swaps', 'Spread', 'Spread Rebate', 'Commission', 'Commission Rebate', 'Currency', ''],
+                colModel: [
+                    { name: 'name', width: 200, fixed: true, title: false },
+                    { name: 'leverage', width: 95, fixed: true, align: 'center', title: false },
+                    { name: 'margin', width: 110, fixed: true, align: 'center', title: false },
+                    { name: 'stopout', width: 90, fixed: true, align: 'center', title: false },
+                    { name: 'min', width: 115, fixed: true, align: 'center', title: false },
+                    { name: 'step', width: 65, fixed: true, align: 'center', title: false },
+                    { name: 'max', width: 120, fixed: true, align: 'center', title: false },
+                    { name: 'bbook', width: 85, fixed: true, align: 'center', title: false },
+                    { name: 'swaps', width: 80, fixed: true, align: 'center', title: false },
+                    { name: 'spread', width: 80, fixed: true, align: 'center', title: false },
+                    { name: 'srebate', width: 130, fixed: true, align: 'center', title: false },
+                    { name: 'commission', width: 120, fixed: true, align: 'center', title: false },
+                    { name: 'crebate', width: 170, fixed: true, align: 'center', title: false },
+                    { name: 'currency', width: 90, fixed: true, align: 'center', title: false },
+                    { name: 'actions', width: 110, fixed: true, align: 'center', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'name': '[fee group name]',
+                        'leverage': '1:100',
+                        'margin': '100%',
+                        'stopout': '95%',
+                        'min': '0.01',
+                        'step': '0.01',
+                        'max': '400',
+                        'bbook': 'Yes',
+                        'swaps': 'Yes',
+                        'spread': '8',
+                        'srebate': '4',
+                        'commission': '10.00',
+                        'crebate': '10.00',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon active tip" title="Disable" type="button"><input class="icon view-edit tip" title="View/Edit" type="button" data-modal="modalEdit"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '[fee group name]',
+                        'leverage': '1:100',
+                        'margin': '100%',
+                        'stopout': '95%',
+                        'min': '0.01',
+                        'step': '0.01',
+                        'max': '400',
+                        'bbook': 'Yes',
+                        'swaps': 'Yes',
+                        'spread': '8',
+                        'srebate': '4',
+                        'commission': '10.00',
+                        'crebate': '10.00',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon active tip" title="Disable" type="button"><input class="icon view-edit tip" title="View/Edit" type="button" data-modal="modalEdit"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '[fee group name]',
+                        'leverage': '1:100',
+                        'margin': '100%',
+                        'stopout': '95%',
+                        'min': '0.01',
+                        'step': '0.01',
+                        'max': '400',
+                        'bbook': 'Yes',
+                        'swaps': 'Yes',
+                        'spread': '8',
+                        'srebate': '4',
+                        'commission': '10.00',
+                        'crebate': '10.00',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon inactive tip" title="Enable" type="button"><input class="icon view-edit tip" title="View/Edit" type="button" data-modal="modalEdit"><input class="icon delete tip" title="Delete" type="button">'
+                    },
+                    {
+                        'name': '[fee group name]',
+                        'leverage': '1:100',
+                        'margin': '100%',
+                        'stopout': '95%',
+                        'min': '0.01',
+                        'step': '0.01',
+                        'max': '400',
+                        'bbook': 'Yes',
+                        'swaps': 'Yes',
+                        'spread': '8',
+                        'srebate': '4',
+                        'commission': '10.00',
+                        'crebate': '10.00',
+                        'currency': '[CUR]',
+                        'actions': '<input class="icon inactive tip" title="Enable" type="button"><input class="icon view-edit tip" title="View/Edit" type="button" data-modal="modalEdit"><input class="icon delete tip" title="Delete" type="button">'
+                    }
+                ]
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+            $('input[data-modal="modalEdit"]').click(function (e) {
+                e.preventDefault();
+                $('#modalEditGroup').modal();
+            });
+
+        });//End of ready
+    </script>
+}

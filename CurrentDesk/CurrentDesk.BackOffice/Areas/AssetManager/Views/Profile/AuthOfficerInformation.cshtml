@@ -1,0 +1,301 @@
+﻿@model CurrentDesk.BackOffice.Models.CorporateAccountReviewModel
+@{
+    ViewBag.Title = "AuthOfficerInformation";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile :</span> Authorized Officer Information</h1>
+            </div>
+            <div id="divAuthOfficerInfo">
+                <!-- Authorized Officer Section -->
+                <article id="artAuthInfo">
+                    <h2>Authorized Officer</h2>
+                    <div class="content-section">
+                        <ul class="row">
+                            <li class="columns two">
+                                <h3>Title</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerTitle)</li>
+                            <li class="columns three">
+                                <h3>First Name</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerFirstName)</li>
+                            <li class="columns three">
+                                <h3>Middle Name</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerMiddleName)</li>
+                            <li class="columns four">
+                                <h3>Last Name</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerLastName)</li>
+                        </ul>
+                        <ul class="row border">
+                            <li class="columns five">
+                                <h3>Date of Birth</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerDobDay)/@Html.DisplayFor(model => model.AuthOfficerDobMonth)/@Html.DisplayFor(model => model.AuthOfficerDobYear)</li>
+                            <li class="columns seven">
+                                <h3>Gender</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerGender)</li>
+                        </ul>
+                        <ul class="row">
+                            <li class="columns five">
+                                <h3>Citizenship</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerCitizenship)</li>
+                            <li class="columns seven">
+                                <h3>ID Information</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerIdInfo): @Html.DisplayFor(model => model.AuthOfficerIdNumber)</li>
+                        </ul>
+                        <ul class="row">
+                            <li class="columns twelve">
+                                <h3>Country of Residence</h3>
+                                @Html.DisplayFor(model => model.AuthOfficerResidenceCountry)</li>
+                        </ul>
+                    </div>
+                </article>
+                <!-- Authorized Officer Contact Information Section -->
+                <article>
+                    <h2 class="inline-block">Authorized Officer Contact Information</h2>
+                    <a class="icon edit toggleAuthContact-link" href="#">Edit</a>
+                    <div class="content-section">
+                        <div class="toggle-show">
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Residential Address</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerAddLine1)</li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>Telephone Number</h3>
+                                    <span id="spnTelNumber">@Html.DisplayFor(model => model.AuthOfficerTelNumberCountryCode)-@Html.DisplayFor(model => model.AuthOfficerTelNumber)</span></li>
+                                <li class="columns eight">
+                                    <h3>Mobile Number</h3>
+                                    <span id="spnMobileNumber">@Html.DisplayFor(model => model.AuthOfficerMobileNumberCountryCode)-@Html.DisplayFor(model => model.AuthOfficerMobileNumber)</span></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Email Address</h3>
+                                    <span id="spnEmail">@Html.DisplayFor(model => model.AuthOfficerEmailAddress)</span></li>
+                            </ul>
+                        </div>
+
+                        <div class="toggle-hide">
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <h3>Residential Address</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerAddLine1)</li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerCity)</li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerCountry)</li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    @Html.DisplayFor(model => model.AuthOfficerPostalCode)</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <label class="h3" for="Telephone">Telephone Number</label><input id="txtTelCountryCode" class="width-extraSmall" type="text" /><input id="txtTelNumber" class="width-default" type="text" /></li>
+                                <li class="columns eight">
+                                    <label class="h3" for="Mobile">Mobile Number</label><input id="txtMobileCountryCode" class="width-extraSmall" type="text" /><input id="txtMobileNumber" class="width-default" type="text" /></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns five">
+                                    <label class="h3" for="Email">Email Address</label><input id="txtEmail" class="width-med" type="text" /></li>
+                                <li class="columns eight"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="button-box toggle-hide text-right">
+                        <button class="btn cancelAuthContactClick">Cancel</button>
+                        <button id="btnAuthOfficerContactInfoSave" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+    </div>
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                <li class="active"><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+
+        });//End of ready
+
+        //jQuery custom script when Cmpy Auth Officer Contact info edit button in the icon bar is clicked
+        $('.toggleAuthContact-link').click(function () {
+            //Reset all edit textboxes to present values
+            resetEditTextBoxes();
+
+            $(this).next('.content-section').find('.toggle-show').toggle();
+            $(this).next('.content-section').find('.toggle-hide').toggle();
+            $(this).hide();
+            $(this).nextAll('.button-box').eq(0).show();
+
+            //Set scroll position and focus
+            $(window).scrollTop((($(window).outerHeight(true)) / 2) + $(window).scrollTop());
+            $('#txtTelCountryCode').focus();
+            return false;
+        });
+
+        //jQuery custom script when Cmpy Auth Officer Contact info cancel button is clicked
+        $('.cancelAuthContactClick').click(function () {
+            $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+            $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+            $(this).parent().prev('.content-section').prev('.toggleAuthContact-link').show();
+            $(this).parent().hide();
+            return false;
+        });
+
+        //Function to update Company Auth Officer Contact Information
+        $('#btnAuthOfficerContactInfoSave').click(function () {
+            var clickedButton = $(this);
+
+            if (checkValidCompanyAuthContactInfoValues()) {
+                $("#loading").show();
+
+                var values = { "emailID": $('#txtEmail').val() }
+                var cmpyAuthContactInfoEditValues = {
+                    "TelephoneCountryCode": $('#txtTelCountryCode').val(),
+                    "TelephoneNumber": $('#txtTelNumber').val(),
+                    "MobileCountryCode": $('#txtMobileCountryCode').val(),
+                    "MobileNumber": $('#txtMobileNumber').val(),
+                    "EmailID": $('#txtEmail').val()
+                }
+
+                //Post request to check if email already exists          
+                $.post("@Url.Action("CheckIfDuplicateEmail", "Profile")", values, function (data) {
+                        if (data == false) {
+                            //Post request to update Company Auth Officer Contact info
+                            $.post("@Url.Action("UpdateCompanyAuthOfficerContactInfo", "Profile")", cmpyAuthContactInfoEditValues, function (data) {
+                                if (data == true) {
+                                    $("#loading").hide();
+
+                                    $('#artAuthInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your profile.</div>');
+
+                                    $('#spnTelNumber').text($('#txtTelCountryCode').val() + '-' + $('#txtTelNumber').val());
+                                    $('#spnMobileNumber').text($('#txtMobileCountryCode').val() + '-' + $('#txtMobileNumber').val());
+                                    $('#spnEmail').text($('#txtEmail').val());
+
+                                    clickedButton.parent().prev('.content-section').find('.toggle-show').toggle();
+                                    clickedButton.parent().prev('.content-section').find('.toggle-hide').toggle();
+                                    clickedButton.parent().parent().find('.toggleAuthContact-link').show();
+                                    clickedButton.parent().hide();
+                                }
+                                else {
+                                    $("#loading").hide();
+                                    $('#modalConfirmError').modal('show');
+                                }
+                            });
+                        }
+                        else if (data == true) {
+                            $("#loading").hide();
+                            $('#txtEmail').after('<span class="requiredError">Email already exists!</span>');
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+            });
+
+        //Function to reset all edit textboxes to present values
+        function resetEditTextBoxes() {
+            $('#txtPhoneID').val($('#spnPhoneID').text());
+
+            $('#txtTelCountryCode').val($('#spnTelNumber').text().split('-')[0]);
+            $('#txtTelNumber').val($('#spnTelNumber').text().split('-')[1]);
+            $('#txtMobileCountryCode').val($('#spnMobileNumber').text().split('-')[0]);
+            $('#txtMobileNumber').val($('#spnMobileNumber').text().split('-')[1]);
+            $('#txtEmail').val($('#spnEmail').text());
+        }
+
+        //Function to check valid Company Auth Officer Contact Info values
+        function checkValidCompanyAuthContactInfoValues() {
+            $('.requiredError').remove();
+            var valid = true;
+            var regNumeric = new RegExp("^[0-9]*$");
+            var regEmail = /^([a-zA-Z0-9_.-])+@@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+
+            if ($('#txtTelCountryCode').val() == '' || !regNumeric.test($('#txtTelCountryCode').val()) || $('#txtTelCountryCode').val().length > 10) {
+                $('#txtTelCountryCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtTelNumber').val() == '' || !regNumeric.test($('#txtTelNumber').val()) || $('#txtTelNumber').val().length > 15) {
+                $('#txtTelNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtMobileCountryCode').val() == '' || !regNumeric.test($('#txtMobileCountryCode').val()) || $('#txtMobileCountryCode').val().length > 10) {
+                $('#txtMobileCountryCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtMobileNumber').val() == '' || !regNumeric.test($('#txtMobileNumber').val()) || $('#txtMobileNumber').val().length > 15) {
+                $('#txtMobileNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if (!regEmail.test($('#txtEmail').val()) || $('#txtEmail').val().length > 50) {
+                $('#txtEmail').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+
+            return valid;
+        }
+
+    </script>
+}

@@ -1,0 +1,311 @@
+﻿@model CurrentDesk.BackOffice.Models.Transfers.TransfersModel
+@{
+    ViewBag.Title = "WithdrawFunds";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <div id="divWithdrawFunds">
+                <!-- Page Title Bar -->
+                <div class="page-title">
+                    <h1 class="accounts"><span class="normal"><a href="@Url.Action("Index", "MyAccount")">My Accounts</a> :</span> <span id="spnAccNumber">@Model.AccountNumber</span></h1>
+                </div>
+
+                <!-- Personal Information Section -->
+                <article id="artWithdrawFund" class="row">
+                    <div class="columns seven">
+                        <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                        <dl class="form-box">
+                            <dt>
+                                <label>From Landing Account <span class="required">*</span></label></dt>
+                            <dd>
+                                <select id="drpWithdrawLandingAcc" class="chzn-select width-400" data-placeholder="Please select a landing account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    @foreach (var item in Model.LandingAccInformation)
+                                    {
+                                        <optgroup label="@item.LCurrencyName Landing Account">
+                                            <option value="@item.LCurrencyName/@item.LAccNumber" data-curr="@item.LCurrencyName">@item.LAccNumber (Landing Account) - @item.LAccBalance</option>
+                                        </optgroup>
+                                    }
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>To Bank Account <span class="required">*</span></label></dt>
+                            <dd>
+                                <select id="drpWithdrawBankAcc" class="chzn-select width-400" data-placeholder="Please select a bank account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    <optgroup label="Bank Accounts">
+                                        @foreach (var item in Model.BankInformation)
+                                        {
+                                            <option value="@item.BankID">@item.BankName - Account #@item.BankAccNumber</option>
+                                        }
+                                    </optgroup>
+                                    <optgroup label="New Account">
+                                        <option value="0">Add new bank account</option>
+                                    </optgroup>
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>Amount <span class="required">*</span></label></dt>
+                            <dd>
+                                <input id="txtAmountWithdrawFund" class="input-text width-sm" type="text" placeholder="enter amount" />
+                                <strong><span id="spnWithdrawCurr"></span></strong></dd>
+                            <dt>
+                                <label>Notes</label></dt>
+                            <dd>
+                                <textarea id="txtNotes" class="width-large" style="height: 80px;"></textarea></dd>
+                        </dl>
+                        <div class="button-box">
+                            <button id="btnSubmitWithdrawFund" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                    <div class="columns five">
+                        <div class="information-box">
+                            <div class="info-group">
+                                <strong class="icn-sm pin">Helpful Tip</strong>
+                                <p>Here are a few tips you should know when withdrawing funds from your FQ Securities account.</p>
+                                <ul>
+                                    <li>Outgoing Wire Fee: 20.00</li>
+                                    <li>All outgoing wires must be sent from your landing account.</li>
+                                    <li>Processing Time: 24 Hours</li>
+                                    <li>We can only send funds to a bank account in the same name as your FQ Securities account.</li>
+                                </ul>
+                            </div>
+                            <div class="info-group">
+                                <strong class="icn-sm info">Did You Know?</strong>
+                                <p>To ensure funds safety, all client funds are held in segregated client trust accounts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="accounts" href="@Url.Action("RebateAccountDetails", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Account Details</strong>@Model.AccountNumber</a></li>
+                <li><a class="single internal" href="@Url.Action("TransferFunds", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Transfer Funds</strong></a></li>
+                <li class="active"><a class="single withdraw" href="@Url.Action("WithdrawFunds", "MyAccount", new { accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Withdraw Funds</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION NEW BANK ACCOUNT -->
+<div id="myModal" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Bank Account Information</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-BankName">
+                    Bank Name <span class="required">*</span>
+                </label>
+                <input id="Modal-BankName" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-AccountNum">
+                    Account Number <span class="required">*</span>
+                </label>
+                <input id="Modal-AccountNum" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3" for="Modal-Swift">
+                    Bic Number/SWIFT Code <span class="required">*</span>
+                </label>
+                <input id="Modal-Swift" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-Receiving">Receiving Bank Information <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @id = "drpNewRecievingBankInfo", style = "width: 150px;" })
+                <input id="Modal-ReceivingBankInfo" class="width-med margin-left" type="text" />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3" for="Modal-Address">Bank Address <span class="required">*</span></label>
+                <input id="Modal-Address" class="width-med" type="text" /></li>
+            <li class="columns twelve">
+                <input id="Address2" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-City">
+                    City <span class="required">*</span>
+                </label>
+                <input id="Modal-City" class="width-med" type="text" /></li>
+            <li class="columns five">
+                <label class="h3" for="Modal-Country">Country <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @id = "drpNewBankCountry", @class = "width-med" })
+            </li>
+            <li class="columns three">
+                <label class="h3" for="Modal-Zip">Postal Code <span class="required">*</span></label><input id="Modal-Zip" class="width-100" type="text" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnAddNewBankAccount" class="btn btn-primary">Add Bank Account</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION WITHDRAW FUND CONFIRMATION -->
+<div id="modalConfirmWithdrawFund" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<h2 class="inline-block h2">Withdrawal Confirmation</h2>
+	</div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <p class="padding text-normal">[confirmation message]</p>
+    </div>
+    
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close Window</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+
+            $('#drpWithdrawLandingAcc').chosen();
+            $('#drpWithdrawBankAcc').chosen();
+            $('#drpNewRecievingBankInfo').chosen();
+            $('#drpNewBankCountry').chosen();
+
+            //Open add new bank dialog on drp last li click
+            $('#drpWithdrawBankAcc_chzn li:last').click(function () {
+                resetNewBankDialog();
+                $('#myModal').modal('show');
+            });
+
+            //Show currency symbol which is being selected for transaction
+            $('#drpWithdrawLandingAcc').chosen().change(function () {
+                $('#spnWithdrawCurr').text($(this).val().split('/')[0]);
+            });
+
+            //Make selected landing account selected in From Landing Account dropdown
+            var tradingAcc = $('#spnAccNumber').text();
+            var landingAcc = tradingAcc.split('-')[0] + '-000-' + tradingAcc.split('-')[2];
+            $('#drpWithdrawLandingAcc option:contains("' + landingAcc + '")').attr("selected", "true");
+            $("#drpWithdrawLandingAcc").trigger("liszt:updated");
+            $('#spnWithdrawCurr').text($('#drpWithdrawLandingAcc option:contains("' + landingAcc + '")').val().split('/')[0]);
+
+        });//End of ready
+        
+        //Adding New Bank Account
+        $("#btnAddNewBankAccount").click(function () {
+            //If valid entries
+            if (checkValidNewBankInfoValues()) {
+                $("#loading").show();
+
+                var values = {
+                    "BankName": $('#Modal-BankName').val(),
+                    "AccountNumber": $('#Modal-AccountNum').val(),
+                    "BicOrSwiftCode": $('#Modal-Swift').val(),
+                    "BankAddLine1": $('#Modal-Address').val(),
+                    "BankAddLine2": $('#Address2').val(),
+                    "ReceivingBankInfoId": $('#drpNewRecievingBankInfo').val(),
+                    "ReceivingBankInfo": $('#Modal-ReceivingBankInfo').val(),
+                    "BankCity": $('#Modal-City').val(),
+                    "BankCountry": $('#drpNewBankCountry').val(),
+                    "BankPostalCode": $('#Modal-Zip').val()
+                }
+                $.post("@Url.Action("AddNewBankAccount", "Profile")", values, function (data) {
+                    $("#loading").hide();
+                    $('#myModal').modal('hide');
+                    $('#artWithdrawFund').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added a new bank.</div>');
+                    window.location.reload();
+                });
+            }
+        });
+
+        // Submit button click of Withdraw fund transfer
+        $('#btnSubmitWithdrawFund').click(function () {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+            if ($('#drpWithdrawBankAcc').val() != '0' && $('#drpWithdrawBankAcc').val() != '' && $('#drpWithdrawLandingAcc').val() != '' && $('#txtAmountWithdrawFund').val() != '' && regNumeric.test($('#txtAmountWithdrawFund').val()) && parseInt($('#txtAmountWithdrawFund').val()) != 0) {
+                $('#loading').show();
+
+                var values = {
+                    "AccountNumber": $('#drpWithdrawLandingAcc').val().split('/')[1],
+                    "Currency": $('#drpWithdrawLandingAcc').val().split('/')[0],
+                    "Amount": $('#txtAmountWithdrawFund').val().split(',').join(''),
+                    "Notes": $('#txtNotes').val(),
+                    "BankInfoID": $('#drpWithdrawBankAcc').val()
+                };
+
+                //Post request to add new withdraw fund request
+                $.post("@Url.Action("AddWithdrawRequest", "FundTransfer")", values, function (data) {
+                    if (data.status) {
+                        $('#loading').hide();
+                        $('#modalConfirmWithdrawFund').modal('show');
+                        $('#artWithdrawFund').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Withdraw request has been successfully submitted.</div>');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#artWithdrawFund').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                    }
+                });
+            }
+            else {
+                alert('Select account and enter amount!');
+            }
+        });
+
+        //Function to reset all fields of Add new bank dialog
+        function resetNewBankDialog() {
+            $('#Modal-BankName').val('');
+            $('#Modal-AccountNum').val('');
+            $('#Modal-Swift').val('');
+            $('#Modal-Address').val('');
+            $('#Address2').val('');
+            $('#Modal-ReceivingBankInfo').val('');
+            $('#Modal-City').val('');
+            $('#Modal-Zip').val('');
+            $('#drpNewRecievingBankInfo').val('1');
+            $('#drpNewBankCountry').val('1');
+
+            $('#drpNewRecievingBankInfo').trigger("liszt:updated");
+            $('#drpNewBankCountry').trigger("liszt:updated");
+        }
+
+    </script>
+}

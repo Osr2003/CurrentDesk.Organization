@@ -1,0 +1,278 @@
+﻿@model CurrentDesk.BackOffice.Models.JointAccountReviewModel
+@{
+    ViewBag.Title = "JointAccountReview";
+}
+@using (Html.BeginForm("JointAccountReview", "AccountSignUp", FormMethod.Post))
+{
+<div class="content-section">
+    <div class="wrapper">
+        <!-- Signup Step 3 - Review -->
+        <div id="live-step-3" class="review-box">
+            <h1>
+                Sign Up - Review</h1>
+            <div class="content-section">
+                <h2>
+                    Primary Account Holder Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Full Name:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderTitle) @Html.DisplayFor(model => model.PrimaryAccountHolderFirstName)
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderMiddleName) @Html.DisplayFor(model => model.PrimaryAccountHolderLastName)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Date of Birth:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Gender:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderDobDay)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobMonth)/@Html.DisplayFor(model => model.PrimaryAccountHolderDobYear)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderGender)
+                        </dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Citizenship:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                ID Information:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderCitizenship)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderIdInfo): @Html.DisplayFor(model => model.PrimaryAccountHolderIdNumber)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Country of Residence:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderResidenceCountry)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Secondary Account Holder Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Full Name:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderTitle) @Html.DisplayFor(model => model.SecondaryAccountHolderFirstName)
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderMiddleName) @Html.DisplayFor(model => model.SecondaryAccountHolderLastName)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Date of Birth:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Gender:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderDobDay)/@Html.DisplayFor(model => model.SecondaryAccountHolderDobMonth)/@Html.DisplayFor(model => model.SecondaryAccountHolderDobYear)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderGender)
+                        </dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Citizenship:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                ID Information:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderCitizenship)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderIdInfo): @Html.DisplayFor(model => model.SecondaryAccountHolderIdNumber)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Country of Residence:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.SecondaryAccountHolderResidenceCountry)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Primary Account Holder Contact Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Telephone Number:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Mobile Number:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeTelNumberCountryCode)-@Html.DisplayFor(model => model.PrimaryAccountHoldeTelNumber)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeMobileNumberCountryCode)-@Html.DisplayFor(model => model.PrimaryAccountHoldeMobileNumber)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Residential Address:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.PrimaryAccountHolderResidentialAddLine1)<br/>
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialAddLine2)<br/>
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCity), @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialCountry),
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeResidentialPostalCode)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Time at current address:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldeYearsInCurrentAdd) years, @Html.DisplayFor(model => model.PrimaryAccountHoldeMonthsInCurrentAdd)
+                            months</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Previous Address:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousAddLine1)<br/>
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousAddLine2)<br/>
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCity), @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousCountry),
+                            @Html.DisplayFor(model => model.PrimaryAccountHoldePreviousPostalCode)</dd>
+                    </dl>
+                   
+                </div>
+                <h2>
+                    Banking Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Bank Name:</label></dt>
+                        <dt class="columns three">
+                            <label>
+                                Account Number:</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Bic Number/SWIFT Code:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.BankName)</dd>
+                        <dd class="columns three">
+                            @Html.DisplayFor(model => model.AccountNumber)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.BicOrSwiftCode)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Bank Address:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Receiving Bank Information:</label></dt>
+                        <dd class="columns fove">
+                            @Html.DisplayFor(model => model.BankAddLine1)<br/>
+                            @Html.DisplayFor(model => model.BankAddLine2)<br/>
+                            @Html.DisplayFor(model => model.BankCity), @Html.DisplayFor(model => model.BankCountry),
+                            @Html.DisplayFor(model => model.BankPostalCode)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.ReceivingBankInfoId):@Html.DisplayFor(model => model.ReceivingBankInfo)
+                        </dd>
+                    </dl>
+                </div>
+                <h2>
+                    Financial Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns four">
+                            <label>
+                                Estimate Annual Income?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Liquid Assets:</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Total net worth in Euros:</label></dt>
+                    </dl>
+                    <dl class="form-list row">
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.EstimatedAnnualIncome)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.LiquidAssets)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.NetWorthEuros)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Trading Experience</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading securities?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading options?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading foreign exchange?</label></dt>
+                    </dl>
+                    <dl class="form-list row">
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingSecurities)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingOptions)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingForeignExchange)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Other Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns six">
+                            <label>
+                                Do you have or have you ever held and other account with FQ Securities?</label></dt>
+                        <dt class="columns six">
+                            <label>
+                                Have you ever been a registered person/entity with CFTC, NFA, SEC, FINRA, FSA, BaFin,
+                                etc?</label></dt>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.HaveAccWithFqSecurities)</dd>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.RequiredToBeRegisteredWithRegulator)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns six">
+                            <label>
+                                Are you required to be registered with a regulator?</label></dt>
+                        <dt class="columns six">
+                            <label>
+                                Are you an employee of an exchange or regulator organization?</label></dt>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.EverDeclaredBankruptcy)</dd>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.RegisteredPerson)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Have you ever declared bankruptcy?</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.EmployeeOfExchangeOrRegulatorOperator)</dd>
+                    </dl>
+                </div>
+                <div style="display: none;">
+                    @Html.EditorFor(model => model.JointModel)
+                    @Html.EditorFor(model => model.IsLive)
+                </div>
+                <!-- Button Box -->
+                <div class="button-box">
+                    <input class="live-submit-send button submit right" type="submit" value="Submit" /></div>
+            </div>
+        </div>
+        <!-- End Signup Step 3 - Review -->
+    </div>
+</div>
+}

@@ -1,0 +1,448 @@
+﻿@model CurrentDesk.BackOffice.Models.Transfers.TransfersModel
+@using System.Globalization
+@{
+    ViewBag.Title = "InternalTransfer";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+        
+            <div id="divInternalTransfer">
+                <!-- Page Title Bar -->
+                <div class="page-title"><h1 class="accounts"><span class="normal"><a href="@Url.Action("Index", "MyAccount")">My Accounts</a> : <a href="@Url.Action("ShowAccountDetails", "MyAccount", new {accountNumber = @Model.AccountNumber })">Account Details</a> : </span>Transfer Funds</h1></div>
+
+                <!-- Personal Information Section -->
+                <article id="artInternalTransfer" class="row">
+                    <div class="columns seven">
+                        <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                        <dl class="form-box">
+                            <dt>
+                                <label>From Account <span class="required">*</span></label></dt>
+                            <dd>
+                                
+                                @{System.Globalization.NumberFormatInfo nfi;
+                                nfi = new NumberFormatInfo();
+                                nfi.CurrencySymbol = "";}
+                                
+                                <select id="drpInternalTransferFromAcc" class="chzn-select width-400" data-placeholder="Please select an account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    @foreach (var item in Model.TradingAccInformation)
+                                    {
+                                        <optgroup label="@item.TradingCurrency Accounts">
+                                        @foreach (var acc in item.TradingAccountList)
+                                        {
+                                            if (acc.TradingAccount == null)
+                                            {
+                                                <option value="@item.TradingCurrency/@acc.LandingAccount" data-curr="@item.TradingCurrency">@acc.LandingAccount (Landing Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                            }
+                                            else
+                                            {
+                                                if (acc.IsTradingAccount == true)
+                                                {
+                                                    if (acc.AccountName == null)
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (Trading Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                    else
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (@acc.AccountName) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (acc.AccountName == null)
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (Managed Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                    else
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (@acc.AccountName) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        </optgroup>
+                                    }
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>To Account <span class="required">*</span></label></dt>
+                            <dd>
+                                <select id="drpInternalTransferToAcc" class="chzn-select width-400" data-placeholder="Please select an account">
+                                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                                    <option></option>
+                                    @foreach (var item in Model.TradingAccInformation)
+                                    {
+                                        <optgroup label="@item.TradingCurrency Accounts">
+                                        @foreach (var acc in item.TradingAccountList)
+                                        {
+                                            if (acc.TradingAccount == null)
+                                            {
+                                                <option value="@item.TradingCurrency/@acc.LandingAccount" data-curr="@item.TradingCurrency">@acc.LandingAccount (Landing Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                            }
+                                            else
+                                            {
+                                                if (acc.IsTradingAccount == true)
+                                                {
+                                                    if (acc.AccountName == null)
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (Trading Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                    else
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (@acc.AccountName) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (acc.AccountName == null)
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (Managed Account) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                    else
+                                                    {
+                                                    <option value="@item.TradingCurrency/@acc.TradingAccount" data-curr="@item.TradingCurrency">@acc.TradingAccount (@acc.AccountName) - @String.Format(nfi, "{0:C}", acc.CurrentBalance)</option>
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        </optgroup>
+                                    }
+                                </select>
+                            </dd>
+                            <dt>
+                                <label>Amount <span class="required">*</span></label></dt>
+                            <dd>
+                                <input id="txtAmount" class="input-text width-sm" type="text" placeholder="enter amount" />
+                                <strong><span id="spnInternalTransferCurr"></span></strong><button id="btnCalculateRate" class="btn btn-small margin-left-20" disabled="disabled">Calculate Rate</button> <strong><span id="spnSecsLeft"></span></strong>
+								<p class="width-large">Note: The currency exchange rate quote will be valid for 10 secs from when you receive it.  If you do not complete your transfer within 10 secs, a new exchange rate will be calculated for you.</p></dd>
+                            <dd class="width-large clearfix">
+								<div id="divExchangeRate" style="display:none;">
+                                <div class="left width-thirty text-large padding-med"><h3><small>This equates to:</small></h3><strong><span id="spnExchangedAmt"></span> <span class="spnToCurr"></span></strong></div>
+								<div class="left text-med dark-box"><h3>Exchange Rate:</h3><strong>1 <span class="spnFromCurr"></span> = <span id="spnFromExchangeRate"></span> <span class="spnToCurr"></span></strong><br/><strong>1 <span class="spnToCurr"></span> = <span id="spnToExchangeRate"></span> <span class="spnFromCurr"></span></strong></div>
+                                 <div class="left"><label class="h3" for="acceptRate">Accept this exchange rate and continue <span class="required">*</span></label><input id="chkAcceptRate" type="checkbox" /></div>
+								</div>
+							</dd>
+                            <dt>
+                                <label>Notes</label></dt>
+                            <dd>
+                                <textarea id="txtNotes" class="width-large" style="height: 80px;"></textarea></dd>
+                        </dl>
+                        <div class="button-box">
+                            <button id="btnInternalTransfer" class="btn btn-primary" disabled="disabled">Submit</button></div>
+                    </div>
+                    <div class="columns five">
+                        <div class="information-box">
+                            <div class="info-group">
+                                <strong class="icn-sm pin">Helpful Tip</strong>
+                                <p>Here are a few tips you should know when transferring funds between your accounts at FQ Securities.</p>
+                                <em>Same Currency Accounts</em>
+                                <ul>
+                                    <li>Transfer Fee: No Fee</li>
+                                    <li>Processing Time: Immediate</li>
+                                </ul>
+                                <em>Different Currency Accounts</em>
+                                <ul>
+                                    <li>Transfer Fee: Varies based on rate</li>
+                                    <li>Processing Time: Varies based on amount</li>
+                                </ul>
+                            </div>
+                            <div class="info-group">
+                                <strong class="icn-sm info">Did You Know?</strong>
+                                <p>To ensure funds safety, all client funds are held in segregated client trust accounts.</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+		<aside class="content-aside">
+			<!-- Sub Navigation Section -->
+			<nav class="sub-nav">
+				<ul>
+					<!-- Add the .active class to the <li> that needs active styling. -->
+					<li><a class="accounts" href="@Url.Action("ShowAccountDetails", "MyAccount", new {accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Account Details</strong><span id="spnAccNumber">@Model.AccountNumber</span></a></li>
+					<li><a class="single fund" href="@Url.Action("FundAccount", "MyAccount", new {accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Deposit Funds</strong></a></li>
+					<li class="active"><a class="single internal" href="@Url.Action("InternalTransfer", "MyAccount", new {accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Transfer Funds</strong></a></li>
+					<li><a class="single withdraw" href="@Url.Action("WithdrawFund", "MyAccount", new {accountNumber = @Model.AccountNumber })"><span class="arrow"></span><strong>Withdraw Funds</strong></a></li>
+					<!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+					<li class="last"></li>
+				</ul>
+			</nav>
+		</aside>
+
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION INTERNAL TRANSFER -->
+<div id="modalConfirmInternalTransfer" class="modal hide fade medium">
+	
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<h2 class="inline-block h2">Transfer Confirmation</h2>
+	</div>
+	
+    <!-- Modal Body -->
+	<div class="modal-body content-section">
+		<p class="padding text-normal">[confirmation message]</p>
+	</div>
+
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close Window</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close Window</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        var interval;
+        
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+
+            $('#drpInternalTransferFromAcc').chosen();
+            $('#drpInternalTransferToAcc').chosen();
+
+            //Make selected account selected in From Account dropdown
+            $('#drpInternalTransferFromAcc option:contains("' + $('#spnAccNumber').text() + '")').attr("selected", "true");
+            $("#drpInternalTransferFromAcc").trigger("liszt:updated");
+            $('#spnInternalTransferCurr').text($('#drpInternalTransferFromAcc option:contains("' + $('#spnAccNumber').text() + '")').val().split('/')[0]);
+
+            //On change of From Account dropdown
+            $('#drpInternalTransferFromAcc').chosen().change(function () {
+                $('#spnInternalTransferCurr').text($(this).val().split('/')[0]);
+                if ($('#drpInternalTransferToAcc').val() != '' && $('#drpInternalTransferToAcc').val() != $('#drpInternalTransferFromAcc').val()) {
+                    if ($('#drpInternalTransferToAcc').val().split('/')[0] == $('#drpInternalTransferFromAcc').val().split('/')[0]) {
+                        if ($('#drpInternalTransferFromAcc').val() == $('#drpInternalTransferToAcc').val()) {
+                            $('#btnInternalTransfer').attr('disabled', 'disabled');
+                            $('#btnCalculateRate').attr('disabled', 'disabled');
+                            $('#divExchangeRate').hide();
+                        }
+                        else {
+                            $('#btnInternalTransfer').removeAttr('disabled');
+                            $('#btnCalculateRate').attr('disabled', 'disabled');
+                            $('#divExchangeRate').hide();
+                        }
+                    }
+                    else {
+                        $('#btnCalculateRate').removeAttr('disabled');
+                        $('#btnInternalTransfer').attr('disabled', 'disabled');
+                        $('#divExchangeRate').hide();
+                    }
+                }
+                else {
+                    $('#btnCalculateRate').attr('disabled', 'disabled');
+                    $('#btnInternalTransfer').attr('disabled', 'disabled');
+                    $('#divExchangeRate').hide();
+                }
+            });
+
+            //On change of To Account dropdown
+            $('#drpInternalTransferToAcc').chosen().change(function () {
+                if ($('#drpInternalTransferFromAcc').val() != '' && $('#drpInternalTransferToAcc').val() != $('#drpInternalTransferFromAcc').val()) {
+                    if ($('#drpInternalTransferToAcc').val().split('/')[0] == $('#drpInternalTransferFromAcc').val().split('/')[0]) {
+                        if ($('#drpInternalTransferFromAcc').val() == $('#drpInternalTransferToAcc').val()) {
+                            $('#btnInternalTransfer').attr('disabled', 'disabled');
+                            $('#btnCalculateRate').attr('disabled', 'disabled');
+                            $('#divExchangeRate').hide();
+                        }
+                        else {
+                            $('#btnInternalTransfer').removeAttr('disabled');
+                            $('#btnCalculateRate').attr('disabled', 'disabled');
+                            $('#divExchangeRate').hide();
+                        }
+                    }
+                    else {
+                        $('#btnCalculateRate').removeAttr('disabled');
+                        $('#btnInternalTransfer').attr('disabled', 'disabled');
+                        $('#divExchangeRate').hide();
+                    }
+                }
+                else {
+                    $('#btnCalculateRate').attr('disabled', 'disabled');
+                    $('#btnInternalTransfer').attr('disabled', 'disabled');
+                    $('#divExchangeRate').hide();
+                }
+            });
+
+        });
+        
+        //Click function of Calculate Rate button
+        $('#btnCalculateRate').click(function () {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+
+            if ($('#txtAmount').val() == '' || !regNumeric.test($('#txtAmount').val()) || parseInt($('#txtAmount').val()) == 0) {
+                alert('Enter correct amount!');
+            }
+            else {
+                $("#loading").show();
+
+                var fromCurr = $('#drpInternalTransferFromAcc').val().split('/')[0];
+                var toCurr = $('#drpInternalTransferToAcc').val().split('/')[0];
+                var values = {
+                    "fromCurr": fromCurr,
+                    "toCurr": toCurr
+                };
+
+                //Post request to get exchange rate and broker spread
+                $.post("@Url.Action("GetExchangeRates", "FundTransfer")", values, function (data) {
+                    if (data != null) {
+                        $("#loading").hide();
+                        $('.spnFromCurr').text(fromCurr);
+                        $('.spnToCurr').text(toCurr);
+                        $('#spnFromExchangeRate').text(data);
+                        $('#spnToExchangeRate').text((1 / data).toFixed(4));
+                        $('#spnExchangedAmt').text(($('#txtAmount').val().split(',').join('') * data).toFixed(2));
+                        
+                        //Set timer
+                        timer(
+                            30000, // milliseconds
+                            function (timeleft) { // called every step to update the visible countdown
+                                document.getElementById('spnSecsLeft').innerHTML = timeleft + " second(s)";
+                            },
+                            function () { // what to do after
+                                $('#btnInternalTransfer').attr('disabled', 'disabled');
+                            }
+                        );
+                    }
+                    else {
+                        $("#loading").hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+
+                $('#chkAcceptRate').attr('checked', false);
+                $('#divExchangeRate').show();
+                $('#btnInternalTransfer').removeAttr("disabled");
+            }
+        });
+
+        //Button click function of Internal Transfer
+        $('#btnInternalTransfer').click(function () {
+            var regNumeric = /(?:^\d{1,3}(?:,?\d{3})*(?:\.\d{2})?$)/;
+
+            if ($('#txtAmount').val() == '' || !regNumeric.test($('#txtAmount').val()) || parseInt($('#txtAmount').val()) == 0) {
+                alert('Enter correct amount!');
+            }
+            else {
+                //If exchange rate required
+                if ($('#divExchangeRate').is(':visible')) {
+                    if ($('#chkAcceptRate').is(':checked')) {
+                        $(this).attr("disabled", "disabled");
+                        $('.requiredError').remove();
+                        $("#loading").show();
+
+                        var values = {
+                            "fromAcc": $('#drpInternalTransferFromAcc').val().split('/')[1],
+                            "toAcc": $('#drpInternalTransferToAcc').val().split('/')[1],
+                            "amount": $('#txtAmount').val().split(',').join(''),
+                            "exchangeRate": $('#spnFromExchangeRate').text(),
+                            "notes": $('#txtNotes').val()
+                        };
+
+                        $.post("@Url.Action("ConversionFundTransfer", "FundTransfer")", values, function (data) {
+                            if (data.status) {
+                                $("#loading").hide();
+
+                                // jQuery bootstrap modal window for Confirmation Dialogs(Fund Account)
+                                $('#modalConfirmInternalTransfer').modal('show');
+                                $('#artInternalTransfer').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                                window.location.reload();
+                            }
+                            else {
+                                $("#loading").hide();
+                                
+                                clearInterval(interval);
+                                $('#spnSecsLeft').html('');
+                                $('#btnInternalTransfer').attr("disabled", "disabled");
+                                $('#artInternalTransfer').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                            }
+                        });
+                    }
+                    else {
+                        $('.requiredError').remove();
+                        $('#chkAcceptRate').after('<span class="requiredError">*</span>');
+                        return false;
+                    }
+                }
+                    //If exchange rate not required
+                else {
+                    $(this).attr("disabled", "disabled");
+                    $("#loading").show();
+
+                    var values = {
+                        "fromAcc": $('#drpInternalTransferFromAcc').val().split('/')[1],
+                        "toAcc": $('#drpInternalTransferToAcc').val().split('/')[1],
+                        "amount": $('#txtAmount').val().split(',').join(''),
+                        "exchangeRate": 1.0,
+                        "notes": $('#txtNotes').val()
+                    };
+
+                    $.post("@Url.Action("InternalFundTransfer", "FundTransfer")", values, function (data) {
+                        if (data.status) {
+                            $("#loading").hide();
+
+                            // jQuery bootstrap modal window for Confirmation Dialogs(Fund Account)
+                            $('#modalConfirmInternalTransfer').modal('show');
+                            $('#artInternalTransfer').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                            window.location.reload();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#btnInternalTransfer').removeAttr("disabled");
+                            $('#artInternalTransfer').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>' + data.message + '</div>');
+                        }
+                    });
+                }
+            }
+        });
+
+        //Timer function to count each sec and fire event after completion of time period
+        function timer(time, update, complete) {
+            var start = new Date().getTime();
+            interval = setInterval(function () {
+                var now = time - (new Date().getTime() - start);
+                if (now <= 0) {
+                    clearInterval(interval);
+                    complete();
+                }
+                else update(Math.floor(now / 1000));
+            }, 100); // the smaller this number, the more accurate the timer will be
+        }
+        
+    </script>
+}

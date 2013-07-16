@@ -1,0 +1,668 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- Page Title Bar -->
+    <div class="page-title">
+        <h1 class="requests">Requests</h1>
+    </div>
+
+    <!-- Padding div needed for single column layouts -->
+    <div class="padding-footer">
+
+        <!-- Pending Requests Section -->
+        <article class="no-margin">
+            <div class="select-bar">
+                <select class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option selected="">Pending</option>
+                    <option>Approved</option>
+                    <option>Denied</option>
+                </select>
+            </div>
+            <h2 class="inline-block">Pending Requests</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tableRequestsPending">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+        <!-- Approved Requests Section -->
+        <article class="no-margin">
+            <div class="select-bar">
+                <select class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option>Pending</option>
+                    <option selected="">Approved</option>
+                    <option>Denied</option>
+                </select>
+            </div>
+            <h2 class="inline-block">Approved Requests</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tableRequestsApproved">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+        <!-- Denied Requests Section -->
+        <article class="no-margin">
+            <div class="select-bar">
+                <select class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option>Pending</option>
+                    <option>Approved</option>
+                    <option selected="">Denied</option>
+                </select>
+            </div>
+            <h2 class="inline-block">Denied Requests</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tableRequestsDenied">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+    </div>
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalLeveragePending" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Leverage Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Account Number</li>
+            <li class="columns six text-right">[account number]</li>
+            <li class="columns six">Current Leverage</li>
+            <li class="columns six text-right">[current leverage]</li>
+            <li class="columns six"><span class="red">Requested Leverage</span></li>
+            <li class="columns six text-right"><span class="red">[requested leverage]</span></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Approval Status <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Approved</option>
+                    <option>Denied</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client <span class="required">*</span></label>
+                <textarea class="width-full" style="height: 40px;" disabled=""></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" disabled="">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalGroupPending" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">New Group Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Spread Markup</li>
+            <li class="columns six text-right">[spread markup]</li>
+            <li class="columns six">Currency</li>
+            <li class="columns six text-right">[currency]</li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Approval Status <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Approved</option>
+                    <option>Denied</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client <span class="required">*</span></label>
+                <textarea class="width-full" style="height: 40px;" disabled=""></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" disabled="">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalAdPending" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Broker Ad Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve text-center">
+                <img src="../img/ad-preview.jpg" width="300" height="250" alt=""></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Approval Status <span class="required">*</span></label>
+                <select class="chzn-select width-150">
+                    <option></option>
+                    <option>Approved</option>
+                    <option>Denied</option>
+                </select>
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client <span class="required">*</span></label>
+                <textarea class="width-full" style="height: 40px;" disabled=""></textarea>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Enter Password <span class="required">*</span></label>
+                <input class=" width-150" type="password"><small class="margin-left">Enter password to submit request.</small>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" disabled="">Submit</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalLeverageApproved" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Approved Leverage Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Account Number</li>
+            <li class="columns six text-right">[account number]</li>
+            <li class="columns six">Current Leverage</li>
+            <li class="columns six text-right">[current leverage]</li>
+            <li class="columns six"><span class="red">Requested Leverage</span></li>
+            <li class="columns six text-right"><span class="red">[requested leverage]</span></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalGroupApproved" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Approved Group Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Spread Markup</li>
+            <li class="columns six text-right">[spread markup]</li>
+            <li class="columns six">Currency</li>
+            <li class="columns six text-right">[currency]</li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalAdApproved" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Approved Broker Ad Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve text-center">
+                <img src="../img/ad-preview.jpg" width="300" height="250" alt=""></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalLeverageDenied" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Denied Leverage Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Account Number</li>
+            <li class="columns six text-right">[account number]</li>
+            <li class="columns six">Current Leverage</li>
+            <li class="columns six text-right">[current leverage]</li>
+            <li class="columns six"><span class="red">Requested Leverage</span></li>
+            <li class="columns six text-right"><span class="red">[requested leverage]</span></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client</label>
+                <p>[reason sent to client]</p>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalGroupDenied" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Denied Group Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">Spread Markup</li>
+            <li class="columns six text-right">[spread markup]</li>
+            <li class="columns six">Currency</li>
+            <li class="columns six text-right">[currency]</li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client</label>
+                <p>[reason sent to client]</p>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalAdDenied" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Denied Broker Ad Request</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row border">
+            <li class="columns six">Client Name</li>
+            <li class="columns six text-right">[first name] [last name]</li>
+            <li class="columns six">Account ID</li>
+            <li class="columns six text-right">[account id]</li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve text-center">
+                <img src="../img/ad-preview.jpg" width="300" height="250" alt=""></li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Reason Sent to Client</label>
+                <p>[reason sent to client]</p>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn btn-primary" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/tip")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liRequests').addClass('active');
+            $('select').chosen();
+
+            $("#tableRequestsPending").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Date/Time', 'Client', 'Request', 'Category', 'Transaction ID', '', ''],
+                colModel: [
+                    { name: 'date', width: 110, fixed: true, title: false, search: false },
+                    { name: 'client', title: false },
+                    { name: 'request', width: 150, fixed: true, title: false },
+                    { name: 'category', title: false },
+                    { name: 'id', title: false },
+                    { name: 'details', width: 90, fixed: true, align: 'center', title: false, sortable: false, search: false },
+                    { name: 'actions', width: 40, fixed: true, align: 'center', title: false, sortable: false, search: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Leverage Change',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalLeveragePending"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Broker Ad',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalAdPending"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'New Group',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalGroupPending"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    }
+                ]
+            });
+            $("#tableRequestsPending").filterToolbar({
+                searchOnEnter: true
+            });
+
+            $("#tableRequestsApproved").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Date/Time', 'Client', 'Request', 'Category', 'Transaction ID', '', ''],
+                colModel: [
+                    { name: 'date', width: 110, fixed: true, title: false, search: false },
+                    { name: 'client', title: false },
+                    { name: 'request', width: 150, fixed: true, title: false },
+                    { name: 'category', title: false },
+                    { name: 'id', title: false },
+                    { name: 'details', width: 90, fixed: true, align: 'center', title: false, sortable: false, search: false },
+                    { name: 'actions', width: 40, fixed: true, align: 'center', title: false, sortable: false, search: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Leverage Change',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalLeverageApproved"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Broker Ad',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalAdApproved"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'New Group',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalGroupApproved"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    }
+                ]
+            });
+            $("#tableRequestsApproved").filterToolbar({
+                searchOnEnter: true
+            });
+
+            $("#tableRequestsDenied").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Date/Time', 'Client', 'Request', 'Category', 'Transaction ID', '', ''],
+                colModel: [
+                    { name: 'date', width: 110, fixed: true, title: false, search: false },
+                    { name: 'client', title: false },
+                    { name: 'request', width: 150, fixed: true, title: false },
+                    { name: 'category', title: false },
+                    { name: 'id', title: false },
+                    { name: 'details', width: 90, fixed: true, align: 'center', title: false, sortable: false, search: false },
+                    { name: 'actions', width: 40, fixed: true, align: 'center', title: false, sortable: false, search: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Leverage Change',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalLeverageDenied"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'Broker Ad',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalAdDenied"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">[first name] [last name]</a>',
+                        'request': 'New Group',
+                        'category': '[category]',
+                        'id': '[transaction id]',
+                        'details': '<button class="btn btn-mini" data-modal="modalGroupDenied"><i class="icon-check"></i> Review</button>',
+                        'actions': '<input class="icon delete tip" title="Delete" type="button" value="Delete">'
+                    }
+                ]
+            });
+            $("#tableRequestsDenied").filterToolbar({
+                searchOnEnter: true
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+            $('button[data-modal="modalLeveragePending"]').click(function (e) {
+                e.preventDefault();
+                $('#modalLeveragePending').modal();
+            });
+            $('button[data-modal="modalGroupPending"]').click(function (e) {
+                e.preventDefault();
+                $('#modalGroupPending').modal();
+            });
+            $('button[data-modal="modalAdPending"]').click(function (e) {
+                e.preventDefault();
+                $('#modalAdPending').modal();
+            });
+
+            $('button[data-modal="modalLeverageApproved"]').click(function (e) {
+                e.preventDefault();
+                $('#modalLeverageApproved').modal();
+            });
+            $('button[data-modal="modalGroupApproved"]').click(function (e) {
+                e.preventDefault();
+                $('#modalGroupApproved').modal();
+            });
+            $('button[data-modal="modalAdApproved"]').click(function (e) {
+                e.preventDefault();
+                $('#modalAdApproved').modal();
+            });
+
+            $('button[data-modal="modalLeverageDenied"]').click(function (e) {
+                e.preventDefault();
+                $('#modalLeverageDenied').modal();
+            });
+            $('button[data-modal="modalGroupDenied"]').click(function (e) {
+                e.preventDefault();
+                $('#modalGroupDenied').modal();
+            });
+            $('button[data-modal="modalAdDenied"]').click(function (e) {
+                e.preventDefault();
+                $('#modalAdDenied').modal();
+            });
+
+        });//End ready
+    </script>
+}

@@ -1,0 +1,445 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBAgents.AgentsListModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Page Title Bar -->
+        <div class="page-title">
+            <h1 class="agents">My Agents</h1>
+        </div>
+
+        <!-- Clients List Section -->
+        <article id="artAgent" class="no-margin">
+            <div class="button-bar">
+                <button class="btn btn-mini" data-toggle="modal" data-target="#modalAddAgent" onclick="resetAddNewAgentDialog()">Add New Agent</button>
+            </div>
+            <h2 class="inline-block">Agents List</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tblAgents">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+    </div>
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN ADD AGENT MODAL CONTENT SECTION -->
+<div id="modalAddAgent" class="modal hide fade xlarge">
+
+    <!-- Step 1: Select Bank Account to Fund -->
+    <div id="step-1">
+        
+        <!-- Modal Header -->
+		<div class="modal-header">
+			<small class="right required"><strong>*Required Fields</strong></small>
+			<h2 class="inline-block h2">New Agent Information </h2><small>Step 1 of 2</small>
+		</div>
+
+        <!-- Modal Body -->
+        <div class="content-section">
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">First Name <span class="required">*</span></label><input id="txtFirstName" type="text" class="input-text width-150" /></li>
+                <li class="columns four">
+                    <label class="h3">Last Name <span class="required">*</span></label><input id="txtLastName" type="text" class="input-text width-150" /></li>
+                <li class="columns four">
+                    <label class="h3">Date of Birth <span class="required">*</span></label>
+                    <div id="divBirthDate" class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+						<input id="txtBirthDate" class="width-80" size="16" type="text" readonly="" />
+						<span class="add-on"><i class="icon-calendar"></i></span>
+					</div>
+                </li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Phone Number <span class="required">*</span></label><input id="txtPhoneNumber" type="text" class="input-text width-150" /></li>
+                <li class="columns eight">
+                    <label class="h3">Email Address <span class="required">*</span></label><input id="txtEmail" type="text" class="input-text width-150" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Phone ID <span class="required">*</span></label><input id="txtPhoneID" type="text" class="input-text width-sm" /></li>
+                <li class="columns eight">
+                    <label class="h3">Password</label><input id="txtPassword" class="input-text width-sm" type="text" /><button class="btn btn-small margin-left">Generate Password</button></li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Agent Address <span class="required">*</span></label><input id="txtAgentAdd1" class="input-text width-med" type="text" /></li>
+                <li class="columns twelve">
+                    <input id="txtAgentAdd2" class="input-text width-med" type="text" /></li>
+            </ul>
+            <ul class="row">
+                <li class="columns four">
+                    <label class="h3">City <span class="required">*</span></label><input id="txtAgentCity" class="input-text width-med" type="text" /></li>
+                <li class="columns five">
+                    <label class="h3">Country <span class="required">*</span></label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "", new { @id = "drpAgentCountry" })
+                </li>
+                <li class="columns three">
+                    <label class="h3">Postal Code <span class="required">*</span></label><input id="txtAgentPostalCode" class="input-text width-100" type="text" /></li>
+            </ul>
+        </div>
+        
+        <!-- Modal Footer -->
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button id="step-1-submit" class="btn btn-primary">Continue to Step 2</button>
+		</div>
+
+    </div>
+
+    <!-- Step 2: Deposit Confirmation -->
+    <div id="step-2" style="display: none;">
+        
+        <!-- Modal Header -->
+		<div class="modal-header">
+			<small class="right required"><strong>*Required Fields</strong></small>
+			<h2 class="inline-block h2">New Agent Bank Information </h2><small>Step 2 of 2</small>
+		</div>
+
+        <!-- Modal Body -->
+        <div class="content-section">
+            <ul class="row">
+                <li class="columns four">
+                    <label class="h3">Bank Name</label><input id="txtBankName" class="input-text width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Account Number</label><input id="txtAccNumber" class="input-text width-med" type="text" /></li>
+            </ul>
+            <ul class="row border">
+                <li class="columns four">
+                    <label class="h3">Bic Number/SWIFT Code</label><input id="txtBicCode" class="input-text width-med" type="text" /></li>
+                <li class="columns eight">
+                    <label class="h3">Receiving Bank Information</label>
+                    @Html.DropDownListFor(model => model.ReceivingBankInfoID, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], "", new { @id = "drpReceivingBankInfo" })
+                    <input id="txtRecBankInfo" class="input-text width-med margin-left" type="text" />
+                </li>
+            </ul>
+            <ul class="row">
+                <li class="columns twelve">
+                    <label class="h3">Bank Address</label><input id="txtBankAdd1" class="input-text width-med" type="text" /></li>
+                <li class="columns twelve">
+                    <input id="txtBankAdd2" class="input-text width-med" type="text" /></li>
+            </ul>
+            <ul class="row">
+                <li class="columns four">
+                    <label class="h3">City</label><input id="txtBankCity" class="input-text width-med" type="text" /></li>
+                <li class="columns five">
+                    <label class="h3">Country</label>
+                    @Html.DropDownListFor(model => model.CountryID, (IEnumerable<SelectListItem>)ViewData["Country"], "", new { @id = "drpBankCountry" })
+                </li>
+                <li class="columns three">
+                    <label class="h3">Postal Code</label><input id="txtBankPostalCode" class="input-text width-100" type="text" /></li>
+            </ul>
+        </div>
+        
+        <!-- Modal Footer -->
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal">Cancel</button>
+			<button id="btnAddNewAgent" class="btn btn-primary">Add New Agent</button>
+		</div>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    @Scripts.Render("~/bundles/jqgrid")
+    <script>
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAgents').addClass('active');
+            $('select').attr('data-placeholder', 'Please Select');
+            $('select').css("width", "200px");
+            $('select').chosen();
+            $('.date').datepicker();
+
+            //Load jqgrid with list of agents
+            $("#tblAgents").jqGrid({
+                url: '/IntroducingBrokerAgents/GetAgentsList',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                sortname: "AgentID",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                sortable: true,
+                loadonce: true,
+                colNames: ['Agent ID', 'First Name', 'Last Name', 'Actions'],
+                colModel: [
+                    {
+                        name: 'AgentID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return '<a href="IntroducingBrokerAgents/AgentDetails?agentID='+ cellValue +'">' + cellValue + '</a>';
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'Action', width: 80, fixed: true, align: 'center', title: false, search: false, sortable: false }
+                ]
+            });
+            $("#tblAgents").filterToolbar({
+                searchOnEnter: true
+            });
+
+        });
+
+        // custom jQuery to hide/show step-by-step sections
+        $('#step-1-submit').click(function () {
+            if (validateNewAgentValues()) {
+                $('#step-1').hide();
+                $('#step-2').show();
+            }
+        });
+
+        //Function to validate new agent info values
+        function validateNewAgentValues() {
+            var valid = true;
+            var regNumeric = new RegExp("^[0-9]*$");
+            var regEmail = /^([a-zA-Z0-9_.-])+@@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+            $('.requiredError').remove();
+            if ($('#txtFirstName').val() == '') {
+                $('#txtFirstName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtLastName').val() == '') {
+                $('#txtLastName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBirthDate').val() == '') {
+                $('#divBirthDate').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtPhoneNumber').val() == '' || !regNumeric.test($('#txtPhoneNumber').val())) {
+                $('#txtPhoneNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if (!regEmail.test($('#txtEmail').val())) {
+                $('#txtEmail').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtPhoneID').val() == '') {
+                $('#txtPhoneID').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtAgentAdd1').val() == '') {
+                $('#txtAgentAdd1').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtAgentCity').val() == '') {
+                $('#txtAgentCity').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtAgentPostalCode').val() == '') {
+                $('#txtAgentPostalCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpAgentCountry').val() == '') {
+                $('#drpAgentCountry_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Add new agent button click
+        $('#btnAddNewAgent').click(function () {
+            //if (validateAgentBankValues()) {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            var birthDate = $('#txtBirthDate').val().split('-');
+
+            var newAgentValues = {
+                "FirstName": $('#txtFirstName').val(),
+                "LastName": $('#txtLastName').val(),
+                "BirthDate": (birthDate[1] + '-' + birthDate[0] + '-' + birthDate[2]),
+                "PhoneNumber": $('#txtPhoneNumber').val(),
+                "EmailAddress": $('#txtEmail').val(),
+                "PhoneID": $('#txtPhoneID').val(),
+                "Password": $('#txtPassword').val(),
+                "AgentAddress": $('#txtAgentAdd1').val() + '@@' + $('#txtAgentAdd2').val(),
+                "City": $('#txtAgentCity').val(),
+                "FK_CountryID": $('#drpAgentCountry').val(),
+                "PostalCode": $('#txtAgentPostalCode').val(),
+                "BankName": $('#txtBankName').val(),
+                "AccountNumber": $('#txtAccNumber').val(),
+                "BicOrSwiftCode": $('#txtBicCode').val(),
+                "FK_ReceivingBankInfoID": $('#drpReceivingBankInfo').val(),
+                "ReceivingBankInfo": $('#txtRecBankInfo').val(),
+                "BankAddress": $('#txtBankAdd1').val() + '@@' + $('#txtBankAdd2').val(),
+                "BankCity": $('#txtBankCity').val(),
+                "FK_BankCountryID": $('#drpBankCountry').val(),
+                "BankPostalCode": $('#txtBankPostalCode').val()
+            }
+
+            //Post request to add new agent info
+            $.post("@Url.Action("AddNewAgentInfo", "IntroducingBrokerAgents")", newAgentValues, function (data) {
+                if (data) {
+                    $('#loading').hide();
+                    $('#modalAddAgent').modal('hide');
+                    $('#artAgent').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added an agent.</div>');
+                    $("#tblAgents").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnAddNewAgent').removeAttr("disabled");
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+            //}
+        });
+
+        //Function to validate agent new banking info values
+        function validateAgentBankValues() {
+            var valid = true;
+            $('.requiredError').remove();
+            if ($('#txtBankName').val() == '') {
+                $('#txtBankName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtAccNumber').val() == '') {
+                $('#txtAccNumber').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBicCode').val() == '') {
+                $('#txtBicCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtRecBankInfo').val() == '') {
+                $('#txtRecBankInfo').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankAdd1').val() == '') {
+                $('#txtBankAdd1').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankCity').val() == '') {
+                $('#txtBankCity').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtBankPostalCode').val() == '') {
+                $('#txtBankPostalCode').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpReceivingBankInfo').val() == '') {
+                $('#drpReceivingBankInfo_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpBankCountry').val() == '') {
+                $('#drpBankCountry_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Function to reset all fields in Add New Agent dialog
+        function resetAddNewAgentDialog() {
+            $('#step-2').hide();
+            $('#step-1').show();
+
+            $('#txtFirstName').val('');
+            $('#txtLastName').val('');
+            $('#txtBirthDate').val('');
+            $('#txtPhoneNumber').val('');
+            $('#txtEmail').val('');
+            $('#txtPhoneID').val('');
+            $('#txtPassword').val('');
+            $('#txtAgentAdd1').val('');
+            $('#txtAgentAdd2').val('');
+            $('#txtAgentCity').val('');
+            $('#drpAgentCountry').val('');
+            $('#txtAgentPostalCode').val('');
+            $('#txtBankName').val('');
+            $('#txtAccNumber').val('');
+            $('#txtBicCode').val('');
+            $('#drpReceivingBankInfo').val('');
+            $('#txtRecBankInfo').val('');
+            $('#txtBankAdd1').val('');
+            $('#txtBankAdd2').val('');
+            $('#txtBankCity').val('');
+            $('#drpBankCountry').val('');
+            $('#txtBankPostalCode').val('');
+
+            //Update chosen
+            $("#drpAgentCountry").trigger("liszt:updated");
+            $("#drpReceivingBankInfo").trigger("liszt:updated");
+            $("#drpBankCountry").trigger("liszt:updated");
+        }
+
+        //Function to enable agent of IB
+        function enableAgent(cntrl) {
+            $('#loading').show();
+
+            var agentValue = {
+                "agentID": cntrl
+            }
+
+            //Post request to enable agent
+            $.post("@Url.Action("EnableAgent", "IntroducingBrokerAgents")", agentValue, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //Function to disable agent of IB
+        function disableAgent(cntrl) {
+            $('#loading').show();
+
+            var agentValue = {
+                "agentID": cntrl
+            }
+
+            //Post request to enable agent
+            $.post("@Url.Action("DisableAgent", "IntroducingBrokerAgents")", agentValue, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+    </script>
+}

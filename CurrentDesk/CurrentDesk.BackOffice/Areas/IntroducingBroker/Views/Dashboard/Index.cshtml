@@ -1,0 +1,1859 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.Dashboard.IBDashboardModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- First row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Accounts Overview -->
+        <div class="columns six">
+            <h2>My Accounts</h2>
+            <div class="content-box">
+
+                <div class="scroll-head">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Account Number</th>
+                                <th class="text-right width-30">Equity</th>
+                                <th class="text-right width-25">Change</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="scroll-table" style="height: 177px;">
+                    <table>
+                        <tbody>
+                            @foreach (var acc in Model.RebateAccDetails)
+                            {
+                                <tr class="header-row">
+                                    <td colspan="3">@acc.RebateAccCurrency</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="@Url.Action("ShowAccountDetails", "MyAccount", new { accountNumber = acc.RebateAccNumber })">@acc.RebateAccNumber</a></td>
+                                    <td class="text-right width-30">@acc.Equity</td>
+                                    <td class="text-right width-25"><span class="green">+0.23%</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="columns six">
+            <div class="select-bar">
+                <select id="drpActivityType" class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option selected="" value="1">My Activity</option>
+                    <option value="2">Client Activity</option>
+                </select>
+            </div>
+            <h2>Recent Activity</h2>
+            <div id="divOverviewBroker" class="content-box" style="height: 207px;">
+
+                <table id="tblOverviewBroker">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+
+            </div>
+            <div id="divOverviewClient" class="content-box" style="display: none; height: 207px;">
+
+                <table id="tblOverviewClient">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Second row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Latest Client Changes -->
+        <div class="columns twelve">
+            <h2>Latest Client Changes</h2>
+            <div class="content-box">
+                <table id="tblLatestClientChanges" class="column-table">
+                    <tr>
+                        @if (Model.ApprovedStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalApproved">
+                            <h3>Recently<br>
+                                Approved</h3>
+                            <strong>@Model.ApprovedStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalApproved">
+                            <h3>Recently<br>
+                                Approved</h3>
+                            <strong>@Model.ApprovedStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.PendingStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalPending">
+                            <h3>Pending<br>
+                                Approval</h3>
+                            <strong>@Model.PendingStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalPending">
+                            <h3>Pending<br>
+                                Approval</h3>
+                            <strong>@Model.PendingStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.MissingStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalMissing">
+                            <h3>Missing<br>
+                                Documents</h3>
+                            <strong>@Model.MissingStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalMissing">
+                            <h3>Missing<br>
+                                Documents</h3>
+                            <strong>@Model.MissingStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.DeniedStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalDenied">
+                            <h3>Approval<br>
+                                Denied</h3>
+                            <strong>@Model.DeniedStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalDenied">
+                            <h3>Approval<br>
+                                Denied</h3>
+                            <strong>@Model.DeniedStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.NewStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalNew">
+                            <h3>New<br>
+                                Account</h3>
+                            <strong>@Model.NewStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalNew">
+                            <h3>New<br>
+                                Account</h3>
+                            <strong>@Model.NewStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.ActiveStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalActive">
+                            <h3>Active<br>
+                                Account</h3>
+                            <strong class="green">@Model.ActiveStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalActive">
+                            <h3>Active<br>
+                                Account</h3>
+                            <strong class="green">@Model.ActiveStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.InactiveStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalInactive">
+                            <h3>Inactive<br>
+                                Account</h3>
+                            <strong class="yellow">@Model.InactiveStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalInactive">
+                            <h3>Inactive<br>
+                                Account</h3>
+                            <strong class="yellow">@Model.InactiveStatus.First().Key</strong></a></td>
+                        }
+                        @if (Model.DormantStatus.First().Value)
+                        {
+                        <td class="box-link status1"><a href="#" data-toggle="modal" data-target="#modalDormant">
+                            <h3>Dormant<br>
+                                Account</h3>
+                            <strong class="red">@Model.DormantStatus.First().Key</strong></a></td>
+                        }
+                        else
+                        {
+                        <td class="box-link"><a href="#" data-toggle="modal" data-target="#modalDormant">
+                            <h3>Dormant<br>
+                                Account</h3>
+                            <strong class="red">@Model.DormantStatus.First().Key</strong></a></td>
+                        }
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Third row of dashboard items -->
+    <div class="row content-row">
+
+       <!-- Client Transactions -->
+			<div class="columns eight">
+				<div class="select-bar">
+					<select id="drpTransacTypeSelector" class="chzn-select width-150">
+						<!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+						<option></option>
+						<option value="deposit" selected="">Deposits</option>
+						<option value="transfer">Internal Transfers</option>
+						<option value="withdrawal">Withdrawals</option>
+						<option value="conversion">Conversions</option>
+					</select>
+				</div>
+				<h2>Client Transactions</h2>
+				<div class="content-box">
+					
+					<!-- Deposits Table -->
+					<div id="deposit_table" class="toggle-hide show">					
+						<table id="tblDeposits">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Transfers Table -->
+					<div id="transfer_table" class="toggle-hide">
+						<table id="tblTransfers">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Withdrawels Table -->
+					<div id="withdrawal_table" class="toggle-hide">	
+						<table id="tblWithdrawals">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+					<!-- Conversions Table -->
+					<div id="conversion_table" class="toggle-hide">	
+						<table id="tblConversions">
+							<tr>
+								<td/>
+							</tr>
+						</table>
+					</div>
+					
+				</div>
+			</div>
+
+        <!-- Volume Overview -->
+		<div class="columns four volume-overview">
+				<div class="select-bar">
+					<select id="drpVolOverviewType" class="chzn-select width-150">
+						<option selected="" value="1">Currencies</option>
+						<option value="2">CFD's</option>
+					</select>
+				</div>
+                <h2>Volume Overview</h2>
+				<div class="content-box">
+					<div class="mtd-volume"><h3 class="h3 inline">Month to Date:</h3> <span id="spnMonthToDate"></span></div>
+                    <div id="divVolLoading" class="vol-overview-loading"></div>
+					<div id="divChartVolumeOverviewCurr" style="height: 207px;"></div>
+                    <div id="divChartVolumeOverviewCFD" style="height: 207px;"></div>
+				</div>
+			</div>
+
+    </div>
+
+    <!-- Fourth row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Market News -->
+        <div class="columns twelve" style="margin-right: -300px;">
+            <h2>Market News</h2>
+            <div class="content-box" style="margin-right: 325px;">
+
+                <div class="scroll-head">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="marketNewsWidth-15">Time</th>
+                                <th class="marketNewsWidth-15">Currency</th>
+                                <th>Details</th>
+                                <th class="width-10">Impact</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="scroll-table" style="height: 207px;">
+                    <table>
+                        <tbody>
+                            @foreach (var news in Model.MarketNews)
+                            {
+                                <tr>
+                                    <td class="marketNewsWidth-15">@news.NewsDateTime</td>
+                                    <td class="marketNewsWidth-15">@news.Currency</td>
+                                    <td><a href="#">@news.Title</a></td>
+                                    @if (news.Impact == "Low")
+                                    {
+                                        <td class="width-10">
+                                            <img src="/Images/impact-low.png" alt="Low" /></td>
+                                    }
+                                    else if (news.Impact == "Medium")
+                                    {
+                                        <td class="width-10">
+                                            <img src="/Images/impact-med.png" alt="Medium" /></td>
+                                    }
+                                    else if (news.Impact == "High")
+                                    {
+                                        <td class="width-10">
+                                            <img src="/Images/impact-high.png" alt="High" /></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="width-10">
+                                            <img src="/Images/impact-none.png" alt="None" /></td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Broker Promo -->
+        <div class="columns">
+            <h2>Broker Promo</h2>
+            <div class="promo-box">
+                <img src="" width="300" height="250" alt="">
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalApproved" class="modal hide fade xlarge">
+	
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal">×</button>
+		<h2 class="inline-block h2">Recently Approved Clients</h2>
+	</div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblApproved">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-0"></div>
+        </div>
+    </div>
+	
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button id="btnApprovedCancel" class="btn" disabled="">Clear Selected</button>
+		<button id="btnApprovedDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalPending" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Clients Pending Approval</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblPending">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-1"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnPendingCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnPendingDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalMissing" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Clients Missing Documents</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblMissing">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-2"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnMissingCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnMissingDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalDenied" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Clients Denied Approval</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblDenied">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-3"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnDeniedCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnDeniedDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNew" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">New Client Accounts</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblNew">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-4"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnNewCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnNewDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalActive" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Active Client Accounts</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblActive">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-5"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnActiveCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnActiveDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalInactive" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Inactive Client Accounts</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblInactive">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-6"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnInactiveCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnInactiveDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalDormant" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h2 class="inline-block h2">Dormant Client Accounts</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <div class="content-section" style="height: 344px;">
+            <table id="tblDormant">
+                <tr>
+                    <td />
+                </tr>
+            </table>
+            <div id="pager-7"></div>
+        </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnDormantCancel" class="btn" disabled="">Clear Selected</button>
+        <button id="btnDormantDismiss" class="btn btn-primary" disabled="">Dismiss Selected</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/morris")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        var currencyTotalTrade;
+        var cfdTotalTrade;
+
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liDashboard').addClass('active');
+            $('.chzn-select').chosen();
+
+            //Remove red highlight on click of any client changes menu
+            $('#tblLatestClientChanges tr td').bind('click', function () {
+                $(this).removeClass('alert');
+            });
+
+            //Load IB activity list on page load
+            $('#drpActivityType').trigger('change');
+
+            //Transaction type dropdown change event
+            $("#drpTransacTypeSelector").change(function () {
+                $(".toggle-hide").hide();
+                $("#" + $(this).val() + "_table").show().removeClass("show");
+
+                if ($(this).val() == 'deposit') {
+                    showDepositsGrid();
+                }
+                else if ($(this).val() == 'transfer') {
+                    showTransferGrid();
+                }
+                else if ($(this).val() == 'withdrawal') {
+                    showWithdrawalGrid();
+                }
+                else if ($(this).val() == 'conversion') {
+                    showConversionGrid();
+                }
+            });
+
+            $("#drpTransacTypeSelector").trigger('change');
+
+            $("#tableDeposits").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                colNames: ['Date/Time', 'Client', 'Status', 'Amount'],
+                colModel: [
+                    { name: 'date', width: '110', fixed: true, title: false },
+                    { name: 'client', title: false },
+                    { name: 'status', title: false },
+                    { name: 'amount', align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': '<i>pending</i>',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': '<i>pending</i>',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': 'Approved',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': 'Approved',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': 'Approved',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': 'Approved',
+                        'amount': '$0,000,000.00'
+                    },
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'client': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': 'Approved',
+                        'amount': '$0,000,000.00'
+                    }
+                ]
+            });
+
+            $("#tableTransfers").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                colNames: ['Date/Time', 'From', 'To', 'Status', 'Amount'],
+                colModel: [
+                    { name: 'date', width: '110', fixed: true, title: false },
+                    { name: 'from', title: false },
+                    { name: 'to', title: false },
+                    { name: 'status', title: false },
+                    { name: 'amount', align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'from': '<a href="">000-000-0000000</a><br>[client name]',
+                        'to': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': '<i>pending</i>',
+                        'amount': '$0,000,000.00'
+                    }
+                ]
+            });
+
+            $("#tableConversions").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                colNames: ['Date/Time', 'From', 'Amount', 'Rate', 'To', 'Status', 'Converted'],
+                colModel: [
+                    { name: 'date', width: '110', fixed: true, title: false },
+                    { name: 'from', title: false },
+                    { name: 'amount', align: 'right', title: false },
+                    { name: 'rate', title: false },
+                    { name: 'to', title: false },
+                    { name: 'status', title: false },
+                    { name: 'converted', align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'date': '04/01/2013<br>01:20 GMT',
+                        'from': '<a href="">000-000-0000000</a><br>[client name]',
+                        'amount': '$0,000,000.00',
+                        'rate': '1.00000',
+                        'to': '<a href="">000-000-0000000</a><br>[client name]',
+                        'status': '<i>pending</i>',
+                        'converted': '&euro;0,000,000.00'
+                    }
+                ]
+            });
+
+            //Currency volume overview
+            new Morris.Bar({
+                // ID of the element in which to draw the chart.
+                element: 'divChartVolumeOverviewCurr',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: getCurrVolumeOverviewData(),
+                xkey: 'x',
+                ykeys: ['y'],
+                labels: ['DV']
+            });
+
+            //CFD volume overview
+            //Currency volume overview
+            new Morris.Bar({
+                // ID of the element in which to draw the chart.
+                element: 'divChartVolumeOverviewCFD',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: getCFDVolumeOverviewData(),
+                xkey: 'x',
+                ykeys: ['y'],
+                labels: ['DV']
+            });
+            $('#divChartVolumeOverviewCFD').hide();
+            $('#drpVolOverviewType').trigger('change');
+            
+        });//End of ready function
+
+        //Function to show all client withdraw transactions in grid
+        function showWithdrawalGrid() {
+            $("#tblWithdrawals").jqGrid({
+                url: 'Dashboard/GetClientWithdrawalTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'Client', 'Status', 'Amount', 'ClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true }
+                ]
+            });
+        }
+        
+        //Function to show all client deposit transactions in grid
+        function showDepositsGrid() {
+            $("#tblDeposits").jqGrid({
+                url: 'Dashboard/GetClientDepositTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'Client', 'Status', 'Amount', 'ClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true }
+                ]
+            });
+        }
+        
+        //Function to show all client internal transfer transactions in grid
+        function showTransferGrid() {
+            $("#tblTransfers").jqGrid({
+                url: 'Dashboard/GetClientInternalTransferTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'From', 'To', 'Status', 'Amount', 'ClientName', 'ToClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    {
+                        name: 'ToAccount', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ToClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true },
+                    { name: 'ToClientName', hidden: true }
+                ]
+            });
+        }
+        
+        //Function to show all client conversion transactions in grid
+        function showConversionGrid() {
+            $("#tblConversions").jqGrid({
+                url: 'Dashboard/GetClientConversionTransactions',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '174',
+                forceFit: true,
+                scrollOffset: '17',
+                sortname: "TransactionDate",
+                sortorder: "desc",
+                sortable: true,
+                loadonce: true,
+                colNames: ['Date/Time', 'From', 'Amount', 'Rate', 'To', 'Status', 'Converted', 'ClientName', 'ToClientName'],
+                colModel: [
+                    { name: 'TransactionDate', width: '110', fixed: true, title: false },
+                    {
+                        name: 'AccountNumber', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ClientName"];
+                        }
+                    },
+                    { name: 'Amount', align: 'right', title: false },
+                    { name: 'ExchangeRate', title: false },
+                    {
+                        name: 'ToAccount', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='#'>" + cellValue + "</a><br>" + rowObject["ToClientName"];
+                        }
+                    },
+                    { name: 'Status', title: false },
+                    { name: 'ExchangedAmount', align: 'right', title: false },
+                    { name: 'ClientName', hidden: true },
+                    { name: 'ToClientName', hidden: true }
+                ]
+            });
+        }
+
+        //Volume overview type dropdown change event
+        $('#drpVolOverviewType').change(function () {
+            if ($('#drpVolOverviewType').val() == 1) {
+                $('#spnMonthToDate').text(currencyTotalTrade);
+                $('#divChartVolumeOverviewCurr').show();
+                $('#divChartVolumeOverviewCFD').hide();
+            }
+            else if ($('#drpVolOverviewType').val() == 2) {
+                $('#spnMonthToDate').text(cfdTotalTrade);
+                $('#divChartVolumeOverviewCFD').show();
+                $('#divChartVolumeOverviewCurr').hide();
+            }
+        });
+
+        //Function to display currency volume overview
+        function getCurrVolumeOverviewData() {
+            var ret = [];
+            var z;
+
+            //Ajax call to get volume overview data
+            $.ajax({
+                type: 'POST',
+                url: 'Dashboard/GetCurrencyVolumeOverviewData',
+                success: function (data) {
+                    z = data;
+                },
+                dataType: 'json',
+                async: false
+            });
+           
+            $.each(z, function (index, value) {
+                if (value.Day != 'MonthToDate') {
+                    ret.push({
+                        x: value.Day,
+                        y: value.Volume
+                    });
+                }
+                //Display monthtodate volume
+                else {
+                    currencyTotalTrade = value.Volume;
+                }
+            });
+            $('#divVolLoading').remove();
+            return ret;
+        }
+
+        //Function to display CFD volume overview
+        function getCFDVolumeOverviewData() {
+            var ret = [];
+            var z;
+
+            //Ajax call to get volume overview data
+            $.ajax({
+                type: 'POST',
+                url: 'Dashboard/GetCFDVolumeOverviewData',
+                success: function (data) {
+                    z = data;
+                },
+                dataType: 'json',
+                async: false
+            });
+
+            $.each(z, function (index, value) {
+                if (value.Day != 'MonthToDate') {
+                    ret.push({
+                        x: value.Day,
+                        y: value.Volume
+                    });
+                }
+                //Display monthtodate volume
+                else {
+                    cfdTotalTrade = value.Volume;
+                }
+            });
+            return ret;
+        }
+
+        //On change event of Activity type dropdown
+        $('#drpActivityType').change(function () {
+            if ($('#drpActivityType').val() == 1) {
+                $('#divOverviewBroker').show();
+                $('#divOverviewClient').hide();
+
+                $("#tblOverviewBroker").jqGrid({
+                    url: 'Dashboard/GetIntroducingBrokerRecentActivityDetails',
+                    jsonReader: {
+                        root: "rows",
+                        page: "page",
+                        total: "total",
+                        records: "records",
+                        repeatitems: false,
+                        cell: "cell",
+                        id: "id",
+                        userdata: "userdata",
+                    },
+                    datatype: "json",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: '174',
+                    forceFit: true,
+                    scrollOffset: '17',
+                    loadonce: true,
+                    sortable: true,
+                    sortname: 'ActivityTimestamp',
+                    sortorder: 'desc',
+                    colNames: ['Date/Time', 'Activity Details'],
+                    colModel: [
+                        {
+                            name: 'ActivityTimestamp', width: '110', fixed: true, title: false, sorttype: 'date', datefmt: "d/m/Y h:i:s A", formatter: function (cellValue, options, rowObject) {
+                                if (rowObject["IsSeen"] == false) {
+                                    return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                                }
+                                else {
+                                    return cellValue;
+                                }
+                            }
+                        },
+                    {
+                        name: 'ActivityDetails', title: false, sortable: false, formatter: function (cellValue, options, rowObject) {
+                            if (rowObject["IsSeen"] == false) {
+                                return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                            }
+                            else {
+                                return cellValue;
+                            }
+                        }
+                    }
+                    ]
+                });
+            }
+            else {
+                $('#divOverviewBroker').hide();
+                $('#divOverviewClient').show();
+
+                $("#tblOverviewClient").jqGrid({
+                    url: 'Dashboard/GetClientsRecentActivityDetails',
+                    jsonReader: {
+                        root: "rows",
+                        page: "page",
+                        total: "total",
+                        records: "records",
+                        repeatitems: false,
+                        cell: "cell",
+                        id: "id",
+                        userdata: "userdata",
+                    },
+                    datatype: "json",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: '174',
+                    forceFit: true,
+                    scrollOffset: '17',
+                    loadonce: true,
+                    sortable: true,
+                    sortname: 'ActivityTimestamp',
+                    sortorder: 'desc',
+                    colNames: ['Date/Time', 'Activity Details'],
+                    colModel: [
+                        {
+                            name: 'ActivityTimestamp', width: '110', fixed: true, title: false, sorttype: 'date', datefmt: "d/m/Y h:i:s A", formatter: function (cellValue, options, rowObject) {
+                                if (rowObject["IsSeen"] == false) {
+                                    return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                                }
+                                else {
+                                    return cellValue;
+                                }
+                            }
+                        },
+                        {
+                            name: 'ActivityDetails', title: false, sortable: false, formatter: function (cellValue, options, rowObject) {
+                                if (rowObject["IsSeen"] == false) {
+                                    return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                                }
+                                else {
+                                    return cellValue;
+                                }
+                            }
+                        }
+                    ]
+                });
+            }
+        });
+
+        //Event to load all clients with Approved status
+        $('#modalApproved').on('shown', function () {
+            $("#tblApproved").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnStatus?status=Approved',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDocuments?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "&clientName=" + rowObject["FirstName"] + '@@' + rowObject["LastName"] + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblApproved').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnApprovedCancel').removeAttr("disabled");
+                        $('#btnApprovedDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnApprovedCancel').attr("disabled", "disabled");
+                        $('#btnApprovedDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with Pending status
+        $('#modalPending').on('shown', function () {
+            $("#tblPending").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnStatus?status=Pending',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDocuments?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "&clientName=" + rowObject["FirstName"] + '@@' + rowObject["LastName"] + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblPending').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnPendingCancel').removeAttr("disabled");
+                        $('#btnPendingDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnPendingCancel').attr("disabled", "disabled");
+                        $('#btnPendingDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with Missing Documents status
+        $('#modalMissing').on('shown', function () {
+            $("#tblMissing").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnStatus?status=Missing Documents',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDocuments?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "&clientName=" + rowObject["FirstName"] + '@@' + rowObject["LastName"] + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblMissing').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnMissingCancel').removeAttr("disabled");
+                        $('#btnMissingDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnMissingCancel').attr("disabled", "disabled");
+                        $('#btnMissingDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with Denied status
+        $('#modalDenied').on('shown', function () {
+            $("#tblDenied").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnStatus?status=Denied',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDocuments?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "&clientName=" + rowObject["FirstName"] + '@@' + rowObject["LastName"] + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblDenied').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnDeniedCancel').removeAttr("disabled");
+                        $('#btnDeniedDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnDeniedCancel').attr("disabled", "disabled");
+                        $('#btnDeniedDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with new activity
+        $('#modalNew').on('shown', function () {
+            $("#tblNew").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnActivityStatus?activity=new',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDetails?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblNew').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnNewCancel').removeAttr("disabled");
+                        $('#btnNewDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnNewCancel').attr("disabled", "disabled");
+                        $('#btnNewDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with active activity
+        $('#modalActive').on('shown', function () {
+            $("#tblActive").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnActivityStatus?activity=active',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDetails?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblActive').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnActiveCancel').removeAttr("disabled");
+                        $('#btnActiveDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnActiveCancel').attr("disabled", "disabled");
+                        $('#btnActiveDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with inactive activity
+        $('#modalInactive').on('shown', function () {
+            $("#tblInactive").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnActivityStatus?activity=inactive',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDetails?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblInactive').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnInactiveCancel').removeAttr("disabled");
+                        $('#btnInactiveDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnInactiveCancel').attr("disabled", "disabled");
+                        $('#btnInactiveDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //Event to load all clients with dormant activity
+        $('#modalDormant').on('shown', function () {
+            $("#tblDormant").jqGrid({
+                url: '/IntroducingBroker/Dashboard/GetClientListOnActivityStatus?activity=dormant',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '279',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                pager: '#pager-1',
+                recordpos: 'left',
+                viewrecords: true,
+                colNames: ['PK_ClientID', 'Account ID', 'First Name', 'Last Name', 'Company Name'],
+                colModel: [
+                    { name: 'PK_ClientID', hidden: true },
+                    {
+                        name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='IntroducingBrokerClients/ClientDetails?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'FirstName', title: false },
+                    { name: 'LastName', title: false },
+                    { name: 'CompanyName', title: false }
+                ],
+                onSelectRow: function (ids) {
+                    var selRowIds = $('#tblDormant').jqGrid('getGridParam', 'selarrrow');
+                    if (selRowIds != '') {
+                        $('#btnDormantCancel').removeAttr("disabled");
+                        $('#btnDormantDismiss').removeAttr("disabled");
+                    }
+                    else {
+                        $('#btnDormantCancel').attr("disabled", "disabled");
+                        $('#btnDormantDismiss').attr("disabled", "disabled");
+                    }
+                }
+            });
+        });
+
+        //===========================================
+        //        Reset selected rows in grid
+        $('#btnApprovedCancel').click(function () {
+            $('#tblApproved').jqGrid('resetSelection');
+            $('#btnApprovedCancel').attr("disabled", "disabled");
+            $('#btnApprovedDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnPendingCancel').click(function () {
+            $('#tblPending').jqGrid('resetSelection');
+            $('#btnPendingCancel').attr("disabled", "disabled");
+            $('#btnPendingDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnMissingCancel').click(function () {
+            $('#tblMissing').jqGrid('resetSelection');
+            $('#btnMissingCancel').attr("disabled", "disabled");
+            $('#btnMissingDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnDeniedCancel').click(function () {
+            $('#tblDenied').jqGrid('resetSelection');
+            $('#btnDeniedCancel').attr("disabled", "disabled");
+            $('#btnDeniedDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnNewCancel').click(function () {
+            $('#tblNew').jqGrid('resetSelection');
+            $('#btnNewCancel').attr("disabled", "disabled");
+            $('#btnNewDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnActiveCancel').click(function () {
+            $('#tblActive').jqGrid('resetSelection');
+            $('#btnActiveCancel').attr("disabled", "disabled");
+            $('#btnActiveDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnInactiveCancel').click(function () {
+            $('#tblInactive').jqGrid('resetSelection');
+            $('#btnInactiveCancel').attr("disabled", "disabled");
+            $('#btnInactiveDismiss').attr("disabled", "disabled");
+        });
+
+        $('#btnDormantCancel').click(function () {
+            $('#tblDormant').jqGrid('resetSelection');
+            $('#btnDormantCancel').attr("disabled", "disabled");
+            $('#btnDormantDismiss').attr("disabled", "disabled");
+        });
+        //===============================================
+
+        //Function to dismiss Missing status clients
+        $('#btnMissingDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblMissing').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblMissing').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+            
+            var value = {
+                "clientIDs": clientIds,
+                "status": "Missing Documents"
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClients", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnMissingDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Approved status clients
+        $('#btnApprovedDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblApproved').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblApproved').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds,
+                "status": "Approved"
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClients", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnApprovedDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Pending status clients
+        $('#btnPendingDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblPending').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblPending').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds,
+                "status": "Pending"
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClients", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnPendingDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Denied status clients
+        $('#btnDeniedDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblDenied').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblDenied').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds,
+                "status": "Denied"
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClients", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnDeniedDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss New activity clients
+        $('#btnNewDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblNew').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblNew').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClientsOnActivity", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnNewDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Active activity clients
+        $('#btnActiveDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblActive').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblActive').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClientsOnActivity", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnActiveDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Inactive activity clients
+        $('#btnInactiveDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblInactive').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblInactive').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClientsOnActivity", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnInactiveDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+        //Function to dismiss Dormant activity clients
+        $('#btnDormantDismiss').click(function () {
+            $(this).attr("disabled", "disabled");
+            $('#loading').show();
+
+            //Get selected row ids
+            var selRowIds = $('#tblDormant').jqGrid('getGridParam', 'selarrrow');
+
+            //Get selected clients PK ids
+            var clientIds = '';
+            $.each(selRowIds, function (index, value) {
+                clientIds += $('#tblDormant').jqGrid('getCell', value, 'PK_ClientID') + ',';
+            });
+
+            var value = {
+                "clientIDs": clientIds
+            }
+
+            //Update IsDismiss to true for all selected clients
+            $.post("@Url.Action("DismissSelectedClientsOnActivity", "Dashboard")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#btnDormantDismiss').removeAttr("disabled");
+                }
+            });
+        });
+
+    </script>
+}

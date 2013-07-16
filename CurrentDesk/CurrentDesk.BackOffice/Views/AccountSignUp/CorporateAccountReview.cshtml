@@ -1,0 +1,243 @@
+﻿@model CurrentDesk.BackOffice.Models.CorporateAccountReviewModel
+@{
+    ViewBag.Title = "CorporateAccountReview";
+}
+
+@using (Html.BeginForm("CorporateAccountReview", "AccountSignUp", FormMethod.Post))
+{
+<div class="content-section">
+    <div class="wrapper">
+        <!-- Signup Step 3 - Review -->
+        <div id="live-step-3" class="review-box">
+            <h1>
+                Sign Up - Review</h1>
+            <div class="content-section">
+                <h2>
+                    Company Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Company Name:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Company Type:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.CompanyName)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.CompanyType)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Company Address:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.CompanyAddLine1)<br/>
+                            @Html.DisplayFor(model => model.CompanyAddLine2)<br/>
+                            @Html.DisplayFor(model => model.CompanyCity), @Html.DisplayFor(model => model.CompanyCountry),
+                            @Html.DisplayFor(model => model.CompanyPostalCode)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Authorized Officer
+                </h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Full Name:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.AuthOfficerTitle) @Html.DisplayFor(model => model.AuthOfficerFirstName)
+                            @Html.DisplayFor(model => model.AuthOfficerMiddleName) @Html.DisplayFor(model => model.AuthOfficerLastName)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Date of Birth:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Gender:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.AuthOfficerDobDay)/@Html.DisplayFor(model => model.AuthOfficerDobMonth)/@Html.DisplayFor(model => model.AuthOfficerDobYear)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.AuthOfficerGender)
+                        </dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Citizenship:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                ID Information:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.AuthOfficerCitizenship)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.AuthOfficerIdInfo): @Html.DisplayFor(model => model.AuthOfficerIdNumber)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Country of Residence:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.AuthOfficerResidenceCountry)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Authorized Officer Contact Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Residential Address:</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.AuthOfficerAddLine1)<br/>
+                            @Html.DisplayFor(model => model.AuthOfficerAddLine2)<br/>
+                            @Html.DisplayFor(model => model.AuthOfficerCity), @Html.DisplayFor(model => model.AuthOfficerCountry),
+                            @Html.DisplayFor(model => model.AuthOfficerPostalCode)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Telephone Number:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Mobile Number:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.AuthOfficerTelNumberCountryCode)-@Html.DisplayFor(model => model.AuthOfficerTelNumber)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.AuthOfficerMobileNumberCountryCode)-@Html.DisplayFor(model => model.AuthOfficerMobileNumber)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Banking Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Bank Name:</label></dt>
+                        <dt class="columns three">
+                            <label>
+                                Account Number:</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Bic Number/SWIFT Code:</label></dt>
+                        <dd class="columns five">
+                            @Html.DisplayFor(model => model.BankName)</dd>
+                        <dd class="columns three">
+                            @Html.DisplayFor(model => model.AccountNumber)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.BicOrSwiftCode)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns five">
+                            <label>
+                                Bank Address:</label></dt>
+                        <dt class="columns seven">
+                            <label>
+                                Receiving Bank Information:</label></dt>
+                        <dd class="columns fove">
+                            @Html.DisplayFor(model => model.BankAddLine1)<br/>
+                            @Html.DisplayFor(model => model.BankAddLine2)<br/>
+                            @Html.DisplayFor(model => model.BankCity), @Html.DisplayFor(model => model.BankCountry),
+                            @Html.DisplayFor(model => model.BankPostalCode)</dd>
+                        <dd class="columns seven">
+                            @Html.DisplayFor(model => model.ReceivingBankInfoId):@Html.DisplayFor(model => model.ReceivingBankInfo)
+                        </dd>
+                    </dl>
+                </div>
+                <h2>
+                    Financial Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns four">
+                            <label>
+                                Estimate Annual Income?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Liquid Assets:</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Total net worth in Euros:</label></dt>
+                    </dl>
+                    <dl class="form-list row">
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.EstimatedAnnualIncome)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.LiquidAssets)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.NetWorthEuros)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Trading Experience</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading securities?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading options?</label></dt>
+                        <dt class="columns four">
+                            <label>
+                                Do you have experience trading foreign exchange?</label></dt>
+                    </dl>
+                    <dl class="form-list row">
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingSecurities)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingOptions)</dd>
+                        <dd class="columns four">
+                            @Html.DisplayFor(model => model.DrpHaveExperienceTradingForeignExchange)</dd>
+                    </dl>
+                </div>
+                <h2>
+                    Other Information</h2>
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns six">
+                            <label>
+                                Do you have or have you ever held and other account with FQ Securities?</label></dt>
+                        <dt class="columns six">
+                            <label>
+                                Have you ever been a registered person/entity with CFTC, NFA, SEC, FINRA, FSA, BaFin,
+                                etc?</label></dt>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.HaveAccWithFqSecurities)</dd>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.RequiredToBeRegisteredWithRegulator)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns six">
+                            <label>
+                                Are you required to be registered with a regulator?</label></dt>
+                        <dt class="columns six">
+                            <label>
+                                Are you an employee of an exchange or regulator organization?</label></dt>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.EverDeclaredBankruptcy)</dd>
+                        <dd class="columns six">
+                            @Html.DisplayFor(model => model.RegisteredPerson)</dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve">
+                            <label>
+                                Have you ever declared bankruptcy?</label></dt>
+                        <dd class="columns twelve">
+                            @Html.DisplayFor(model => model.EmployeeOfExchangeOrRegulatorOperator)</dd>
+                    </dl>
+                </div>
+                <div style="display: none">
+                    @Html.EditorFor(model => model.CorporateModel)
+                    @Html.EditorFor(model => model.IsLive)
+                </div>
+                <!-- Button Box -->
+                <div class="button-box">
+                    <input class="live-submit-send button submit right" type="submit" value="Submit" /></div>
+            </div>
+        </div>
+        <!-- End Signup Step 3 - Review -->
+    </div>
+</div>
+}

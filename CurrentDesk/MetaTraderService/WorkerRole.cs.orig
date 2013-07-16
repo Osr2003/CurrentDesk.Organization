@@ -1,0 +1,1718 @@
+#region Header Information
+/*****************************************************************************
+ * File Name     : WorkerRole.cs
+ * Author        : Chinmoy Dey
+ * Copyright     : Mindfire Solutions
+ * Creation Date : 11th March 2013
+ * Modified Date : 11th March 2013
+ * Description   : This file represents azure worker role(service) and contains code that
+ *                 is called repeatedly after fixed interval of time
+ * ***************************************************************************/
+#endregion
+
+#region Namespace Used
+using System.Diagnostics;
+using System.Net;
+using System.Threading;
+using Microsoft.WindowsAzure.ServiceRuntime;
+using MT4Wrapper;
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+
+using CurrentDesk.Models;
+using System.Threading.Tasks;
+
+using CurrentDesk.Common;
+using CurrentDesk.Logging;
+using CurrentDesk.Repository;
+using MT4ManLibraryNETv03;
+using CurrentDesk.Repository.CurrentDesk;
+using Microsoft.WindowsAzure;
+using System.Data.SqlClient;
+using System.Data;
+using System.Text.RegularExpressions;
+#endregion
+
+namespace MetaTraderService
+{
+    public class WorkerRole : RoleEntryPoint
+    {
+
+
+        #region "Constants"
+
+        const int PUMP_START_PUMPING = 0;
+        const int PUMP_UPDATE_SYMBOLS = 1;
+        const int TEST_LOCAL = 777;
+        const int PUMP_UPDATE_GROUPS = 2;
+        const int PUMP_UPDATE_USERS = 3;
+        const int PUMP_UPDATE_ONLINE = 4;
+        const int PUMP_UPDATE_BIDASK = 5;
+        const int PUMP_UPDATE_NEWS = 6;
+        const int PUMP_UPDATE_NEWS_BODY = 7;
+        const int PUMP_UPDATE_MAIL = 8;
+        const int PUMP_UPDATE_TRADES = 9;
+        const int PUMP_UPDATE_REQUESTS = 10;
+        const int PUMP_UPDATE_PLUGINS = 11;
+        const int PUMP_UPDATE_ACTIVATION = 12;
+        const int PUMP_UPDATE_MARGINCALL = 13;
+        const int PUMP_STOP_PUMPING = 14;
+        const int PUMP_PING = 15;
+
+
+
+
+        enum Transaction : int { TRANS_ADD = 0, TRANS_DELETE, TRANS_UPDATE, TRANS_CHANGE_GRP };
+
+
+        /// <summary>
+        /// Pumping mode flags    
+        /// </summary>
+        enum PumpingFlags : int
+        {
+            //--- user flags
+            CLIENT_FLAGS_HIDETICKS = 1,     // do not send ticks
+            CLIENT_FLAGS_HIDENEWS = 2,     // do not send news
+            CLIENT_FLAGS_HIDEMAIL = 4,     // do not send mails
+            CLIENT_FLAGS_SENDFULLNEWS = 8,     // send news body with news header in pumping mode
+            CLIENT_FLAGS_RESERVED = 16,    // reserved
+            //--- manager flags
+            CLIENT_FLAGS_HIDEONLINE = 32,    // do not send online users table
+            CLIENT_FLAGS_HIDEUSERS = 64     // do not send users table
+        };
+
+        #endregion
+
+        #region "Variable"
+
+        public MT4ManLibraryNETv03.CMTManager manager = new MT4ManLibraryNETv03.CMTManager();
+
+        //Require for pumping without ticks
+        public MT4ManLibraryNETv03.CMTManager manager2 = new MT4ManLibraryNETv03.CMTManager();
+
+        public Task t;
+
+        MetaTraderTrades metaTrader;
+
+        //Task for TickInfoLast        
+        List<string> lstSymbol = new List<string>();
+
+        Task taskOpenTrades;
+        Task taskMargin;
+        Task taskPrice;
+        Task taskUsers;
+        Task taskSymbols;
+
+        Task taskRealtimeMargin;
+
+        bool IsMarginSynchFirsttime = false;
+
+        public MT4ManLibraryNETv03.MarginLevelNET[] arrMarginLevel;
+        public List<MarginLevelNET> lstTempMargins = new List<MarginLevelNET>();
+        public List<SymbolMarginMode> lstSymbMarginMode = new List<SymbolMarginMode>();
+
+        bool isBulkSymbolColpied = false;
+        #endregion
+
+
+        #region "Server Credentials"
+
+        string ServerName = string.Empty;
+        int ManagerId = 0;
+        string ManagerPassword = string.Empty;
+
+        #endregion
+
+        /// <summary>
+        /// Connect to metatrader in pumping mode and synch Trades,Price,Margin  tables
+        /// </summary>
+        public override void Run()
+        {
+            // This is a sample worker implementation. Replace with your logic.
+            Trace.WriteLine("MetaTraderService entry point called", "Information");
+
+            //Get MetaTrader settings
+            ServerName = CloudConfigurationManager.GetSetting("ServerName");
+            ManagerId = Convert.ToInt32(CloudConfigurationManager.GetSetting("ManagerId"));
+            ManagerPassword = CloudConfigurationManager.GetSetting("Password");
+
+            metaTrader = new MetaTraderTrades();
+
+
+            //Run new thread to update last trading date
+            UpdateLastTradingDateThread();
+
+
+            ConnectToManager(manager);
+
+            var allTasks = new List<Task>();
+
+            #region "Get OpenTrades from MetaTrader Server and Save to Trade table"
+
+
+            var total = 0;
+            MT4ManLibraryNETv03.TradeRecordNET[] tradeInfo;
+            tradeInfo = manager.TradesRequest(ref total);
+
+            //Get List of traded Symbol
+            if (tradeInfo.Length > 0)
+            {
+
+                lstSymbol = (from s in tradeInfo
+                             select s.symbol).Distinct().ToList();
+            }
+
+            taskOpenTrades = new Task(() =>
+            {
+                try
+                {
+                    List<Trade> lstTradeInfo = (from tr in tradeInfo
+                                                select new Trade
+                                                {
+
+                                                    Activation = tr.activation,
+                                                    ClosePrice = tr.close_price,
+                                                    CloseTime = tr.close_time,
+                                                    Cmd = tr.cmd,
+                                                    Comment = tr.comment,
+                                                    Commission = tr.commission,
+                                                    CommissionAgent = tr.commission_agent,
+                                                    ConvRates = tr.conv_rates[0],
+                                                    ConvReserv = tr.conv_reserv,
+                                                    Digits = tr.digits,
+                                                    Expiration = tr.expiration,
+                                                    InternalID = tr.internal_id,
+                                                    Login = tr.login,
+                                                    Magic = tr.magic,
+                                                    MarginRate = tr.margin_rate,
+                                                    OpenPrice = tr.open_price,
+                                                    OpenTime = tr.open_time,
+                                                    OrderID = tr.order,
+                                                    Profit = tr.profit,
+                                                    Sl = tr.sl,
+                                                    Spread = tr.spread,
+                                                    State = tr.state,
+                                                    Storage = tr.storage,
+                                                    Symbol = tr.symbol,
+                                                    Taxes = tr.taxes,
+                                                    Timestamp = tr.timestamp,
+                                                    Tp = tr.tp,
+                                                    ValueDate = tr.value_date,
+                                                    Volume = tr.volume,
+                                                    TradeDateTime = tr.timestamp.TimeStampToDateTime()
+                                                }).ToList();
+
+                    metaTrader.SaveTrades(lstTradeInfo);
+                }
+                catch (Exception ex)
+                {
+                    CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                }
+            });
+
+
+            #endregion
+
+            #region "Get All Users from MetaTrader Server and Save to UserRecord table"
+
+
+
+            int totalUser = 0;
+            UserRecordNET[] userRecordInfo;
+            userRecordInfo = manager.UsersRequest(ref totalUser);
+
+            taskUsers = new Task(() =>
+            {
+                try
+                {
+                    var lstUser = (from u in userRecordInfo
+                                   select new UserRecord
+                                   {
+                                       Login = u.login,
+                                       Group = u.@group,
+                                       Address = u.address,
+                                       AgentAccount = u.agent_account,
+                                       ApiData = u.api_data,
+                                       Balance = u.balance,
+                                       BalanceStatus = u.balance_status,
+                                       City = u.city,
+                                       Comment = u.comment,
+                                       Country = u.country,
+                                       Credit = u.credit,
+                                       Email = u.email,
+
+                                       Enable = u.enable,
+                                       EnableChangePassword = u.enable_change_password,
+                                       EnableReadOnly = u.enable_read_only,
+
+                                       ID = u.id,
+                                       InterestRate = u.interestrate,
+                                       LastDate = u.lastdate.TimeStampToDateTime(),
+
+                                       Leverage = u.leverage,
+                                       Name = u.password,
+                                       PasswordInvestor = u.password_investor,
+                                       PasswordPhone = u.password_phone,
+
+                                       Phone = u.phone,
+                                       PrevBalance = u.prevbalance,
+
+                                       PrevEquity = u.prevequity,
+                                       PublicKey = u.publickey,
+
+                                       RegDate = u.regdate.TimeStampToDateTime(),
+                                       Reserved = u.reserved.IntArrayToString(),
+                                       Reserved2 = u.reserved2.DoubleArrayToString(),
+
+                                       SendReports = u.send_reports,
+                                       State = u.state,
+                                       Status = u.status,
+                                       Taxes = u.taxes,
+                                       Timestamp = u.timestamp.TimeStampToDateTime(),
+                                       Unused = u.unused,
+                                       UserColor = u.user_color,
+                                       ZipCode = u.zipcode
+
+                                   }).ToList();
+
+                    UserRecordBO userRecordBO = new UserRecordBO();
+                    userRecordBO.SaveUserRecord(lstUser);
+                }
+                catch (Exception ex)
+                {
+                    CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                }
+
+            });
+
+
+            #endregion
+
+            bool isSynchedSucessfully = false;
+            try
+            {
+                allTasks.Add(taskOpenTrades);
+                //allTasks.Add(taskUsers);
+
+                taskOpenTrades.Start();
+                //taskUsers.Start();
+
+                Task.WaitAll(allTasks.ToArray());
+
+                isSynchedSucessfully = true;
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+            }
+
+            if (isSynchedSucessfully)
+            {
+                //Synch Users
+                //UserRecordBO ubo = new UserRecordBO();
+                //ubo.AddClientRecord();
+
+            }
+
+            //Synch equity
+            SynchClientEquity();
+
+            #region "Set Pumping"
+
+            // ((int)PumpingFlags.CLIENT_FLAGS_HIDETICKS) |         
+            int flags = ((int)PumpingFlags.CLIENT_FLAGS_HIDEMAIL) | ((int)PumpingFlags.CLIENT_FLAGS_HIDENEWS) | ((int)PumpingFlags.CLIENT_FLAGS_HIDEONLINE);
+
+            PumpFuncExDelegate pumpEx = new PumpFuncExDelegate(CallBackMethodEx);
+
+            var iPumpRet = manager.PassMeAnExDelegate(pumpEx);
+            iPumpRet = manager.PumpingSwitchEx(flags, null);
+
+            #endregion
+
+            StartHistoryDataSynch();
+            Thread.Sleep(Timeout.Infinite);
+        }
+
+
+        /// <summary>
+        /// Extended pumping
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="type"></param>
+        /// <param name="data"></param>
+        /// <param name="param"></param>
+        protected void CallBackMethodEx(int code, int type, Object data, Object param)
+        {
+            switch (code)
+            {
+                case PUMP_START_PUMPING:
+                    //CurrentDeskLog.Info("Pumping Starts : PUMP_START_PUMPING");
+                    break;
+
+                case PUMP_UPDATE_GROUPS:
+                    break;
+
+                case PUMP_UPDATE_USERS:
+                    break;
+
+                case PUMP_UPDATE_ONLINE:
+                    break;
+
+                case PUMP_UPDATE_SYMBOLS:
+
+                    #region "Synch Symbol"
+
+                    int totalSymbl = 0;
+                    ConSymbolNET[] symb;
+                    symb = manager.SymbolsGetAll(ref totalSymbl);
+
+                    if (taskSymbols == null || taskSymbols.IsCompleted)
+                    {
+                        taskSymbols = new Task(() =>
+                        {
+
+                            DataTable dtSymbol = new DataTable("Symbol");
+                            #region "Create DataTable for Symbol"
+
+                            dtSymbol.Columns.Add("PK_SymbolID", typeof(int));
+                            dtSymbol.Columns.Add("Currency", typeof(string));
+                            dtSymbol.Columns.Add("Description", typeof(string));
+                            dtSymbol.Columns.Add("MarginCurrency", typeof(string));
+                            dtSymbol.Columns.Add("MarginMode", typeof(int));
+                            dtSymbol.Columns.Add("ProfitMode", typeof(int));
+                            dtSymbol.Columns.Add("Symbol", typeof(string));
+                            dtSymbol.Columns.Add("Trade", typeof(int));
+                            dtSymbol.Columns.Add("Type", typeof(int));
+
+                            lstSymbMarginMode.Clear();
+                            foreach (ConSymbolNET symboleNet in symb)
+                            {
+                                var newMode = new SymbolMarginMode();
+                                newMode.MarginMode = symboleNet.margin_mode;
+                                newMode.Symbol = symboleNet.symbol;
+                                lstSymbMarginMode.Add(newMode);
+
+                                dtSymbol.Rows.Add(0, symboleNet.currency, symboleNet.description, symboleNet.margin_currency, symboleNet.margin_mode, symboleNet.profit_mode, symboleNet.symbol, symboleNet.trade, symboleNet.type);
+
+                            }
+
+
+                            //Clear Existing symbole and rfresh woth new symbole
+                            if (dtSymbol.Rows.Count > 0)
+                            {
+                                SymbolBO symbolBO = new SymbolBO();
+                                bool isClear = symbolBO.ClearExistingSymbol();
+                                if (isClear)
+                                {
+                                    try
+                                    {
+                                        using (SqlConnection connection = new SqlConnection(CurrentDesk.Repository.Utility.StaticCache.ConnectionString))
+                                        {
+                                            connection.Open();
+                                            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                                            {
+                                                bulkCopy.BatchSize = 500;
+                                                bulkCopy.DestinationTableName =
+                                                    "dbo.Symbol";
+
+                                                try
+                                                {
+                                                    bulkCopy.WriteToServer(dtSymbol);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                                }
+                                            }
+
+                                            connection.Close();
+                                        }
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        CommonErrorLogger.CommonErrorLog(exception, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                    }
+                                }
+
+                            }
+
+
+
+                            #endregion
+
+                        });
+
+                        taskSymbols.Start();
+                    }
+
+
+
+                    #endregion
+
+                    CurrentDeskLog.Info("Updaing Symbols : PUMP_UPDATE_SYMBOLS");
+
+                    break;
+
+<<<<<<< HEAD
+                case PUMP_STOP_PUMPING:
+
+                    CurrentDeskLog.Info("Pumping Stops : PUMP_STOP_PUMPING");
+
+                    //Restart Pumping
+                    Thread t = new Thread(ReStartPumping);
+                    t.Start();
+=======
+                case PUMP_STOP_PUMPING: 
+   
+                    CurrentDeskLog.Info("Pumping Stops : PUMP_STOP_PUMPING");
+
+                    //Restart Pumping
+                     Thread t = new Thread(ReStartPumping);
+                     t.Start();
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+
+                    break;
+
+                case PUMP_UPDATE_TRADES: // 9
+
+                    try
+                    {
+                        if (data != null)
+                        {
+                            TradeRecordNET tinfo = (TradeRecordNET)data;
+
+                            #region "Synch Trade"
+
+                            Trade trade = GetTrade(tinfo);
+                            switch (type)
+                            {
+                                case (int)Transaction.TRANS_ADD:
+                                    {
+
+                                        if (lstSymbol.IndexOf(tinfo.symbol) == -1)
+                                        {
+                                            lstSymbol.Add(tinfo.symbol);
+                                        }
+
+                                        new Task(() =>
+                                        {
+
+                                            TradeBO tradeBO = new TradeBO();
+                                            tradeBO.AddTrade(trade);
+
+                                        }).Start();
+                                    }
+                                    break;
+
+                                case (int)Transaction.TRANS_DELETE:
+                                    {
+                                        new Task(() =>
+                                        {
+
+                                            TradeBO tradeBO = new TradeBO();
+                                            tradeBO.DeleteTrade(trade);
+
+                                        }).Start();
+                                    }
+                                    break;
+
+                                case (int)Transaction.TRANS_UPDATE:
+                                    {
+                                        new Task(() =>
+                                        {
+
+                                            TradeBO tradeBO = new TradeBO();
+                                            tradeBO.UpdateTrade(trade);
+
+                                        }).Start();
+                                    }
+                                    break;
+                            }
+                            #endregion
+
+                            #region "Synch Margin"
+
+                            if (IsMarginSynchFirsttime)
+                            {
+
+                                int loginId = tinfo.login;
+                                UserRecordNET user = new UserRecordNET();
+                                manager.UserRecordGet(loginId, user);
+
+                                MarginLevelNET marginLevel = new MarginLevelNET();
+                                int margin = 0;
+                                margin = manager.MarginLevelGet(loginId, user.group, marginLevel);
+
+                                Margin newMargin = GetMargin(marginLevel);
+
+                                new Task(() =>
+                                {
+
+                                    MarginBO mbo = new MarginBO();
+                                    mbo.UpdateMargin(newMargin);
+
+                                }).Start();
+
+                            }
+                            else
+                            {
+
+                                //Synch Margin Table first Time
+                                MT4ManLibraryNETv03.MarginLevelNET[] mrgnLevelNET;
+                                int marginTotal = 0;
+                                mrgnLevelNET = manager.MarginsGet(ref marginTotal);
+
+                                if (mrgnLevelNET != null && marginTotal > 0)
+                                {
+                                    if (taskMargin == null || taskMargin.IsCompleted)
+                                    {
+                                        taskMargin = new Task(() =>
+                                        {
+                                            List<Margin> lstmargin = (from margin in mrgnLevelNET
+                                                                      select new Margin
+                                                                      {
+                                                                          Group = margin.@group,
+                                                                          Login = margin.login,
+                                                                          Leverage = margin.leverage,
+                                                                          Updated = margin.updated,
+                                                                          Balance = Convert.ToDecimal(margin.balance),
+                                                                          Equity = Convert.ToDecimal(margin.equity),
+                                                                          Volume = margin.volume,
+                                                                          Margin1 = Convert.ToDecimal(margin.margin),
+                                                                          MarginFree = Convert.ToDecimal(margin.margin_free),
+                                                                          MarginLevel = Convert.ToDecimal(margin.margin_level),
+                                                                          MarginType = margin.margin_type,
+                                                                          LevelType = margin.level_type
+
+                                                                      }).ToList();
+
+                                            if (lstmargin.Count > 0)
+                                            {
+                                                MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                                metaTrader.UpdateMargin(lstmargin);
+                                            }
+
+                                            IsMarginSynchFirsttime = true;
+                                        });
+
+                                        taskMargin.Start();
+                                    }
+                                }
+                            }
+
+                            #endregion
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+                    break;
+
+                case PUMP_UPDATE_BIDASK:
+
+                    #region "Price Synch"
+
+                    /*try
+                    {
+                        //Price Pumping
+                        if (lstSymbol.Count > 0)
+                        {
+                            if (taskPrice == null || taskPrice.IsCompleted)
+                            {
+                                taskPrice = new Task(() =>
+                                {
+                                    List<Price> lstPrice = new List<CurrentDesk.Models.Price>();
+
+                                    Parallel.ForEach(lstSymbol, symbole =>
+                                    {
+
+                                        MT4ManLibraryNETv03.TickInfoNET[] TickInfoArray;
+                                        int totalTicks = 0;
+                                        TickInfoArray = manager.TickInfoLast(symbole, ref totalTicks);
+
+                                        if (totalTicks > 0)
+                                        {
+                                            Price p = new Price();
+                                            p.Ask = Convert.ToDecimal(TickInfoArray[0].ask);
+                                            p.Bid = Convert.ToDecimal(TickInfoArray[0].bid);
+                                            p.Symbole = TickInfoArray[0].symbol ?? string.Empty;
+
+                                            DateTime dt = new DateTime(TickInfoArray[0].ctm);
+                                            p.Time = TickInfoArray[0].ctm.TimeStampToDateTime();
+
+                                            lstPrice.Add(p);
+                                        }
+
+                                    });
+
+                                    if (lstPrice.Count > 0)
+                                    {
+                                        MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                        metaTrader.UpdatePrice(lstPrice);
+                                    }
+                                }, TaskCreationOptions.LongRunning);
+
+                                taskPrice.Start();
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+                    */
+
+                    #endregion
+
+
+                    #region "Realtime Margin Synch"
+
+
+                    try
+                    {
+                        var marginTotal1 = 0;
+                        var mrgnLevelNET1 = manager.MarginsGet(ref marginTotal1);
+                        List<MarginLevelNET> lstNewMargins = new List<MarginLevelNET>();
+
+                        if (mrgnLevelNET1 != null)
+                        {
+                            if (arrMarginLevel == null)
+                            {
+                                arrMarginLevel = mrgnLevelNET1;
+                            }
+                            else
+                            {
+                                lstNewMargins = (from nmargin in mrgnLevelNET1
+                                                 join omargin in arrMarginLevel
+                                                     on nmargin.login equals omargin.login
+                                                 where nmargin.equity != omargin.equity
+                                                 select nmargin).ToList();
+
+
+                            }
+
+                            if (taskRealtimeMargin == null || taskRealtimeMargin.IsCompleted)
+                            {
+                                arrMarginLevel = mrgnLevelNET1;
+
+                                if (lstTempMargins.Count > 0)
+                                {
+                                    var skipedMargins = (from lt in lstTempMargins
+                                                         where !lstNewMargins.Select(s => s.login).Contains(lt.login)
+                                                         select lt).ToList();
+
+                                    lstNewMargins.AddRange(skipedMargins);
+                                    lstTempMargins = new List<MarginLevelNET>();
+                                }
+
+                                taskRealtimeMargin = new Task(() =>
+                                {
+
+                                    if (lstNewMargins.Count > 0)
+                                    {
+                                        List<Margin> lstmargin = (from margin in lstNewMargins
+                                                                  select new Margin
+                                                                  {
+                                                                      Group = margin.@group,
+                                                                      Login = margin.login,
+                                                                      Leverage = margin.leverage,
+                                                                      Updated = margin.updated,
+                                                                      Balance = Convert.ToDecimal(margin.balance),
+                                                                      Equity = Convert.ToDecimal(margin.equity),
+                                                                      Volume = margin.volume,
+                                                                      Margin1 = Convert.ToDecimal(margin.margin),
+                                                                      MarginFree = Convert.ToDecimal(margin.margin_free),
+                                                                      MarginLevel = Convert.ToDecimal(margin.margin_level),
+                                                                      MarginType = margin.margin_type,
+                                                                      LevelType = margin.level_type
+<<<<<<< HEAD
+
+                                                                  }).ToList();
+                                        MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                        metaTrader.UpdateMargin(lstmargin);
+                                    }
+
+=======
+
+                                                                  }).ToList();
+                                        MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                        metaTrader.UpdateMargin(lstmargin);
+                                    }
+
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                                });
+
+                                taskRealtimeMargin.Start();
+                            }
+                            else
+                            {
+                                lstTempMargins.AddRange(lstNewMargins);
+                            }
+                        }
+                        else
+                        {
+                            CurrentDeskLog.Info("MarginsGet returns NULL");
+
+                            //Disconnect Pumping
+                            Thread t1 = new Thread(DisconnectPumping);
+                            t1.Start();
+                            System.Threading.Thread.Sleep(5000);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+
+
+                    #endregion
+
+                    break;
+
+                case PUMP_PING:
+                    var pingstatus = manager.Ping();
+<<<<<<< HEAD
+                    CurrentDeskLog.Info("Pinging : PUMP_PING :" + pingstatus);
+=======
+                    CurrentDeskLog.Info("Pinging : PUMP_PING :" + pingstatus );
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                    break;
+                case TEST_LOCAL:
+                    break;
+                default:
+                    code = 911;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="margin"></param>
+        /// <returns></returns>
+        public Margin GetMargin(MarginLevelNET margin)
+        {
+            var marginLevel = new Margin
+            {
+
+
+
+                Group = margin.@group,
+                Login = margin.login,
+                Leverage = margin.leverage,
+                Updated = margin.updated,
+                Balance = Convert.ToDecimal(margin.balance),
+                Equity = Convert.ToDecimal(margin.equity),
+                Volume = margin.volume,
+                Margin1 = Convert.ToDecimal(margin.margin),
+                MarginFree = Convert.ToDecimal(margin.margin_free),
+                MarginLevel = Convert.ToDecimal(margin.margin_level),
+                MarginType = margin.margin_type,
+                LevelType = margin.level_type
+
+
+            };
+
+            return marginLevel;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tr"></param>
+        /// <returns></returns>
+        public Trade GetTrade(TradeRecordNET tr)
+        {
+            var trade = new Trade
+            {
+
+                Activation = tr.activation,
+                ClosePrice = tr.close_price,
+                CloseTime = tr.close_time,
+                Cmd = tr.cmd,
+                Comment = tr.comment,
+                Commission = tr.commission,
+                CommissionAgent = tr.commission_agent,
+                ConvRates = tr.conv_rates[0],
+                ConvReserv = tr.conv_reserv,
+                Digits = tr.digits,
+                Expiration = tr.expiration,
+                InternalID = tr.internal_id,
+                Login = tr.login,
+                Magic = tr.magic,
+                MarginRate = tr.margin_rate,
+                OpenPrice = tr.open_price,
+                OpenTime = tr.open_time,
+                OrderID = tr.order,
+                Profit = tr.profit,
+                Sl = tr.sl,
+                Spread = tr.spread,
+                State = tr.state,
+                Storage = tr.storage,
+                Symbol = tr.symbol,
+                Taxes = tr.taxes,
+                Timestamp = tr.timestamp,
+                Tp = tr.tp,
+                ValueDate = tr.value_date,
+                Volume = tr.volume,
+                TradeDateTime = tr.timestamp.TimeStampToDateTime()
+            };
+
+            return trade;
+        }
+
+        /// <summary>
+        /// May be used 
+        /// </summary>
+        /// <param name="code"></param>
+        protected void CallBackMethod(int code)
+        {
+            int iRet = 0;
+
+            switch (code)
+            {
+                case PUMP_START_PUMPING:
+                    break;
+
+                case PUMP_UPDATE_GROUPS:
+                    break;
+
+                case PUMP_UPDATE_USERS:
+                    break;
+
+                case PUMP_UPDATE_ONLINE:
+                    break;
+
+                case PUMP_UPDATE_SYMBOLS: // 1                   
+                    break;
+
+                case PUMP_STOP_PUMPING: // 14                  
+                    //iRet = manager.dummyFunction(14);
+                    break;
+
+                case PUMP_UPDATE_TRADES: // 9
+
+                    //Trades Pumping
+                    try
+                    {
+                        MT4ManLibraryNETv03.TradeRecordNET[] TradeInfo;
+                        int val = 0;
+                        TradeInfo = manager.TradesGet(ref val);
+
+                        if (taskOpenTrades == null || taskOpenTrades.IsCompleted)
+                        {
+                            taskOpenTrades = new Task(() =>
+                            {
+
+
+                                List<Trade> lstTrade = (from tr in TradeInfo
+                                                        select new Trade
+                                                        {
+
+                                                            Activation = tr.activation,
+                                                            ClosePrice = tr.close_price,
+                                                            CloseTime = tr.close_time,
+                                                            Cmd = tr.cmd,
+                                                            Comment = tr.comment,
+                                                            Commission = tr.commission,
+                                                            CommissionAgent = tr.commission_agent,
+                                                            ConvRates = tr.conv_rates[0],
+                                                            ConvReserv = tr.conv_reserv,
+                                                            Digits = tr.digits,
+                                                            Expiration = tr.expiration,
+                                                            InternalID = tr.internal_id,
+                                                            Login = tr.login,
+                                                            Magic = tr.magic,
+                                                            MarginRate = tr.margin_rate,
+                                                            OpenPrice = tr.open_price,
+                                                            OpenTime = tr.open_time,
+                                                            OrderID = tr.order,
+                                                            Profit = tr.profit,
+                                                            Sl = tr.sl,
+                                                            Spread = tr.spread,
+                                                            State = tr.state,
+                                                            Storage = tr.storage,
+                                                            Symbol = tr.symbol,
+                                                            Taxes = tr.taxes,
+                                                            Timestamp = tr.timestamp,
+                                                            Tp = tr.tp,
+                                                            ValueDate = tr.value_date,
+                                                            Volume = tr.volume,
+                                                            TradeDateTime = tr.timestamp.TimeStampToDateTime()
+                                                        }).ToList();
+
+
+                                //MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                //metaTrader.SaveTrades(lstTrade);
+
+                            }, TaskCreationOptions.LongRunning);
+
+                            taskOpenTrades.Start();
+                        }
+
+                        //Get List of traded Symbol
+                        if (TradeInfo.Length > 0)
+                        {
+
+                            lstSymbol = (from s in TradeInfo
+                                         select s.symbol).Distinct().ToList();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+
+                    //Margin Pummping
+                    try
+                    {
+                        MT4ManLibraryNETv03.MarginLevelNET[] mrgnLevelNET;
+                        int marginTotal = 0;
+                        mrgnLevelNET = manager.MarginsGet(ref marginTotal);
+                        //Margin
+                        if (taskMargin == null || taskMargin.IsCompleted)
+                        {
+                            taskMargin = new Task(() =>
+                            {
+
+                                List<Margin> lstmargin = (from margin in mrgnLevelNET
+                                                          select new Margin
+                                                          {
+                                                              Group = margin.@group,
+                                                              Login = margin.login,
+                                                              Leverage = margin.leverage,
+                                                              Updated = margin.updated,
+                                                              Balance = Convert.ToDecimal(margin.balance),
+                                                              Equity = Convert.ToDecimal(margin.equity),
+                                                              Volume = margin.volume,
+                                                              Margin1 = Convert.ToDecimal(margin.margin),
+                                                              MarginFree = Convert.ToDecimal(margin.margin_free),
+                                                              MarginLevel = Convert.ToDecimal(margin.margin_level),
+                                                              MarginType = margin.margin_type,
+                                                              LevelType = margin.level_type
+
+                                                          }).ToList();
+
+                                if (lstmargin.Count > 0)
+                                {
+                                    MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                    metaTrader.UpdateMargin(lstmargin);
+                                }
+                            }, TaskCreationOptions.LongRunning);
+
+
+                            taskMargin.Start();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+                    break;
+
+                case PUMP_UPDATE_BIDASK:
+                    try
+                    {
+                        //Price Pumping
+                        if (lstSymbol.Count > 0)
+                        {
+                            if (taskPrice == null || taskPrice.IsCompleted)
+                            {
+                                taskPrice = new Task(() =>
+                                {
+                                    List<Price> lstPrice = new List<CurrentDesk.Models.Price>();
+
+                                    Parallel.ForEach(lstSymbol, symbole =>
+                                    {
+
+                                        MT4ManLibraryNETv03.TickInfoNET[] TickInfoArray;
+                                        int totalTicks = 0;
+                                        TickInfoArray = manager.TickInfoLast(symbole, ref totalTicks);
+
+                                        if (totalTicks > 0)
+                                        {
+                                            Price p = new Price();
+                                            p.Ask = Convert.ToDecimal(TickInfoArray[0].ask);
+                                            p.Bid = Convert.ToDecimal(TickInfoArray[0].bid);
+                                            p.Symbole = TickInfoArray[0].symbol ?? string.Empty;
+
+                                            DateTime dt = new DateTime(TickInfoArray[0].ctm);
+                                            p.Time = TickInfoArray[0].ctm.TimeStampToDateTime();
+
+                                            lstPrice.Add(p);
+                                        }
+
+                                    });
+
+                                    if (lstPrice.Count > 0)
+                                    {
+                                        MetaTraderTrades metaTrader = new MetaTraderTrades();
+                                        metaTrader.UpdatePrice(lstPrice);
+                                    }
+                                }, TaskCreationOptions.LongRunning);
+
+                                taskPrice.Start();
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                    }
+
+                    break;
+                case PUMP_PING:
+
+                    iRet = manager.Ping();
+                    break;
+                case TEST_LOCAL:
+                    break;
+                default:
+
+                    code = 911;
+                    break;
+            }
+
+
+        }
+
+
+        /// <summary>
+        /// This method runs new thread to update
+        /// last trading date once a day
+        /// </summary>
+        private void UpdateLastTradingDateThread()
+        {
+            Thread t = new Thread(new ThreadStart(UpdateTradingDate));
+            t.Start();
+        }
+
+        /// <summary>
+        /// This method update last trading date 
+        /// </summary>
+        private void UpdateTradingDate()
+        {
+            var lastDateTime = DateTime.UtcNow;
+            while (true)
+            {
+
+                MetaTraderTrades metaTrader = new MetaTraderTrades();
+                var allLoginTradedToday = metaTrader.GetAllLoginsTradedToday(lastDateTime);
+                lastDateTime = DateTime.UtcNow;
+
+                metaTrader.UpdateClientTradeDate(allLoginTradedToday);
+
+                Thread.Sleep(60 * 60 * 24 * 1000);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override bool OnStart()
+        {
+            // Set the maximum number of concurrent connections 
+            ServicePointManager.DefaultConnectionLimit = 12;
+
+            // For information on handling configuration changes
+            // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
+
+            return base.OnStart();
+        }
+
+        /// <summary>
+        /// Thread for synch Equity
+        /// </summary>
+        public void SynchClientEquity()
+        {
+            Thread t = new Thread(new ThreadStart(UpdateClientEquity));
+            t.Start();
+        }
+
+        /// <summary>
+        /// Sunch Equity and Balance
+        /// </summary>
+        public void UpdateClientEquity()
+        {
+            while (true)
+            {
+                try
+                {
+                    Client_AccountBO cbo = new Client_AccountBO();
+                    cbo.SynchClientAccount();
+                }
+                catch (Exception exception)
+                {
+                    CommonErrorLogger.CommonErrorLog(exception, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                }
+            }
+        }
+
+        public void StartHistoryDataSynch()
+        {
+            Thread t = new Thread(new ThreadStart(SynchHistory));
+            t.Start();
+        }
+
+
+        /// <summary>
+        /// Get last close traded time and get the trades between closetime and current time
+        /// </summary>
+        public void SynchHistory()
+        {
+
+            TradesHistoryBO tradesHistory = new TradesHistoryBO();
+            string connectionString = tradesHistory.GetConnectionString();
+
+            //Start Time
+            Int64 from = 0;
+            Int64 to = 0;
+            TimeZone tZone = TimeZone.CurrentTimeZone;
+            DateTime baseTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+            DateTime startTime = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+
+            //Connect to meta trader server
+            MT4ManLibraryNETv03.CMTManager mgr = new MT4ManLibraryNETv03.CMTManager();
+
+
+            while (true)
+            {
+                try
+                {
+<<<<<<< HEAD
+
+                    //Get Symbole Margin mode
+                    //SymbolBO sbo = new SymbolBO();
+
+                    // var lstSymbolMarginMode = sbo.GetSymolMarginMode();                   
+=======
+                   
+                    //Get Symbole Margin mode
+                    //SymbolBO sbo = new SymbolBO();
+                    
+                   // var lstSymbolMarginMode = sbo.GetSymolMarginMode();                   
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                    if (lstSymbMarginMode.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    TradesHistoryBO thbo = new TradesHistoryBO();
+                    long? closeTime = thbo.GetMaxCloseTime();
+                    if (closeTime == -1)
+                    {
+                        continue;
+                    }
+
+                    if (closeTime > 0)
+                    {
+                        TimeSpan fromSpan = baseTime - startTime + tZone.GetUtcOffset(baseTime);
+                        DateTime endTime = DateTime.Now;
+                        TimeSpan toSpan = baseTime - endTime + tZone.GetUtcOffset(baseTime);
+                        from = Convert.ToInt64(closeTime) + 1;
+                        to = Convert.ToInt64(Math.Abs(toSpan.TotalSeconds));
+
+                    }
+                    else
+                    {
+                        TimeSpan fromSpan = baseTime - startTime + tZone.GetUtcOffset(baseTime);
+                        DateTime endTime = DateTime.Now;
+                        TimeSpan toSpan = baseTime - endTime + tZone.GetUtcOffset(baseTime);
+                        from = Convert.ToInt64(Math.Abs(fromSpan.TotalSeconds));
+                        to = Convert.ToInt64(Math.Abs(toSpan.TotalSeconds));
+
+                    }
+
+                    DataTable dt = new DataTable("TradesHistory");
+                    #region "Create DataTable for TradesHistory"
+
+                    dt.Columns.Add("PK_TradeID", typeof(int));
+                    dt.Columns.Add("Activation", typeof(int));
+                    dt.Columns.Add("ClosePrice", typeof(float));
+                    dt.Columns.Add("CloseTime", typeof(Int64));
+                    dt.Columns.Add("Cmd", typeof(int));
+                    dt.Columns.Add("Comment", typeof(string));
+                    dt.Columns.Add("Commission", typeof(float));
+                    dt.Columns.Add("CommissionAgent", typeof(float));
+                    dt.Columns.Add("ConvRates", typeof(float));
+                    dt.Columns.Add("ConvReserv", typeof(int));
+                    dt.Columns.Add("Digits", typeof(int));
+                    dt.Columns.Add("Expiration", typeof(Int64));
+                    dt.Columns.Add("InternalID", typeof(int));
+                    dt.Columns.Add("Login", typeof(int));
+                    dt.Columns.Add("Magic", typeof(int));
+                    dt.Columns.Add("MarginRate", typeof(float));
+                    dt.Columns.Add("OpenPrice", typeof(float));
+                    dt.Columns.Add("OpenTime", typeof(Int64));
+                    dt.Columns.Add("OrderID", typeof(int));
+                    dt.Columns.Add("Profit", typeof(float));
+                    dt.Columns.Add("Sl", typeof(float));
+                    dt.Columns.Add("Spread", typeof(int));
+                    dt.Columns.Add("State", typeof(int));
+                    dt.Columns.Add("Storage", typeof(float));
+                    dt.Columns.Add("Symbol", typeof(string));
+                    dt.Columns.Add("Taxes", typeof(float));
+                    dt.Columns.Add("Timestamp", typeof(Int64));
+                    dt.Columns.Add("Tp", typeof(float));
+                    dt.Columns.Add("ValueDate", typeof(Int64));
+                    dt.Columns.Add("Volume", typeof(Int32));
+                    dt.Columns.Add("ActualVol", typeof(float));
+                    dt.Columns.Add("MarginMode", typeof(int));
+
+                    #endregion
+
+                    #region "Get Trade Logins"
+
+                    #region "Connect to MetaTrader"
+
+                    while (mgr.IsConnected() == 0)
+                    {
+                        int iRet = mgr.ManagerFactory();
+                        iRet = mgr.Connect(ServerName);
+
+                        iRet = mgr.Login(ManagerId, ManagerPassword);
+                        var errDesc = mgr.ErrorDescription(iRet);
+                        Trace.WriteLine("Login Message: {0}", errDesc);
+                        if (iRet == 0)
+                        {
+
+                        }
+                        else
+                        {
+                            CommonErrorLogger.LogInfo("MT4 Diconnected at : " + DateTime.Now, " - MT4 Connection");
+                            Thread.Sleep(30000);
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+
+                    int totalUser = 0;
+                    UserRecordNET[] userRecordInfo;
+                    userRecordInfo = mgr.UsersRequest(ref totalUser);
+<<<<<<< HEAD
+
+=======
+                    
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                    if (userRecordInfo != null && totalUser > 0)
+                    {
+                        //Get List of User LoginID
+                        var lstLoginId = userRecordInfo.Select(s => s.login).ToList();
+
+                        #region BulkCopy
+
+                        try
+                        {
+                            CommonErrorLogger.LogInfo(" --- Start Time : " + DateTime.Now + " --- ", " - SynchHistory");
+
+                            //Get History records for all logins and put in DataReader for SqlBulkCopy
+                            foreach (var lid in lstLoginId)
+                            {
+                                int value = 0;
+                                TradeRecordNET[] TradeInfo = null;
+                                TradeInfo = mgr.TradesUserHistory(lid, from, to, ref value);
+
+
+                                if (TradeInfo != null && value > 0)
+                                {
+                                    foreach (var item in TradeInfo)
+                                    {
+
+                                        #region "Actual Volume"
+                                        var actualVol = 0F;
+                                        Match match = Regex.Match(item.comment, @"Vol:\d+(\.\d+)?");
+                                        if (match.Success)
+                                        {
+                                            Match match1 = Regex.Match(match.Value, @"\d+(\.\d+)?");
+                                            if (match1.Success)
+                                            {
+
+                                                actualVol = match1.Value.FloatTryParse();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            actualVol = item.volume;
+                                        }
+                                        #endregion
+
+
+                                        //Get margin mode
+                                        var symbol = lstSymbMarginMode.Find(i => i.Symbol == item.symbol);
+                                        int? marginMode = symbol == null ? null : symbol.MarginMode;
+
+                                        dt.Rows.Add(0, item.activation, item.close_price,
+                                                    item.close_time, item.cmd, item.comment,
+                                                    item.commission, item.commission_agent,
+                                                    item.conv_rates[0], item.conv_reserv,
+                                                    item.digits, item.expiration,
+                                                    item.internal_id,
+                                                    item.login, item.magic, item.margin_rate,
+                                                    item.open_price, item.open_time, item.order,
+                                                    item.profit, item.sl, item.spread,
+                                                    item.state,
+                                                    item.storage, item.symbol, item.taxes,
+                                                    item.timestamp, item.tp, item.value_date,
+                                                    item.volume, actualVol, marginMode);
+                                    }
+
+                                }
+                            }
+<<<<<<< HEAD
+
+                            CommonErrorLogger.LogInfo("HISTORY INFO: Total rows From MT4 :" + dt.Rows.Count, " - SynchHistory");
+                            CommonErrorLogger.LogInfo("HISTORY INFO: Buck CopyStarts at :" + DateTime.Now, " - SynchHistory");
+
+                            //Calculate total page for pagesie=3000
+
+=======
+
+                            CommonErrorLogger.LogInfo("HISTORY INFO: Total rows From MT4 :" + dt.Rows.Count, " - SynchHistory");
+                            CommonErrorLogger.LogInfo("HISTORY INFO: Buck CopyStarts at :" + DateTime.Now, " - SynchHistory");
+
+                            //Calculate total page for pagesie=3000
+                           
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                            int pageSize = 3000;
+                            int totalpage = dt.Rows.Count / pageSize;
+                            int mod = dt.Rows.Count % pageSize;
+                            if (mod > 0)
+                            {
+                                totalpage = totalpage + 1;
+                            }
+
+                            if (dt.Rows.Count > 0)
+                            {
+                                #region "Create Table Page"
+                                //Create DataPages for Parallel processing
+                                List<DataTable> lstDataPage = new List<DataTable>();
+                                for (int pageNo = 1; pageNo <= totalpage; pageNo++)
+<<<<<<< HEAD
+                                {
+                                    DataTable dtPage =
+                                        dt.Rows.Cast<System.Data.DataRow>().Skip((pageNo - 1) * pageSize).Take(pageSize).
+                                            CopyToDataTable();
+                                    lstDataPage.Add(dtPage);
+
+                                }
+                                #endregion
+
+                                #region "Buck Copy"
+                                Parallel.ForEach(lstDataPage, dtp =>
+                                {
+=======
+                                {
+                                    DataTable dtPage =
+                                        dt.Rows.Cast<System.Data.DataRow>().Skip((pageNo - 1) * pageSize).Take(pageSize).
+                                            CopyToDataTable();
+                                    lstDataPage.Add(dtPage);
+
+                                }
+                                #endregion
+
+                                #region "Buck Copy"
+                                Parallel.ForEach(lstDataPage, dtp =>
+                                {
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+                                    try
+                                    {
+                                        using (SqlConnection connection = new SqlConnection(connectionString))
+                                        {
+                                            connection.Open();
+                                            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                                            {
+                                                bulkCopy.BatchSize = 1000;
+                                                bulkCopy.DestinationTableName =
+                                                    "dbo.TradesHistory";
+
+                                                try
+                                                {
+                                                    bulkCopy.WriteToServer(dtp);
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                                }
+                                            }
+
+                                            connection.Close();
+                                        }
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        CommonErrorLogger.CommonErrorLog(exception, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                    }
+                                });
+
+
+                                #endregion
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            CommonErrorLogger.CommonErrorLog(exception, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                        }
+
+                        CommonErrorLogger.LogInfo(" --- End Time: " + DateTime.Now + " --- ", " - SynchHistory");
+
+                        #endregion
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                }
+            }
+        }
+
+        #region "Symnch Symbols using Pumping"
+
+        /// <summary>
+        /// Puming for Symbol synch
+        /// </summary>
+        public void PumpingForSymbols()
+        {
+
+            ConnectToManager(manager2);
+
+            int flagsNoTick = ((int)PumpingFlags.CLIENT_FLAGS_HIDEMAIL) | ((int)PumpingFlags.CLIENT_FLAGS_HIDENEWS) | ((int)PumpingFlags.CLIENT_FLAGS_HIDEONLINE) | ((int)PumpingFlags.CLIENT_FLAGS_HIDETICKS);
+            PumpFuncExDelegate pumpExNoTicks = new PumpFuncExDelegate(CallBackMethodExWithoutTick);
+
+            var iPumpRet2 = manager2.PassMeAnExDelegate(pumpExNoTicks);
+            iPumpRet2 = manager2.PumpingSwitchEx(flagsNoTick, null);
+        }
+
+        /// <summary>
+        /// Pumping without tick
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="type"></param>
+        /// <param name="data"></param>
+        /// <param name="param"></param>
+        protected void CallBackMethodExWithoutTick(int code, int type, Object data, Object param)
+        {
+            switch (code)
+            {
+                case PUMP_START_PUMPING:
+                    break;
+
+                case PUMP_UPDATE_GROUPS:
+                    break;
+
+                case PUMP_UPDATE_USERS:
+                    break;
+
+                case PUMP_UPDATE_ONLINE:
+                    break;
+
+                case PUMP_UPDATE_SYMBOLS:
+                    #region "Synch Symbol"
+
+                    int totalSymbl = 0;
+                    ConSymbolNET[] symb;
+                    symb = manager2.SymbolsGetAll(ref totalSymbl);
+
+                    DataTable dtSymbol = new DataTable("Symbol");
+                    #region "Create DataTable for Symbol"
+
+                    dtSymbol.Columns.Add("PK_SymbolID", typeof(int));
+                    dtSymbol.Columns.Add("Currency", typeof(string));
+                    dtSymbol.Columns.Add("Description", typeof(string));
+                    dtSymbol.Columns.Add("MarginCurrency", typeof(string));
+                    dtSymbol.Columns.Add("MarginMode", typeof(int));
+                    dtSymbol.Columns.Add("ProfitMode", typeof(int));
+                    dtSymbol.Columns.Add("Symbol", typeof(string));
+                    dtSymbol.Columns.Add("Trade", typeof(int));
+                    dtSymbol.Columns.Add("Type", typeof(int));
+
+                    foreach (ConSymbolNET symboleNet in symb)
+                    {
+
+                        dtSymbol.Rows.Add(0, symboleNet.currency, symboleNet.description, symboleNet.margin_currency, symboleNet.margin_mode, symboleNet.profit_mode, symboleNet.symbol, symboleNet.trade, symboleNet.type);
+
+                    }
+
+
+                    //Clear Existing symbole and rfresh woth new symbole
+                    if (dtSymbol.Rows.Count > 0)
+                    {
+                        SymbolBO symbolBO = new SymbolBO();
+                        bool isClear = symbolBO.ClearExistingSymbol();
+                        if (isClear)
+                        {
+                            try
+                            {
+                                using (SqlConnection connection = new SqlConnection(CurrentDesk.Repository.Utility.StaticCache.ConnectionString))
+                                {
+                                    connection.Open();
+                                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                                    {
+                                        bulkCopy.BatchSize = 500;
+                                        bulkCopy.DestinationTableName =
+                                            "dbo.Symbol";
+
+                                        try
+                                        {
+                                            bulkCopy.WriteToServer(dtSymbol);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                                        }
+                                    }
+
+                                    connection.Close();
+                                }
+                            }
+                            catch (Exception exception)
+                            {
+                                CommonErrorLogger.CommonErrorLog(exception, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                            }
+                        }
+
+                    }
+
+
+
+                    #endregion
+
+                    #endregion
+                    manager2.Disconnect();
+                    break;
+
+                case PUMP_STOP_PUMPING: // 14                    
+                    break;
+                case PUMP_UPDATE_TRADES: // 9                   
+                    break;
+                case PUMP_UPDATE_BIDASK:
+                    break;
+                case PUMP_PING:
+                    break;
+                case TEST_LOCAL:
+                    break;
+                default:
+                    code = 911;
+                    break;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Contect to MT4
+        /// </summary>
+        /// <param name="mi"></param>
+        public bool ConnectToManager(MT4ManLibraryNETv03.CMTManager mi)
+        {
+            var iSconnect = false;
+
+            while (!iSconnect)
+            {
+                int iRet = mi.ManagerFactory();
+                iRet = mi.Connect(ServerName);
+
+                var errDesc = mi.ErrorDescription(iRet);
+                Trace.WriteLine("Connect Message: {0}", errDesc);
+
+                iRet = mi.Login(ManagerId, ManagerPassword);
+                errDesc = mi.ErrorDescription(iRet);
+                Trace.WriteLine("Login Message: {0}", errDesc);
+                if (iRet == 0)
+                {
+                    iSconnect = true;
+                }
+                else
+                {
+                    iSconnect = false;
+                    Thread.Sleep(30000);
+                }
+            }
+
+            return iSconnect;
+        }
+
+
+        /// <summary>
+        /// Restart pumping
+        /// </summary>
+        public void ReStartPumping()
+<<<<<<< HEAD
+        {
+            while (manager.IsConnected() == 0)
+            {
+
+
+                int iRet1 = 0;
+                int status = manager.ManagerFactory();
+                status = manager.Connect(ServerName);
+                status = manager.Login(ManagerId, ManagerPassword);
+                if (status == 0)
+                {
+                    CurrentDeskLog.Info("ReConnection Successfull.");
+
+                    //Restart pummping
+                    int flags = ((int)PumpingFlags.CLIENT_FLAGS_HIDEMAIL) | ((int)PumpingFlags.CLIENT_FLAGS_HIDENEWS) | ((int)PumpingFlags.CLIENT_FLAGS_HIDEONLINE);
+
+                    PumpFuncExDelegate pumpEx = new PumpFuncExDelegate(CallBackMethodEx);
+
+                    var iPumpRet = manager.PassMeAnExDelegate(pumpEx);
+                    iPumpRet = manager.PumpingSwitchEx(flags, null);
+                }
+                else
+                {
+                    var ErrorMessage = manager.ErrorDescription(status);
+                    CurrentDeskLog.Info("ReConnection UnSuccessfull :" + ErrorMessage);
+                }
+=======
+        {           
+            while (manager.IsConnected() == 0)
+            {
+                
+                    
+                    int iRet1 = 0;
+                    int status = manager.ManagerFactory();
+                    status = manager.Connect(ServerName);
+                    status = manager.Login(ManagerId, ManagerPassword);
+                    if (status == 0)
+                    {
+                        CurrentDeskLog.Info("ReConnection Successfull.");
+
+                        //Restart pummping
+                        int flags = ((int)PumpingFlags.CLIENT_FLAGS_HIDEMAIL) | ((int)PumpingFlags.CLIENT_FLAGS_HIDENEWS) | ((int)PumpingFlags.CLIENT_FLAGS_HIDEONLINE);
+
+                        PumpFuncExDelegate pumpEx = new PumpFuncExDelegate(CallBackMethodEx);
+
+                        var iPumpRet = manager.PassMeAnExDelegate(pumpEx);
+                        iPumpRet = manager.PumpingSwitchEx(flags, null);
+                    }
+                    else
+                    {
+                        var ErrorMessage = manager.ErrorDescription(status);
+                        CurrentDeskLog.Info("ReConnection UnSuccessfull :" + ErrorMessage);
+                    }                    
+>>>>>>> b1e65645a1e77ebb97f2e80f3a49cdca2d99fc22
+
+                System.Threading.Thread.Sleep(5000);
+            }
+        }
+
+        /// <summary>
+        /// Disconnect connection when connection closes
+        /// </summary>
+        public void DisconnectPumping()
+        {
+            int status = manager.Disconnect();
+            CurrentDeskLog.Info("Disconnected Connection ..... " + status);
+        }
+    }
+}

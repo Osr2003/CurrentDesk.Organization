@@ -1,0 +1,378 @@
+﻿@model CurrentDesk.BackOffice.Areas.AssetManager.Models.Profile.ManagedAccountProgramModel
+@{
+    ViewBag.Title = "ManagedAccountProgram";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile :</span> Managed Account Programs</h1>
+            </div>
+
+            <!-- Managed Account Programs Section -->
+            <article id="artPrograms">
+                <ul class="button-bar">
+                    <li><button onclick="resetNewProgramDialogValues()" class="btn btn-mini" data-toggle="modal" data-target="#modalNewProgram">New Program</button></li>
+                </ul>
+                <h2 class="inline-block">Managed Account Programs</h2>
+
+                <div class="content-section no-border-bottom">
+                    <table id="tblPrograms">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_INDIVIDUAL)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PersonalInformation", "Profile")"><span class="arrow"></span><strong>Personal/Contact</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li class="active"><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_JOINT)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                    <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li class="active"><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_CORPORATE)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                    <li><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li class="active"><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewProgram" class="modal hide fade large">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<small class="right required"><strong>*Required Fields</strong></small>
+		<h2 class="inline-block h2">New Program</h2>
+	</div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Program Name <span class="required">*</span></label>
+                <input id="txtProgramName" class="input-text width-150" type="text" />
+            </li>
+            <li class="columns four">
+                <label class="h3">Minimum Deposit <span class="required">*</span></label>
+                <input id="txtMinDeposit" class="input-text width-150" type="text" maxlength="12" />
+            </li>
+            <li class="columns four">
+                <label class="h3">Currency <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.CurrencyID, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "", new { @id = "drpAccountCurrency", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <a class="icn-sm help tip" href="#" title="Help content goes here. It can be really long sections of texted to explain whatever needs to be explained."></a>
+            <li class="columns eight">
+                <label class="h3">Minimum Stopout Level % </label>
+                <input id="sldrStopOutLevel" type="text" value="0" data-slider="true" data-slider-range="0,100" />
+            </li>
+            <li class="columns four"></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Performance Fee %</label>
+                <input id="sldrPerformanceFee" type="text" value="0" data-slider="true" data-slider-range="0,100" />
+            </li>
+            <li class="columns four">
+                <label class="h3">Period</label>
+                @Html.DropDownListFor(model => model.PerformanceFeePeriod, (IEnumerable<SelectListItem>)ViewData["Periods"], new { @id = "drpPerformancePeriod", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns eight">
+                <label class="h3">Management Fee %</label>
+                <input id="sldrManagementFee" type="text" value="0" data-slider="true" data-slider-range="0,10" />
+            </li>
+            <li class="columns four">
+                <label class="h3">Period</label>
+                @Html.DropDownListFor(model => model.ManagementFeePeriod, (IEnumerable<SelectListItem>)ViewData["Periods"], new { @id = "drpManagementPeriod", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3">Fee Group <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.FeeGroupID, (IEnumerable<SelectListItem>)ViewData["FeeGroup"], "", new { @id = "drpFeeGroup", })
+            </li>
+            <li class="columns four">
+                <label class="h3">Deposit Acceptance <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.DepositAcceptance, (IEnumerable<SelectListItem>)ViewData["DepositAcceptance"], "", new { @id = "drpDepositAcceptance", })
+            </li>
+            <li class="columns four">
+                <label class="h3">Platform <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.PlatformID, (IEnumerable<SelectListItem>)ViewData["Platform"], "", new { @id = "drpPlatform", })
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Cancel</button>
+		<button class="btn btn-primary" onclick="addNewProgram()">Add Program</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqgrid")
+    <script src="~/Scripts/simple-slider.min.js"></script>
+    <script src="~/Scripts/jquery.tipTip.minified.js"></script>
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+
+            $('select').addClass('width-150');
+            $('select').chosen();
+
+            $("[data-slider]").each(function () {
+                var input = $(this);
+                $('<input value="0" type="text">').addClass('output width-25 text-center margin-left').insertAfter($(this));
+            }).bind('slider:ready slider:changed', function (event, data) {
+                $(this).nextAll('.output:first').val(data.value.toFixed(0));
+            });
+
+            $('.output').keyup(function () {
+                var value = $(this).val();
+                $(this).prevAll('[data-slider]').simpleSlider('setValue', value);
+            });
+
+            //Set all slider values
+            $('#sldrStopOutLevel').simpleSlider('setValue', 0);
+            $('#sldrPerformanceFee').simpleSlider('setValue', 0);
+            $('#sldrManagementFee').simpleSlider('setValue', 0);
+
+            //Load jqgrid with managed programs of AM
+            $("#tblPrograms").jqGrid({
+                url: 'GetAllManagedAccountPrograms',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                sortname: 'account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                sortable: true,
+                loadonce: true,
+                colNames: ['PK_ProgramID', 'Program Name', 'Currency', 'Actions'],
+                colModel: [
+                    { name: 'PK_ProgramID', hidden: true },
+                    {
+                        name: 'ProgramName', title: false, formatter: function (cellValue, options, rowObject) {
+                            return "<a href='ProgramDetails?programID=" + rowObject["PK_ProgramID"] + "'>" + cellValue + "</a>";
+                        }
+                    },
+                    { name: 'Currency', width: 150, fixed: true, align: 'center', sorttype: 'currency', title: false },
+                    { name: 'Action', width: 80, fixed: true, align: 'center', title: false, sortable: false }
+                ]
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+        });//End of ready
+
+        //Function to add new Managed account program of AM
+        function addNewProgram() {
+            if (checkNewProgramValues()) {
+                $('#loading').show();
+
+                var values = {
+                    "ProgramName": $('#txtProgramName').val(),
+                    "MinimumDeposit": $('#txtMinDeposit').val(),
+                    "CurrencyID": $('#drpAccountCurrency').val(),
+                    "FeeGroupID": $('#drpFeeGroup').val(),
+                    "PlatformID": $('#drpPlatform').val(),
+                    "PerformanceFeePeriod": $('#drpPerformancePeriod').val(),
+                    "ManagementFeePeriod": $('#drpManagementPeriod').val(),
+                    "DepositAcceptance": $('#drpDepositAcceptance').val(),
+                    "MinimumStopOutLevel": Math.round($('#sldrStopOutLevel').val()),
+                    "PerformanceFee": Math.round($('#sldrPerformanceFee').val()),
+                    "ManagementFee": Math.round($('#sldrManagementFee').val())
+                }
+
+                //Post request to add new account program
+                $.post("@Url.Action("AddNewManagedAccountProgram", "Profile")", values, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $('#modalNewProgram').modal('hide');
+                        $('#artPrograms').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully created a new managed account program.</div>');
+                        $("#tblPrograms").setGridParam({ datatype: "json" }).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+        }
+
+        //Function to check valid Managed account program values
+        function checkNewProgramValues() {
+            var valid = true;
+            $('.requiredError').remove();
+            if ($('#txtProgramName').val() == '') {
+                $('#txtProgramName').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#txtMinDeposit').val() == '') {
+                $('#txtMinDeposit').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpAccountCurrency').val() == '') {
+                $('#drpAccountCurrency_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpFeeGroup').val() == '') {
+                $('#drpFeeGroup_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpDepositAcceptance').val() == '') {
+                $('#drpDepositAcceptance_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            if ($('#drpPlatform').val() == '') {
+                $('#drpPlatform_chzn').after('<span class="requiredError">*</span>');
+                valid = false;
+            }
+            return valid;
+        }
+
+        //Function to reset add new program dialogvalues
+        function resetNewProgramDialogValues() {
+            $('#txtProgramName').val('');
+            $('#txtMinDeposit').val('');
+            $('#sldrStopOutLevel').simpleSlider('setValue', 0);
+            $('#sldrPerformanceFee').simpleSlider('setValue', 0);
+            $('#sldrManagementFee').simpleSlider('setValue', 0);
+            $('#drpAccountCurrency').val('');
+            $('#drpFeeGroup').val('');
+            $('#drpPlatform').val('');
+            $('#drpDepositAcceptance').val('');
+            $('#drpPerformancePeriod').val('1');
+            $('#drpManagementPeriod').val('1');
+
+            $("#drpAccountCurrency, #drpFeeGroup, #drpPlatform, #drpDepositAcceptance, #drpPerformancePeriod, #drpManagementPeriod").trigger("liszt:updated");
+        }
+
+        //Function to disable a managed program of AM
+        function disableProgram(programID) {
+            $('#loading').show();
+
+            var value = {
+                "programID": programID
+            }
+
+            //Post request to disable a managed program of AM
+            $.post("@Url.Action("DisableManagedAccountProgram", "Profile")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+        //Function to enable a managed program of AM
+        function enableProgram(programID) {
+            $('#loading').show();
+
+            var value = {
+                "programID": programID
+            }
+
+            //Post request to enable a managed program of AM
+            $.post("@Url.Action("EnableManagedAccountProgram", "Profile")", value, function (data) {
+                if (data) {
+                    window.location.reload();
+                }
+                else {
+                    $('#loading').hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        }
+
+    </script>
+}

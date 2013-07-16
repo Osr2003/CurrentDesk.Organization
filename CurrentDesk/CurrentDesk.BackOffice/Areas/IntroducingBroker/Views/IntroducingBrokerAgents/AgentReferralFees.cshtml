@@ -1,0 +1,156 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBAgents.AgentReferralFeesModel
+@{
+    ViewBag.Title = "AgentReferralFees";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="agents"><span class="normal"><a href="@Url.Action("Index", "IntroducingBrokerAgents")">My Agents</a> :</span> Agent Referral Fees</h1>
+            </div>
+
+            <!-- Fund Account Section -->
+            <article id="artAgentFees" class="row">
+                <div class="columns seven">
+                    <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                    <dl class="form-box">
+                        <dt>
+                            <label>Set Performance Fee <span class="required">*</span></label></dt>
+                        <dd>
+                            <input id="sldrPerformanceFee" type="text" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Set Management Fee <span class="required">*</span></label></dt>
+                        <dd>
+                            <input id="sldrManagementFee" type="text" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Set Rebate Percentage <span class="required">*</span></label></dt>
+                        <dd>
+                            <input id="sldrRebatePercentage" type="text" data-slider="true" data-slider-range="0,100" /></dd>
+                    </dl>
+                    <div class="button-box">
+                        <button id="btnFeeSubmit" class="btn btn-primary">Submit</button></div>
+                </div>
+                <div class="columns five">
+                    <div class="information-box">
+                        <div class="info-group">
+                            <strong class="icn-sm pin">Helpful Tip</strong>
+                            <p>Here are a few tips you should know about Agent Referral Fee's.</p>
+                            <p>• Set the percent you want to share of your fees.</p>
+                            <p>• You have the ability to share rebates, performance and management fees.</p>
+                            <p>• Agent fees are not paid by the broker, it is the IB's responsibility to pay their Agents.</p>
+                            <p>• You can not pay your agents from your account at broker.</p>
+                        </div>
+                        <div class="info-group">
+                            <strong class="icn-sm info">Did You Know?</strong>
+                            <p>You can run monthly reports for your Agents letting them know how much volume their referrals generated and include a monthly statement on how much you are paying them.</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("AgentDetails", "IntroducingBrokerAgents", new { agentID = Model.AgentID})"><span class="arrow"></span><strong>@Model.AgentName.Replace('@', ' ')</strong>@String.Format("{0:000}", Model.AgentID)</a></li>
+                <li class="active"><a class="single referrals" href="@Url.Action("AgentReferralFees", "IntroducingBrokerAgents", new { agentID = Model.AgentID, agentName = Model.AgentName})"><span class="arrow"></span><strong>Agent Referral Fees</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @*Custom jQuery for the jQuery Simple Slider plugin: http://loopj.com/jquery-simple-slider/*@
+    <script src="~/Scripts/simple-slider.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAgents').addClass('active');
+
+            //Slider functionality
+            $('[data-slider]').each(function () {
+                var input = $(this);
+                $('<input value="0" type="text">').addClass('output width-25 text-center margin-left').insertAfter($(this));
+            }).bind("slider:ready slider:changed", function (event, data) {
+                $(this).nextAll('.output:first').val(data.value.toFixed(0));
+            });
+								
+            $('.output').keyup(function () {
+                var value = $(this).val();
+                $(this).prevAll('[data-slider]').simpleSlider('setValue', value);
+            });
+
+            //Set all slider values
+            $('#sldrPerformanceFee').simpleSlider('setValue', @Model.PerformanceFee);
+            $('#sldrManagementFee').simpleSlider('setValue', @Model.ManagementFee);
+            $('#sldrRebatePercentage').simpleSlider('setValue', @Model.RebatePercentage);
+
+        });
+
+        //Button click event to update agent referral fees
+        $('#btnFeeSubmit').click(function () {
+            $(this).attr("disabled", "disabled");
+            $("#loading").show();
+
+            var feeValues = {
+                "agentID": @Model.AgentID,
+                "performanceFee": Math.round($('#sldrPerformanceFee').val()),
+                "managementFee": Math.round($('#sldrManagementFee').val()),
+                "rebatePercentage": Math.round($('#sldrRebatePercentage').val())
+            }
+
+            //Post request to update agent referral fees
+            $.post("@Url.Action("UpdateAgentReferralFees", "IntroducingBrokerAgents")", feeValues, function (data) {
+                if(data){
+                    $("#loading").hide();
+
+                    $('#btnFeeSubmit').removeAttr("disabled");
+                    $('#artAgentFees').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully set agent referral fees.</div>');
+                }
+                else{
+                    $("#loading").hide();
+                    $('#btnFeeSubmit').removeAttr("disabled");
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        });
+
+    </script>
+}

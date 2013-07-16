@@ -1,0 +1,506 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- Page Title Bar -->
+    <div class="page-title">
+        <h1 class="inbox">Inbox</h1>
+    </div>
+
+    <!-- Padding div needed for single column layouts -->
+    <div class="padding-footer">
+
+        <!-- Inbox Section -->
+        <article class="no-margin">
+            <div class="right">
+                <button type="button" class="btn btn-small" data-toggle="modal" data-target="#modalNewMessage">New Message</button>
+            </div>
+
+            <ul class="nav nav-tabs" id="myTab">
+                <li class="active"><a href="#inbox" data-toggle="tab">Inbox</a></li>
+                <li><a href="#sent" data-toggle="tab">Sent</a></li>
+                <li><a href="#archive" data-toggle="tab">Archive</a></li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- Inbox Tab -->
+                <div class="tab-pane active" id="inbox">
+                    <div class="content-section clearfix">
+
+                        <!-- Message List Section -->
+                        <div class="msg-list">
+                            <table id="TableInbox">
+                                <tr>
+                                    <td />
+                                </tr>
+                            </table>
+                            <div id="pager-0"></div>
+                        </div>
+
+                        <!-- Message Content Section -->
+                        <div class="msg-content">
+                            <ul class="header-box">
+                                <li><a class="msg-delete" href="#">Delete</a></li>
+                                <li><a class="msg-archive" href="#">Archive</a></li>
+                                <li><a class="msg-reply" href="#" data-toggle="modal" data-target="#modalReplyMessage">Reply</a></li>
+                            </ul>
+                            <div class="msg-header">
+                                <h4>[message subject]</h4>
+                                <p>From: [from name]<br>
+                                    To: [to name]</p>
+                                <p class="date-time">Wednesday<br>
+                                    April 10, 2013 9:04 AM</p>
+                            </div>
+                            <div class="msg-body">
+                                <p>Hello Travis,</p>
+                                <p>I have a message for you.</p>
+                                <p>Thanks<br>
+                                    Micah</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row button-box">
+                        <div class="columns twelve">
+                            <input class="btn btn-small" type="button" value="Delete Selected" disabled=""><input class="btn btn-small margin-left" type="button" value="Archive Selected" disabled=""></div>
+                    </div>
+                </div>
+
+                <!-- Sent Tab -->
+                <div class="tab-pane" id="sent">
+                    <div class="content-section clearfix">
+
+                        <!-- Message List Section -->
+                        <div class="msg-list">
+                            <table id="TableSent">
+                                <tr>
+                                    <td />
+                                </tr>
+                            </table>
+                            <div id="pager-1"></div>
+                        </div>
+
+                        <!-- Message Content Section -->
+                        <div class="msg-content">
+                            <ul class="header-box">
+                                <li><a class="msg-delete" href="#">Delete</a></li>
+                                <li><a class="msg-archive" href="#">Archive</a></li>
+                                <li><a class="msg-reply" href="#" data-reveal-id="modalReplyMessage" data-animation="fadeAndPop" data-closeonbackgroundclick="false" data-dismissmodalclass="close-reveal">Reply</a></li>
+                            </ul>
+                            <div class="msg-header">
+                                <h4>[message subject]</h4>
+                                <p>From: [from name]<br>
+                                    To: [to name]</p>
+                                <p class="date-time">Wednesday<br>
+                                    April 10, 2013 9:04 AM</p>
+                            </div>
+                            <div class="msg-body">
+                                <p>Hello Travis,</p>
+                                <p>I have a message for you.</p>
+                                <p>Thanks<br>
+                                    Micah</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row button-box">
+                        <div class="columns twelve">
+                            <input class="btn btn-small" type="button" value="Delete Selected" disabled=""><input class="btn btn-small margin-left" type="button" value="Archive Selected" disabled=""></div>
+                    </div>
+                </div>
+
+                <!-- Archive Tab -->
+                <div class="tab-pane" id="archive">
+                    <div class="content-section clearfix">
+
+                        <!-- Message List Section -->
+                        <div class="msg-list">
+                            <table id="TableArchive">
+                                <tr>
+                                    <td />
+                                </tr>
+                            </table>
+                            <div id="pager-2"></div>
+                        </div>
+
+                        <!-- Message Content Section -->
+                        <div class="msg-content">
+                            <ul class="header-box">
+                                <li><a class="msg-delete" href="#">Delete</a></li>
+                                <li><a class="msg-archive" href="#">Archive</a></li>
+                                <li><a class="msg-reply" href="#" data-reveal-id="modalReplyMessage" data-animation="fadeAndPop" data-closeonbackgroundclick="false" data-dismissmodalclass="close-reveal">Reply</a></li>
+                            </ul>
+                            <div class="msg-header">
+                                <h4>[message subject]</h4>
+                                <p>From: [from name]<br>
+                                    To: [to name]</p>
+                                <p class="date-time">Wednesday<br>
+                                    April 10, 2013 9:04 AM</p>
+                            </div>
+                            <div class="msg-body">
+                                <p>Hello Travis,</p>
+                                <p>I have a message for you.</p>
+                                <p>Thanks<br>
+                                    Micah</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row button-box">
+                        <div class="columns twelve">
+                            <input class="btn btn-small" type="button" value="Delete Selected" disabled=""><input class="btn btn-small margin-left" type="button" value="Archive Selected" disabled=""></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </article>
+
+    </div>
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewMessage" class="modal hide fade large">
+
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<small class="right required"><strong>*Required Fields</strong></small>
+		<h2 class="inline-block h2">New Message</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<ul class="row">
+			<li class="columns seven">
+				<label class="h3">To <span class="required">*</span></label>
+				<select class="chzn-select width-300" data-placeholder="Type or select person's name" multiple>
+					<option></option>
+					<option>Micah Perini</option>
+					<option>Travis Dahm</option>
+					<option>Ron Singer</option>
+				</select>
+			</li>
+			<li class="columns five">
+				<label class="h3">From</label>
+				[first name] [last name]
+			</li>
+		</ul>
+		<ul class="row border">
+			<li class="columns twelve">
+				<label class="h3">Subject Line</label>
+				<input class="width-full" type="text">
+			</li>
+		</ul>
+		<ul class="row">
+			<li class="columns twelve">
+				<label class="h3">Message <span class="required">*</span></label>
+				<textarea class="width-full" style="height:180px;"></textarea>
+			</li>
+		</ul>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close</button><button class="btn btn-primary">Send Message</button>
+	</div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalReplyMessage" class="modal hide fade large">
+
+	<!-- Modal Header -->
+	<div class="modal-header">
+		<small class="right required"><strong>*Required Fields</strong></small>
+		<h2 class="inline-block h2">Message Reply</h2>
+	</div>
+	
+	<!-- Modal Body -->
+	<div class="content-section">
+		<ul class="row">
+			<li class="columns seven">
+				<label class="h3">To <span class="required">*</span></label>
+				<select class="chzn-select width-300" data-placeholder="Type or select person's name" multiple>
+					<option></option>
+					<option selected="">Micah Perini</option>
+					<option>Travis Dahm</option>
+					<option>Ron Singer</option>
+				</select>
+			</li>
+			<li class="columns five">
+				<label class="h3">From</label>
+				[first name] [last name]
+			</li>
+		</ul>
+		<ul class="row border">
+			<li class="columns twelve">
+				<label class="h3">Subject Line</label>
+				<input class="width-full" type="text">
+			</li>
+		</ul>
+		<ul class="row">
+			<li class="columns twelve">
+				<label class="h3">Message <span class="required">*</span></label>
+				<textarea class="width-full" style="height:180px;"></textarea>
+			</li>
+		</ul>
+	</div>
+	
+	<!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close</button><button class="btn btn-primary">Send Message</button>
+	</div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liInbox').addClass('active');
+            $('select').chosen();
+            $('#myTab a:first').tab('show');
+
+            $("#TableInbox").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                cellLayout: '20',
+                height: '525',
+                forceFit: true,
+                scrollOffset: '0',
+                multiselect: true,
+                multiboxonly: true,
+                multiselectWidth: '34',
+                pager: '#pager-0',
+                pagerpos: 'right',
+                rowNum: '15',
+                recordpos: 'left',
+                viewrecords: true,
+                sortname: 'received',
+                colNames: ['Message', 'From', 'Received'],
+                colModel: [
+                    { name: 'message', title: false },
+                    { name: 'from', width: '150', title: false },
+                    { name: 'received', width: '100', fixed: true, align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '<strong>[message subject]</strong>',
+                        'from': '<strong>[first name] [last name]</strong>',
+                        'received': '<strong>[date/time]</strong>'
+                    },
+                    {
+                        'message': '[message subject]',
+                        'from': '[first name] [last name]',
+                        'received': '[date/time]'
+                    }
+                ]
+            });
+
+            $('a[href="#sent"]').on('shown', function (e) {
+                e.target
+                $("#TableSent").jqGrid({
+                    datatype: "clientSide",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    cellLayout: '20',
+                    height: '525',
+                    forceFit: true,
+                    scrollOffset: '0',
+                    multiselect: true,
+                    multiboxonly: true,
+                    multiselectWidth: '34',
+                    pager: '#pager-1',
+                    pagerpos: 'right',
+                    rowNum: '15',
+                    recordpos: 'left',
+                    viewrecords: true,
+                    sortname: 'received',
+                    colNames: ['Message', 'From', 'Received'],
+                    colModel: [
+                        { name: 'message', title: false },
+                        { name: 'from', width: '150', title: false },
+                        { name: 'received', width: '100', fixed: true, align: 'right', title: false }
+                    ],
+                    data: [
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '[message subject]',
+                            'from': '[first name] [last name]',
+                            'received': '[date/time]'
+                        },
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '[message subject]',
+                            'from': '[first name] [last name]',
+                            'received': '[date/time]'
+                        }
+                    ]
+                });
+            });
+
+            $('a[href="#archive"]').on('shown', function (e) {
+                e.target
+                $("#TableArchive").jqGrid({
+                    datatype: "clientSide",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    cellLayout: '20',
+                    height: '525',
+                    forceFit: true,
+                    scrollOffset: '0',
+                    multiselect: true,
+                    multiboxonly: true,
+                    multiselectWidth: '34',
+                    pager: '#pager-2',
+                    pagerpos: 'right',
+                    rowNum: '15',
+                    recordpos: 'left',
+                    viewrecords: true,
+                    sortname: 'received',
+                    colNames: ['Message', 'From', 'Received'],
+                    colModel: [
+                        { name: 'message', title: false },
+                        { name: 'from', width: '150', title: false },
+                        { name: 'received', width: '100', fixed: true, align: 'right', title: false }
+                    ],
+                    data: [
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '[message subject]',
+                            'from': '[first name] [last name]',
+                            'received': '[date/time]'
+                        },
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '<strong>[message subject]</strong>',
+                            'from': '<strong>[first name] [last name]</strong>',
+                            'received': '<strong>[date/time]</strong>'
+                        },
+                        {
+                            'message': '[message subject]',
+                            'from': '[first name] [last name]',
+                            'received': '[date/time]'
+                        }
+                    ]
+                });
+            });
+
+        });//End of ready
+
+        
+
+    </script>
+}

@@ -1,0 +1,407 @@
+﻿@model CurrentDesk.BackOffice.Models.IndividualAccountReviewModel
+@using CurrentDesk.Common
+@{
+    ViewBag.Title = "Banking";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile :</span> Banking Information</h1>
+            </div>
+            <!-- Banking Information Section -->
+            <article id="bankingInfo">
+                <ul class="button-bar">
+                    <li><a id="aAddNewBank" class="btn btn-mini" href="#myModal" role="button" data-toggle="modal">Add Bank Account</a></li>
+                </ul>
+                <h2>Bank Information</h2>
+                @foreach (var item in Model.BankAccountModelList)
+                {
+                    <h2 class="inline-block">@item.BankName</h2>
+                    <a id="@item.BankAccountID" class="icon edit togglebank-link" href="#">Edit</a>
+                    <div style="margin-bottom: 10px;" class="content-section">
+                        <div class="toggle-show">
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>Bank Name</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankName" >@Html.DisplayFor(model => item.BankName)</label></li>
+                                <li class="columns eight">
+                                    <h3>Account Number</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblAccountNumber" >@Html.DisplayFor(model => item.AccountNumber)</label></li>
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <h3>Bic Number/SWIFT Code</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBicOrSwiftCode" >@Html.DisplayFor(model => item.BicOrSwiftCode)</label></li>
+                                <li class="columns eight">
+                                    <h3>Receiving Bank Information</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblReceivingBankInfoId" >@Html.DisplayFor(model => item.ReceivingBankInfoId)</label>
+                                    <label class="bold-font" id="@item.BankAccountID-lblReceivingBankInfo" >@Html.DisplayFor(model => item.ReceivingBankInfo)</label></li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>Bank Address</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankAddLine1" >@Html.DisplayFor(model => item.BankAddLine1)</label>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankAddLine2" >@Html.DisplayFor(model => item.BankAddLine2)</label>
+                                </li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <h3>City</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankCity" >@Html.DisplayFor(model => item.BankCity)</label></li>
+                                <li class="columns four">
+                                    <h3>Country</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankCountry" >@Html.DisplayFor(model => item.BankCountry)</label></li>
+                                <li class="columns four">
+                                    <h3>Postal Code</h3>
+                                    <label class="bold-font" id="@item.BankAccountID-lblBankPostalCode" >@Html.DisplayFor(model => item.BankPostalCode)</label></li>
+                            </ul>
+                        </div>
+                        <div class="toggle-hide">
+                            <ul class="row">
+                                <li class="columns four">
+                                    <label class="h3" for="BankName">Bank Name</label>
+                                    @Html.TextBoxFor(model => item.BankName, new { @id = item.BankAccountID + "txtBankName", @class = "input-text width-med" })
+                                    <li class="columns eight">
+                                        <label class="h3" for="AccountNum">Account Number</label>
+                                @Html.TextBoxFor(model => item.AccountNumber, new { @id = item.BankAccountID + "txtAccountNumber", @class = "input-text width-med" })
+                            </ul>
+                            <ul class="row border">
+                                <li class="columns four">
+                                    <label class="h3" for="Swift">Bic Number/SWIFT Code</label>
+                                    @Html.TextBoxFor(model => item.BicOrSwiftCode, new { @id = item.BankAccountID + "txtBicSwiftCode", @class = "input-text width-med" })
+                                </li>
+                                <li class="columns eight">
+                                    <label class="h3" for="Receiving">Receiving Bank Information</label>
+                                    @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @class = @item.BankAccountID + "chzn-select", style = "width: 150px;", @id = item.BankAccountID + "drpReceivingBankInfoId" })
+                                    @Html.TextBoxFor(model => item.ReceivingBankInfo, new { @id = item.BankAccountID + "txtReceivingBankInfo", @class = "input-text width-med margin-left" })
+                                </li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns twelve">
+                                    <label class="h3" for="Address">Bank Address</label>
+                                    @Html.TextBoxFor(model => item.BankAddLine1, new { @id = item.BankAccountID + "txtBankAddressLine1", @class = "input-text width-med" })
+                                </li>
+                                <li class="columns twelve">
+                                    @Html.TextBoxFor(model => item.BankAddLine2, new { @id = item.BankAccountID + "txtBankAddressLine2", @class = "input-text width-med" })</li>
+                            </ul>
+                            <ul class="row">
+                                <li class="columns four">
+                                    <label class="h3" for="City">City</label>
+                                    @Html.TextBoxFor(model => item.BankCity, new { @id = item.BankAccountID + "txtBankCity", @class = "input-text width-med" })
+                                </li>
+                                <li class="columns five">
+                                    <label class="h3" for="Country">Country</label>
+                                    @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @class = @item.BankAccountID + "bankSelect", style = "width: 150px;", @id = item.BankAccountID + "drpBankCountry" })
+                                </li>
+                                <li class="columns three">
+                                    <label class="h3" for="Zip">Postal Code</label>
+                                    @Html.TextBoxFor(model => item.BankPostalCode, new { @id = item.BankAccountID + "txtBankPostalCode", @class = "input-text width-small" })
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="button-box toggle-hide text-right">
+                        <button class="btn cancelBankClick">Cancel</button>
+                        <button id=@item.BankAccountID class="btn btn-primary button-Bank">Save Changes</button>
+                    </div>
+                }
+            </article>
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_INDIVIDUAL)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PersonalInformation", "Profile")"><span class="arrow"></span><strong>Personal/Contact</strong>Information</a></li>
+                    <li class="active"><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_JOINT)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                    <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                    <li class="active"><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_CORPORATE)
+                {
+                    <!-- Add the .active class to the <li> that needs active styling. -->
+                    <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                    <li><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                    <li class="active"><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                    <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                    <li class="last"></li>
+                }
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="myModal" class="modal hide fade xlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">New Bank Account Information</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-BankName">
+                    Bank Name <span class="required">*</span>
+                </label>
+                <input id="Modal-BankName" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-AccountNum">
+                    Account Number <span class="required">*</span>
+                </label>
+                <input id="Modal-AccountNum" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row border">
+            <li class="columns four">
+                <label class="h3" for="Modal-Swift">
+                    Bic Number/SWIFT Code <span class="required">*</span>
+                </label>
+                <input id="Modal-Swift" class="width-med" type="text" /></li>
+            <li class="columns eight">
+                <label class="h3" for="Modal-Receiving">Receiving Bank Information <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.ReceivingBankInfoId, (IEnumerable<SelectListItem>)ViewData["ReceivingBankInfo"], new { @id = "drpNewRecievingBankInfo", style = "width: 150px;" })
+                <input id="Modal-ReceivingBankInfo" class="width-med margin-left" type="text" />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3" for="Modal-Address">Bank Address <span class="required">*</span></label>
+                <input id="Modal-Address" class="width-med" type="text" /></li>
+            <li class="columns twelve">
+                <input id="Address2" class="width-med" type="text" /></li>
+        </ul>
+        <ul class="row">
+            <li class="columns four">
+                <label class="h3" for="Modal-City">
+                    City <span class="required">*</span>
+                </label>
+                <input id="Modal-City" class="width-med" type="text" /></li>
+            <li class="columns five">
+                <label class="h3" for="Modal-Country">Country <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.BankCountry, (IEnumerable<SelectListItem>)ViewData["Country"], new { @id = "drpNewBankCountry", @class = "width-med" })
+            </li>
+            <li class="columns three">
+                <label class="h3" for="Modal-Zip">Postal Code <span class="required">*</span></label><input id="Modal-Zip" class="width-100" type="text" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnAddNewBankAccount" class="btn btn-primary">Add Bank Account</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+
+            $("#drpNewRecievingBankInfo").chosen();
+            $("#drpNewBankCountry").chosen();
+
+            //Adding New Bank Account
+            $("#btnAddNewBankAccount").click(function () {
+                //If valid entries
+                if (checkValidNewBankInfoValues()) {
+                    $("#loading").show();
+
+                    var values = {
+                        "BankName": $('#Modal-BankName').val(),
+                        "AccountNumber": $('#Modal-AccountNum').val(),
+                        "BicOrSwiftCode": $('#Modal-Swift').val(),
+                        "BankAddLine1": $('#Modal-Address').val(),
+                        "BankAddLine2": $('#Address2').val(),
+                        "ReceivingBankInfoId": $('#drpNewRecievingBankInfo').val(),
+                        "ReceivingBankInfo": $('#Modal-ReceivingBankInfo').val(),
+                        "BankCity": $('#Modal-City').val(),
+                        "BankCountry": $('#drpNewBankCountry').val(),
+                        "BankPostalCode": $('#Modal-Zip').val()
+                    }
+                    $.post("@Url.Action("AddNewBankAccount", "Profile")", values, function (data) {
+                        if (data == true) {
+                            $("#loading").hide();
+
+                            $('#myModal').modal('hide');
+                            $('#bankingInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added a new bank.</div>');
+                            window.location.reload();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+                    });
+                }
+            });
+
+            //Functions Related To Bank Information
+            //-----------------------------------------------------
+
+            //jQuery custom script when edit button in the icon bar is clicked
+            $('.togglebank-link').click(function () {
+                var bankID = $(this).attr("id");
+                resetBankInfo(bankID);
+
+                $(this).next('.content-section').find('.toggle-show').toggle();
+                $(this).next('.content-section').find('.toggle-hide').toggle();
+                $(this).nextAll('.button-box').eq(0).show();
+                $(this).hide();
+
+                //Set scroll position and focus
+                $(window).scrollTop((($(window).outerHeight(true) - 250) / 2) + $(window).scrollTop());
+                $('#' + bankID + 'txtBankName').focus();
+                return false;
+            });
+
+            //jQuery custom script when cancel button is clicked
+            $('.cancelBankClick').click(function () {
+
+                $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+                $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+                $(this).parent().prev('.content-section').prev('.togglebank-link').show();
+                $(this).parent().hide();
+
+                return false;
+            });
+
+            //Updating Bank Information
+            $('.button-Bank').click(function () {
+                var btn = $(this);
+                var bankID = $(this).attr("id");
+                var bankName = $('#' + bankID + 'txtBankName').val();
+                var accountNumber = $('#' + bankID + 'txtAccountNumber').val();
+                var bicOrSwiftCode = $('#' + bankID + 'txtBicSwiftCode').val();
+                var bankAddLine1 = $('#' + bankID + 'txtBankAddressLine1').val();
+                var bankAddLine2 = $('#' + bankID + 'txtBankAddressLine2').val();
+                var receivingBankInfoId = $('#' + bankID + 'drpReceivingBankInfoId').val();
+                var receivingBankInfo = $('#' + bankID + 'txtReceivingBankInfo').val();
+                var bankCity = $('#' + bankID + 'txtBankCity').val();
+                var bankCountry = $('#' + bankID + 'drpBankCountry').val();
+                var bankPostalCode = $('#' + bankID + 'txtBankPostalCode').val();
+
+                if (checkValidEditBankInfoValues(bankID)) {
+                    $("#loading").show();
+
+                    var values = {
+                        "BankAccountID": bankID,
+                        "BankName": bankName,
+                        "AccountNumber": accountNumber,
+                        "BicOrSwiftCode": bicOrSwiftCode,
+                        "BankAddLine1": bankAddLine1,
+                        "BankAddLine2": bankAddLine2,
+                        "ReceivingBankInfoId": receivingBankInfoId,
+                        "ReceivingBankInfo": receivingBankInfo,
+                        "BankCity": bankCity,
+                        "BankCountry": bankCountry,
+                        "BankPostalCode": bankPostalCode,
+                    }
+
+                    $.post("@Url.Action("UpdateBankInformation", "Profile")", values, function (data) {
+
+                        if (data == true) {
+                            $("#loading").hide();
+
+                            $('#bankingInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your banking information.</div>');
+
+                            $('#' + bankID + '-lblBankName').text(bankName);
+                            $('#' + bankID + '-lblAccountNumber').text(accountNumber);
+                            $('#' + bankID + '-lblBicOrSwiftCode').text(bicOrSwiftCode);
+                            $('#' + bankID + '-lblBankAddLine1').text(bankAddLine1);
+                            $('#' + bankID + '-lblBankAddLine2').text(bankAddLine2);
+                            $('#' + bankID + '-lblReceivingBankInfoId').text($('#' + bankID + 'drpReceivingBankInfoId :selected').text());
+                            $('#' + bankID + '-lblReceivingBankInfo').text(receivingBankInfo);
+                            $('#' + bankID + '-lblBankCity').text(bankCity);
+                            $('#' + bankID + '-lblBankCountry').text($('#' + bankID + 'drpBankCountry :selected').text());
+                            $('#' + bankID + '-lblBankPostalCode').text(bankPostalCode);
+
+                            btn.parent().prev('.content-section').find('.toggle-show').toggle();
+                            btn.parent().prev('.content-section').find('.toggle-hide').toggle();
+                            btn.parent().parent().find('.togglebank-link').show();
+                            btn.parent().hide();
+                        }
+                        else {
+                            $("#loading").hide();
+                            $('#modalConfirmError').modal('show');
+                        }
+
+                        return false;
+                    });
+                }
+            });
+        });//End of ready
+
+        //Empty/reset add new bank info textboxes
+        $('#aAddNewBank').click(function () {
+            $('#Modal-BankName').val('');
+            $('#Modal-AccountNum').val('');
+            $('#Modal-Swift').val('');
+            $('#Modal-Address').val('');
+            $('#Address2').val('');
+            //$('#drpNewRecievingBankInfo').val();
+            $('#Modal-ReceivingBankInfo').val('');
+            $('#Modal-City').val('');
+            //$('#drpNewBankCountry').val('');
+            $('#Modal-Zip').val('');
+        });
+
+    </script>
+}

@@ -1,0 +1,214 @@
+﻿@model CurrentDesk.BackOffice.Models.DemoAccountModel
+@{
+    ViewBag.Title = "DemoAccount";
+}
+
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+
+  <!-- Main Content Section -->
+<div class="main-content">
+	<div class="wrapper">
+		
+		<!-- Begin Demo Account Signup Form -->
+		<h1>DEMO Account Signup</h1>
+		<p class="sub-header">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<div class="content-section">
+			<h2><span class="right required">*Required Fields</span>Demo Account Information</h2>
+			
+			<form name="demo-account" action="">
+				<div class="form-box">
+					<dl class="form-list row">
+						<dt class="columns six"><label for="fname">First Name: <span class="required">*</span></label></dt>
+						<dt class="columns six"><label for="lname">Last Name: <span class="required">*</span></label></dt>
+						<dd class="columns six"> @Html.TextBoxFor(model => model.FirstName, new { @class = "input-text width-long" })
+                                                 @Html.ValidationMessageFor(model => model.FirstName, "*")</dd>
+						<dd class="columns six"> @Html.TextBoxFor(model => model.LastName, new { @class = "input-text width-long" })
+                                                 @Html.ValidationMessageFor(model => model.LastName, "*")</dd>
+					</dl>
+					<dl class="form-list row">							
+						<dt class="columns six"><label for="email">Email Address: <span class="required">*</span></label></dt>
+						<dt class="columns six"><label for="phone">Phone Number: <span class="required">*</span></label></dt>
+						<dd class="columns six">@Html.TextBoxFor(model => model.EmailAddress, new { @class = "input-text width-long" })
+                                                @Html.ValidationMessageFor(model => model.EmailAddress)</dd>
+						<dd class="columns six">@Html.TextBoxFor(model => model.PhoneNumber, new { @class = "input-text width-long" })
+                                                @Html.ValidationMessageFor(model => model.PhoneNumber, "*")</dd>
+					</dl>
+					<dl class="form-list row">	
+						<dt class="columns six"><label for="country">Country of Residence: <span class="required">*</span></label></dt>
+						<dt class="columns six"><label for="referrer">Introducing Broker or Referring Agent:</label></dt>
+						<dd class="columns six select-long">   
+							 @Html.DropDownListFor(model => model.CountryCode, (IEnumerable<SelectListItem>)ViewData["Country"], "Select Country..", new { @id = "country" })
+                             @Html.ValidationMessageFor(model => model.CountryCode, "*")  
+						</dd>
+						<dd class="columns six">@Html.TextBoxFor(model => model.IntroducingBrokerOrAgent, new { @class = "input-text width-long" })</dd>
+					</dl>
+					<dl class="form-list row">	
+						<dt class="columns six"><label for="atype">Account Type: <span class="required">*</span></label></dt>
+						<dt class="columns six"><label for="currency">Account Currency: <span class="required">*</span></label></dt>
+						<dd class="columns six select-long">
+							 @Html.DropDownListFor(model => model.AccountType, (IEnumerable<SelectListItem>)ViewData["AccountType"], "Select Account..", new { @id = "account" })
+                             @Html.ValidationMessageFor(model => model.AccountType, "*")
+						</dd>
+						<dd class="columns six select-long">
+							 @Html.DropDownListFor(model => model.AccountCurrency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "Select Currency..", new { @id = "currency" })
+                             @Html.ValidationMessageFor(model => model.AccountCurrency,"*")
+						</dd>
+					</dl>
+					<dl class="form-list row">	
+						<dt class="columns six"><label for="platform">Platform:</label></dt>
+						<dt class="columns six"><label for="experience">Years Experience: <span class="required">*</span></label></dt>
+						<dd class="columns six select-long">
+							@Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"], "Select Platform..", new { @id = "platform" })
+                            @Html.ValidationMessageFor(model => model.TradingPlatform, "*")
+						</dd>
+						<dd class="columns six select-long">
+							@Html.DropDownListFor(model => model.TradingExperience, (IEnumerable<SelectListItem>)ViewData["TradingExp"], "Select Experience..", new { @id = "tradingExperience" })
+                            @Html.ValidationMessageFor(model => model.TradingExperience, "*")
+						</dd>	
+					</dl>
+					<dl class="form-list row">	
+						<dt class="columns six"><label for="initial">Intended Initial Investment:</label></dt>
+						<dt class="columns six"><label for="average">Average Ticket Size:</label></dt>
+						<dd class="columns six select-long">
+							@Html.DropDownListFor(model => model.InitialInvestment, (IEnumerable<SelectListItem>)ViewData["Initialinvestment"], "Select Investment..", new { @id = "investment" })
+                            @Html.ValidationMessageFor(model => model.InitialInvestment, "*")
+						</dd>
+						<dd class="columns six select-long">
+							@Html.DropDownListFor(model => model.TicketSize, (IEnumerable<SelectListItem>)ViewData["TicketSize"], "Select Ticket Size..", new { @id = "ticketSize" })
+                            @Html.ValidationMessageFor(model => model.TicketSize, "*")
+						</dd>
+					</dl>
+                    <dl class="form-list row">	
+						<dt class="columns six"><label for="initial">Language Preference:</label></dt>
+						<dt class="columns six">@Html.CheckBoxFor(model => model.IsEnglishSpeaking, false) <label for="initial">Is English Speaking:</label> 
+                                                @Html.ValidationMessageFor(model => model.IsEnglishSpeaking, "*")
+                             </dt>
+						<dd class="columns six select-long">
+							@Html.DropDownListFor(model => model.LanguageCode, (IEnumerable<SelectListItem>)ViewData["Language"], "Select Language..", new { @id = "language" })
+                            @Html.ValidationMessageFor(model => model.LanguageCode, "*")
+						</dd>
+						<dd class="columns six select-long">
+                              
+							  
+						</dd>
+					</dl>
+                   
+				</div>
+				<div class="button-box">
+					<input type="submit" class="button submit right" value="submit" />
+				</div>
+			</form>
+			
+		</div>
+		<!-- End Demo Account Signup Form -->
+	
+	</div>
+</div>
+<!-- End Main Content Section -->
+   @* <fieldset>
+        <legend>DemoAccountModel</legend>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.FirstName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.FirstName)
+            @Html.ValidationMessageFor(model => model.FirstName)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.LastName)
+            @Html.ValidationMessageFor(model => model.LastName)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.EmailAddress)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.EmailAddress)
+            @Html.ValidationMessageFor(model => model.EmailAddress)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.PhoneNumber)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.PhoneNumber)
+            @Html.ValidationMessageFor(model => model.PhoneNumber)
+        </div>
+        <div class="editor-label">
+            Country
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.CountryCode, (IEnumerable<SelectListItem>)ViewData["Country"])
+            @Html.ValidationMessageFor(model => model.CountryCode)
+        </div>
+        <div class="editor-label">
+            AccountCurrency
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.AccountCurrency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"])
+            @Html.ValidationMessageFor(model => model.AccountCurrency)
+        </div>
+        <div class="editor-label">
+            InitialInvestment :
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.InitialInvestment, (IEnumerable<SelectListItem>)ViewData["Initialinvestment"])
+            @Html.ValidationMessageFor(model => model.InitialInvestment)
+        </div>
+        <div class="editor-label">
+            TicketSize :
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.TicketSize, (IEnumerable<SelectListItem>)ViewData["TicketSize"])
+            @Html.ValidationMessageFor(model => model.TicketSize)
+        </div>
+         <div class="editor-label">
+            IradingPlatform :
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"])
+            @Html.ValidationMessageFor(model => model.TradingPlatform)
+        </div>
+        <div class="editor-label">
+            AccountType :
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.AccountType, (IEnumerable<SelectListItem>)ViewData["AccountType"])
+            @Html.ValidationMessageFor(model => model.AccountType)
+        </div>
+         <div class="editor-label">
+            Languages :
+        </div>
+        <div>
+            @Html.DropDownListFor(model => model.LanguageCode, (IEnumerable<SelectListItem>)ViewData["Language"])
+            @Html.ValidationMessageFor(model => model.LanguageCode)
+        </div>
+
+        <div class="editor-label">
+            IsEnglishSpeaking :
+        </div>
+        <div>
+            @Html.CheckBoxFor(model => model.IsEnglishSpeaking, false)
+            @Html.ValidationMessageFor(model => model.IsEnglishSpeaking)
+        </div>
+        <p>
+            <input type="submit" value="Create" />
+        </p>
+    </fieldset>*@
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")  
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("select").uniform();
+            //            $("select, input:checkbox, input:radio").uniform();
+
+        });
+    </script>
+}

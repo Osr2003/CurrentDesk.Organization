@@ -1,0 +1,296 @@
+﻿@model CurrentDesk.BackOffice.Models.CorporateAccountReviewModel
+@{
+    ViewBag.Title = "CompanyInformation";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal">My Profile :</span> Company Information</h1>
+            </div>
+            <div id="divCompanyInfo">
+                <!-- Company Information Section -->
+                <article id="artCmpyInfo">
+                    <h2 class="inline-block">Company Information</h2>
+                    <a class="icon edit toggleCmpyInfo-link" href="#">Edit</a>
+                    <div class="content-section">
+                        <div class="row toggle-show">
+                            <!-- This <div> with the classes "columns two border-right" is here to display the right vertical border correctly. This is only here for styling purposes. No content should be added inside. -->
+                            <div class="columns two border-right"></div>
+                            <div class="columns two">
+                                <div class="avatar">
+                                    <img src="../@CurrentDesk.BackOffice.Security.SessionManagement.ImageURL" width="150px" height="130px" onerror="imgError(this);"  alt="" />
+                                </div>
+                            </div>
+                            <div class="columns ten">
+                                <ul class="row border">
+                                    <li class="columns eight">
+                                        <h3>Company Name</h3>
+                                        @Html.DisplayFor(model => model.CompanyName)</li>
+                                    <li class="columns four">
+                                        <h3>Company Type</h3>
+                                        @Html.DisplayFor(model => model.CompanyType)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns twelve">
+                                        <h3>Company Address</h3>
+                                        @Html.DisplayFor(model => model.CompanyAddLine1)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <h3>City</h3>
+                                        @Html.DisplayFor(model => model.CompanyCity)</li>
+                                    <li class="columns four">
+                                        <h3>Country</h3>
+                                        @Html.DisplayFor(model => model.CompanyCountry)</li>
+                                    <li class="columns four">
+                                        <h3>Postal Code</h3>
+                                        @Html.DisplayFor(model => model.CompanyPostalCode)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns eight">
+                                        <h3>Account Number:</h3>
+                                        @Html.DisplayFor(model => model.ClientAccountNumber)</li>
+                                    <li class="columns four">
+                                        <h3>Phone ID</h3>
+                                        <span id="spnPhoneID">@Html.DisplayFor(model => model.PhoneID)</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row toggle-hide">
+                            <!-- This <div> with the classes "columns two border-right" is here to display the right vertical border correctly. This is only here for styling purposes. No content should be added inside. -->
+                            <div class="columns two border-right"></div>
+                            <div class="columns two text-center">
+                                <div class="avatar">
+                                    <img id="imgEditSrc" src="../@CurrentDesk.BackOffice.Security.SessionManagement.ImageURL" width="150px" height="130px"  onerror="imgError(this);" alt="" />
+                                </div>
+                                <a class="btn btn-mini" href="#myImageModal" role="button" data-toggle="modal">Change Image</a>
+                            </div>
+                            <div class="columns ten">
+                                <ul class="row border">
+                                    <li class="columns eight">
+                                        <h3>Company Name</h3>
+                                        @Html.DisplayFor(model => model.CompanyName)</li>
+                                    <li class="columns four">
+                                        <h3>Company Type</h3>
+                                        @Html.DisplayFor(model => model.CompanyType)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns twelve">
+                                        <h3>Company Address</h3>
+                                        @Html.DisplayFor(model => model.CompanyAddLine1)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns four">
+                                        <h3>City</h3>
+                                        @Html.DisplayFor(model => model.CompanyCity)</li>
+                                    <li class="columns four">
+                                        <h3>Country</h3>
+                                        @Html.DisplayFor(model => model.CompanyCountry)</li>
+                                    <li class="columns four">
+                                        <h3>Postal Code</h3>
+                                        @Html.DisplayFor(model => model.CompanyPostalCode)</li>
+                                </ul>
+                                <ul class="row">
+                                    <li class="columns eight">
+                                        <h3>Account Number:</h3>
+                                        @Html.DisplayFor(model => model.ClientAccountNumber)</li>
+                                    <li class="columns four">
+                                        <label class="h3" for="PhoneID">Phone ID</label><input id="txtPhoneID" class="width-med" type="text" /></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-box toggle-hide text-right">
+                        <button class="btn cancelCmpyInfoClick">Cancel</button>
+                        <button id="btnCompanyInfoSave" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </article>
+            </div>
+        </div>
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+    </div>
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
+                <li><a class="officer" href="@Url.Action("AuthOfficerInformation", "Profile")"><span class="arrow"></span><strong>Authorized Officer</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="managers" href="#"><span class="arrow"></span><strong>Asset Manager</strong>Relationships</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+</div>
+
+<!-- Begin Modal Upload Content -->
+<div id="myImageModal" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add Image</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns">
+                <input id="fileUploader" type="file" name="file" accept="image/*" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button id="btnUploadClose" class="btn" data-dismiss="modal">Cancel</button>
+        <button id="btnUpload" class="btn btn-primary">Upload</button>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/upload")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+
+        });//End of ready
+
+        //Upload Image
+        $('#btnUpload').click(function () {
+            if (validateUploadedFile()) {
+                var url = 'http://' + window.location.host + '/IntroducingBroker/Profile/AddImage';
+                $('#fileUploader').upload(url, function (data) {
+                    if (data) {
+                        $('#myImageModal').modal('hide');
+                        $('#artCmpyInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully uploaded a profile image.</div>');
+                        window.location.reload();
+                    }
+                    else {
+                        $('#modalConfirmError').modal('show');
+                    }
+                }, 'json');
+            }
+        });
+
+        //Function to validate uploaded image
+        function validateUploadedFile() {
+            $('#uploadErrorID').remove();
+            if ($('#fileUploader').val().length == 0) {
+                $('#fileUploader').after('<span id="uploadErrorID" class="requiredError">*</span>');
+                return false;
+            }
+            else {
+                var fileName = $('#fileUploader').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if (fileName.indexOf(".") == -1 || fileExt != "jpg" && fileExt != "tif" && fileExt != "png" && fileExt != "gif") {
+                    $('#myImageModal').modal('hide');
+                    $('#artCmpyInfo').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Image file type is not accepted; please upload jpg, png, tif or gif.</div>');
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+
+        //jQuery custom script when Cmpy info edit button in the icon bar is clicked
+        $('.toggleCmpyInfo-link').click(function () {
+            //Reset all edit textboxes to present values
+            resetEditTextBoxes();
+
+            $(this).next('.content-section').find('.toggle-show').toggle();
+            $(this).next('.content-section').find('.toggle-hide').toggle();
+            $(this).hide();
+            $(this).nextAll('.button-box').eq(0).show();
+
+            //Set focus
+            $('#txtPhoneID').focus();
+            return false;
+        });
+
+        //jQuery custom script when Cmpy info cancel button is clicked
+        $('.cancelCmpyInfoClick').click(function () {
+            $(this).parent().prev('.content-section').find('.toggle-show').toggle();
+            $(this).parent().prev('.content-section').find('.toggle-hide').toggle();
+            $(this).parent().prev('.content-section').prev('.toggleCmpyInfo-link').show();
+            $(this).parent().hide();
+            return false;
+        });
+
+        //Function to reset all edit textboxes to present values
+        function resetEditTextBoxes() {
+            $('#txtPhoneID').val($('#spnPhoneID').text());
+        }
+
+        //Function to update Company Information
+        $('#btnCompanyInfoSave').click(function () {
+            var clickedButton = $(this);
+
+            if ($('#txtPhoneID').val() != '' && $('#txtPhoneID').val().length <= 30) {
+                $("#loading").show();
+
+                var cmpyInformationEditValues = {
+                    "phoneID": $('#txtPhoneID').val()
+                }
+
+                //Post request to update Company info
+                $.post("@Url.Action("UpdateCompanyInformation", "Profile")", cmpyInformationEditValues, function (data) {
+                    if (data == true) {
+                        $("#loading").hide();
+
+                        $('#artCmpyInfo').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully edited your profile.</div>');
+
+                        $('#spnPhoneID').text($('#txtPhoneID').val());
+
+                        clickedButton.parent().prev('.content-section').find('.toggle-show').toggle();
+                        clickedButton.parent().prev('.content-section').find('.toggle-hide').toggle();
+                        clickedButton.parent().parent().parent().find('.toggleCmpyInfo-link').show();
+                        clickedButton.parent().hide();
+                    }
+                    else {
+                        $("#loading").hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+            else {
+                $('.requiredError').remove();
+                $('#txtPhoneID').after('<span class="requiredError">*</span>');
+            }
+        });
+
+    </script>
+}

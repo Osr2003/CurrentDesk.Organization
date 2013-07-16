@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "AssetManagerAccounts";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="clients.html">Clients</a> : <a href="client-details-ib.html">[client name]</a> :</span> AM Accounts</h1>
+            </div>
+
+            <!-- USD Landing Account Section -->
+            <article class="overflow">
+                <!-- Each landing account section has <div> with the class .landing-header and the appropriate currency class added. -->
+                <div class="landing-header usd clearfix">
+                    <div class="left">
+                        <h2>100-000-0000000</h2>
+                        <h3>USD Landing Account</h3>
+                    </div>
+                    <div class="right">
+                        <h3>Balance:<span class="balance"><small>$</small>10,950,000.00</span></h3>
+                    </div>
+                </div>
+                <table id="TableUSD">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("AssetManagerDetails", "Clients")"><span class="arrow"></span><strong>[client name]</strong>00000000</a></li>
+                <li class="active"><a class="single accounts" href="@Url.Action("AssetManagerAccounts", "Clients")"><span class="arrow"></span><strong>AM Accounts</strong></a></li>
+                <li><a class="single clients" href="@Url.Action("AssetManagerClients", "Clients")"><span class="arrow"></span><strong>AM Clients</strong></a></li>
+                <li><a class="single agents" href="#"><span class="arrow"></span><strong>AM Agents</strong></a></li>
+                <li><a class="fees" href="#"><span class="arrow"></span><strong>AM Fee Group</strong>Management</a></li>
+                <li><a class="programs" href="@Url.Action("ManageAccPrograms", "Clients")"><span class="arrow"></span><strong>Manage Account</strong>Programs</a></li>
+                <li><a class="tools" href="#"><span class="arrow"></span><strong>AM Marketing</strong>Tools</a></li>
+                <li><a class="single documents" href="#"><span class="arrow"></span><strong>AM Documents</strong></a></li>
+                <li><a class="single history" href="#"><span class="arrow"></span><strong>AM Activity</strong></a></li>
+                <li><a class="notes" href="#"><span class="arrow"></span><strong>AM Note</strong>History</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/choosen")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liClients').addClass('active');
+
+            $("#TableUSD").jqGrid({
+                datatype: "clientSide",
+                sortname: 'account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Type', 'Account', 'Balance', 'Floating P/L', 'Equity', 'Latest Change', 'Leverage', 'Fee Group'],
+                colModel: [
+                    { name: 'type', width: 55, fixed: true, align: 'center', title: false, sortable: false },
+                    { name: 'account', width: 150, fixed: true, title: false },
+                    { name: 'balance', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'floating', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'equity', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'change', width: 125, fixed: true, align: 'right', sorttype: 'number', title: false },
+                    { name: 'leverage', width: 100, fixed: true, classes: 'overflow', title: false, sortable: false },
+                    { name: 'fees', width: 170, fixed: true, classes: 'overflow', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'type': '<img src="/Images/account-rebate.png" title="Fee/Rebate Account" alt="Fee/Rebate Account">',
+                        'account': '<a href="@Url.Action("AssetManagerRebateAccDetails", "Clients")">100-001-0000000</a><br>Fee/Rebate Account',
+                        'balance': '--',
+                        'floating': '--',
+                        'equity': '$0,000,000.00',
+                        'change': '--',
+                        'leverage': '--',
+                        'fees': '--'
+                    },
+                    {
+                        'type': '<img src="/Images/account-metatrader.png" title="MetaTrader 4" alt="MetaTrader 4">',
+                        'account': '<a href="@Url.Action("AssetManagerMasterAccDetails", "Clients")">100-004-0000000</a><br>Master Account',
+                        'balance': '$150,000.00',
+                        'floating': '$0.00',
+                        'equity': '$0,000,000.00',
+                        'change': '0.00%',
+                        'leverage': '<select class="chzn-select width-80"><option></option><option>00:00</option><option selected="">1:1000</option><option>00:00</option></select>',
+                        'fees': '<select class="chzn-select width-150"><option></option><option>Fee Group 1</option><option selected="">Fee Group 2</option><option>Fee Group 3</option></select>'
+                    }
+                ],
+                loadComplete: function () {
+                    $('select').chosen();
+                }
+            });
+
+        });//End of ready
+    </script>
+}

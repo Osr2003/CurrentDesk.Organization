@@ -1,0 +1,235 @@
+﻿@model CurrentDesk.BackOffice.Models.PartnerAccountInitialModel
+@{
+    ViewBag.Title = "PartnerAccountInitial";
+}
+@using (Html.BeginForm(new { id = "loginForm" }))
+{
+    @Html.ValidationSummary(true)
+    <div class="main-content">
+        <div class="wrapper">
+            <h1>
+                Become a partner today!</h1>
+            <p class="sub-header">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
+                irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+                pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                deserunt mollit anim id est laborum.</p>
+            <div class="content-section">
+                <dl class="form-list width-half">
+                    <!-- What Account -->
+                    <dt>
+                        <label style="display: block;">
+                            <span class="right required">*Required Fields</span>Which account are you signing
+                            up for? <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        @Html.DropDownListFor(model => model.AccountCode, (IEnumerable<SelectListItem>)ViewData["AccountCode"], "Please select", new { @id = "accountcode" })
+                        @Html.ValidationMessageFor(model => model.AccountCode)
+                    </dd>
+                    <!-- Account Type -->
+                    <dt>
+                        <label>
+                            Account Type: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        @Html.DropDownListFor(model => model.AccountType, (IEnumerable<SelectListItem>)ViewData["AccountType"], "Please select")
+                        @Html.ValidationMessageFor(model => model.AccountType)
+                    </dd>
+                    <!-- Trading Platform -->
+                    <dt>
+                        <label>
+                            Trading Platform: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        @Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"], "Please select")
+                        @Html.ValidationMessageFor(model => model.TradingPlatform)
+                    </dd>
+                    <!-- Account Currency -->
+                    <dt>
+                        <label>
+                            Account Currency: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        @Html.DropDownListFor(model => model.AccountCurrency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "Please select")
+                        @Html.ValidationMessageFor(model => model.AccountCurrency)
+                    </dd>
+                    <!-- Email -->
+                    <dt>
+                        <label>
+                            EmailId: <span class="required">*</span></label></dt>
+                    <dd style="margin-bottom: 15px;">@Html.TextBoxFor(model => model.UserEmail, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.UserEmail)</dd>
+                    <!-- Password -->
+                    <dt>
+                        <label>
+                            Password: <span class="required">*</span></label></dt>
+                    <dd style="margin-bottom: 15px;">
+                        @Html.PasswordFor(model => model.Password, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.Password)</dd>
+                    <!-- Verify Password -->
+                    <dt>
+                        <label>
+                            Verify Password: <span class="required">*</span></label></dt>
+                    <dd>@Html.PasswordFor(model => model.ConfirmPassword, new { @class = "input-text width-default" })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword)</dd>
+                    <!-- Language -->
+                    <dt>
+                        <label>
+                            Language: <span class="required">*</span></label></dt>
+                    <dd class="clearfix" style="margin-bottom: 15px;">
+                        @Html.DropDownListFor(model => model.LanguageCode, (IEnumerable<SelectListItem>)ViewData["Language"], "Please select")
+                        @Html.ValidationMessageFor(model => model.LanguageCode)
+                    </dd>
+                    <dt>
+                        <label>
+                            Is English Speaking: <span class="required">*</span></label></dt>
+                    <dd>@Html.EditorFor(model => model.IsEnglishSpeaking)
+                        @Html.ValidationMessageFor(model => model.IsEnglishSpeaking)</dd>
+                </dl>
+                <div class="agreements-box">
+                    <div class="bottom">
+                        <h2>
+                            Agreements and Risk Disclosure</h2>
+                        <p>
+                            Before you fill out the online application form, please read our agreements and
+                            risk disclosure. In order to read PDF files you may need to download <a href="http://get.adobe.com/reader/"
+                                target="_blank">Adobe Acrobat Reader</a>.</p>
+                        <ol>
+                            <li><a href="#">Partnership Commission Agreement</a> <i>(PDF)</i></li>
+                            <li><a href="#">Non-Circumvention Non-Disclosure Confidentiality Agreement</a> <i>(PDF)</i></li>
+                        </ol>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.EditorFor(model => model.IsPartnershipCommissionAgreement)
+                                @Html.ValidationMessageFor(model => model.IsPartnershipCommissionAgreement)</dt>
+                            <dd>
+                                <label for="docs-1-4">
+                                    I have read and agree to the Partnership Commission Agreement</label></dd>
+                        </dl>
+                        <dl class="check-list clearfix">
+                            <dt>@Html.EditorFor(model => model.IsConfidentialityAgreement)
+                                @Html.ValidationMessageFor(model => model.IsConfidentialityAgreement)</dt>
+                            <dd>
+                                <label for="docs-1-5">
+                                I have read and agree to the Non-Circumvention Non-Disclosure Confidentiality Agreement</dd>
+                        </dl>
+                        <h2>
+                            Partnership Commission Agreement - Exhibit A</h2>
+                        <div id="docs-0">
+                            <p>
+                                [Fill out the form to view the associated options.]</p>
+                        </div>
+                        <div id="docs-1" style="display: none;">
+                            <p id="ibParaID" style="display: none;" >
+                                An IB at FQ Securities may have there own feed, by widening the raw spread they
+                                receive from FQ Securities Ltd. The Rebates that the IB earns will be 100% of the
+                                amount widened. Please complete the following information:</p>
+                            <p id="amParaID" style="display: none;"> 
+                                An AM at FQ Securities may have there own feed, by widening the raw spread they
+                                receive from FQ Securities Ltd. The Rebates that the IB earns will be 100% of the
+                                amount widened. Please complete the following information:</p>
+                            <dl class="form-list clearfix">
+                                <dt>
+                                    <label>
+                                        Mark up spreads:</label></dt>
+                                <dd>
+                                    @Html.DropDownListFor(model => model.WidenSpread, (IEnumerable<SelectListItem>)ViewData["WideSpreads"], new { @id = "widenSpread" })
+                                    @Html.ValidationMessageFor(model => model.WidenSpread, "*")
+                                    @Html.TextBoxFor(model => model.WidenSpreadOthers, new { @class = "input-text width-short", @disabled = "disabled", @id = "widenSpreadOthers" })
+                                    @Html.ValidationMessageFor(model => model.WidenSpreadOthers)
+                                </dd>
+                            </dl>
+                        </div>
+                        <div id="docs-2" style="display: none;">
+                            <dl class="form-list clearfix">
+                                <dt>
+                                    <label>
+                                        Increase Commissions by:</label></dt>
+                                <dd class="columns seven">
+                                    @Html.DropDownListFor(model => model.IncreasedCommission, (IEnumerable<SelectListItem>)ViewData["IncreasedCommissions"], new { @id = "increasedCommissions" })
+                                    @Html.ValidationMessageFor(model => model.IncreasedCommission)
+                                    @Html.TextBoxFor(model => model.IncreasedCommissionOthers, new { @class = "input-text width-short", @disabled = "disabled", @id = "increasedCommissionOthers" })
+                                    @Html.ValidationMessageFor(model => model.IncreasedCommissionOthers)
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Button Box -->
+            <div class="button-box">
+                <input id="btnPartnerInitialSubmit" class="button submit right" type="submit" value="Continue" />
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        (function ($) {
+            $("select").uniform();
+            $.validator.unobtrusive.adapters.addBool("booleanrequired", "required");
+
+            $.validator.unobtrusive.adapters.add('requiredif', ['dependentproperty', 'targetvalue', 'controlid'], function (options) {
+                options.rules["required"] = function (element) {
+                    return $('#' + options.params.dependentproperty).val() == options.params.targetvalue;
+                };
+
+
+                if (true) {
+                    options.messages["required"] = "*";
+                }
+                $('#' + options.params.dependentproperty).change(function () {
+                    $('#' + options.params.controlid).valid();
+                });
+
+                $('#' + options.params.depedentproperty).blur(function () {
+                    $('#' + options.element.name).valid();
+                });
+            });
+
+        } (jQuery));
+
+        $("#accountcode").change(function (e) {
+            var accountCode = $("#accountcode").val();
+
+            if (accountCode == 4) {
+                $("#docs-2").hide();
+                $("#docs-1").show();
+                $("#ibParaID").show();
+                $("#amParaID").hide();
+            }
+            else if (accountCode == 5) {
+                $("#docs-1").show();
+                $("#docs-2").show();
+                $("#ibParaID").hide();
+                $("#amParaID").show();
+            }
+            else {
+                $("#docs-1").hide();
+                $("#docs-2").hide();
+                $("#ibParaID").hide();
+                $("#amParaID").hide();
+            }
+        });
+
+        $("#widenSpread").change(function (e) {
+            var widenSpread = $("#widenSpread").val();
+
+            if (widenSpread == 7) {
+                $("#widenSpreadOthers").removeAttr('disabled');
+            }
+            else {
+                $("#widenSpreadOthers").attr('disabled', 'disabled'); ;
+            }
+        });
+
+        $("#increasedCommissions").change(function (e) {
+            var increasedCommissionOthers = $("#increasedCommissions").val();
+
+            if (increasedCommissionOthers == 6) {
+                $("#increasedCommissionOthers").removeAttr('disabled');
+            }
+            else {
+                $("#increasedCommissionOthers").attr('disabled', 'disabled'); ;
+            }
+        });
+    </script>
+}

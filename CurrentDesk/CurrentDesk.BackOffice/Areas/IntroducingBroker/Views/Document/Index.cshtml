@@ -1,0 +1,238 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="documents"><span class="normal">Documents :</span> My Documents</h1>
+            </div>
+
+            <!-- Clients List Section -->
+            <article id="artDocument">
+                <h2 class="inline-block">My Documents</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblDocs">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="single documents" href="@Url.Action("Index", "Document")"><span class="arrow"></span><strong>My Documents</strong></a></li>
+                <li><a class="single forms" href="@Url.Action("BrokerForms", "Document")"><span class="arrow"></span><strong>Broker Forms</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- Begin Modal Upload Content -->
+<div id="imageModal" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add Document</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body content-section">
+        <ul class="row">
+            <li class="columns">
+                <input id="fileUploader" type="file" name="file" accept="image/*" /></li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+        <div class="columns six">
+            <button class="btn" data-dismiss="modal">Close Window</button>
+        </div>
+        <div class="columns six text-right">
+            <button id="btnUpload" class="btn btn-primary">Upload</button>
+        </div>
+    </div>
+</div>
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close Window</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/tip")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/upload")
+    <script>
+        var uploadDocID;
+
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liDocument').addClass('active');
+
+            $("#tblDocs").jqGrid({
+                url: 'Document/GetDocumentDetails',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                sortname: 'status',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['DocumentID', 'Document', 'Status', 'Actions'],
+                colModel: [
+                    { name: 'DocumentID', hidden: true },
+                    {
+                        name: 'DocumentName', title:false, sortable:false, formatter: function (cellValue, options, rowObject) {
+                            return '<a class="tip" href="#" title="Personal Identification must be in the form of a notoraized Passport or Government ID that is not expired. ">' + cellValue + '</a>';
+                        }
+                    },
+                    { name: 'Status', width: 300, fixed: true, title: false, sortable: false },
+                    {
+                        name: 'Actions', width: 100, fixed: true, align: 'center', title: false, sortable: false, formatter: function (cellValue, options, rowObject) {
+                            if (rowObject["Status"] == 'Missing Documents') {
+                                return '<input class="icon upload tip" type="button" title="Upload Document" onclick="uploadDocument(' + rowObject["DocumentID"] + ')" value="Upload Document" /><input class="icon download tip" type="button" title="Download Document" value="Download Document" disabled="" /><input class="icon clear tip" type="button" title="Clear Document" value="Clear Document" disabled="" />';
+                            }
+                            else if (rowObject["Status"] == 'Pending') {
+                                return '<input class="icon upload tip" type="button" title="Upload Document" value="Upload Document" disabled="" /><a class="icon download tip" href="/Document/DownloadDocument?docID=' + rowObject["DocumentID"] + '" title="Download Document">download</a><input class="icon clear tip" type="button" title="Clear Document" onclick="clearDocument(' + rowObject["DocumentID"] + ')" value="Clear Document" />';
+                            }
+                            else if (rowObject["Status"] == 'Approved') {
+                                return '<input class="icon upload tip" type="button" title="Upload Document" value="Upload Document" disabled="" /><a class="icon download tip" href="/Document/DownloadDocument?docID=' + rowObject["DocumentID"] + '" title="Download Document">download</a><input class="icon clear tip" type="button" title="Clear Document" onclick="clearDocument(' + rowObject["DocumentID"] + ')" value="Clear Document" />';
+                            }
+                            else if (rowObject["Status"] == 'Denied') {
+                                return '<input class="icon upload tip" type="button" title="Upload Document" value="Upload Document" disabled="" /><a class="icon download tip" href="/Document/DownloadDocument?docID=' + rowObject["DocumentID"] + '" title="Download Document">download</a><input class="icon clear tip" type="button" title="Clear Document" onclick="clearDocument(' + rowObject["DocumentID"] + ')" value="Clear Document" />';
+                            }
+                        }
+                    }
+                ],
+                loadComplete: function () {
+                    //Show tool tip
+                    $('.tip').tipTip({ defaultPosition: 'top' });
+                }
+            });
+
+        });//End of ready
+
+        //Function to open upload dialog to upload document
+        function uploadDocument(docID) {
+            $('#imageModal').modal('show');
+            uploadDocID = docID;
+        }
+
+        //Upload document function  
+        $('#btnUpload').click(function () {
+            if (validateUploadedFile()) {
+                var url = 'http://' + window.location.host + '/IntroducingBroker/Document/UploadIBDocument';
+                var value = {
+                    "docID": uploadDocID
+                }
+                $('#fileUploader').upload(url, value, function (data) {
+                    $('#fileUploader').text = "";
+                    if (data) {
+                        $('#imageModal').modal('hide');
+                        $('#artDocument').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully uploaded your document.</div>');
+                        $('#tblDocs').trigger('reloadGrid');
+                    }
+                    else {
+                        $('#modalConfirmError').modal('show');
+                    }
+                }, 'json');
+            }
+        });
+
+        //Function to validate document file to be uploaded
+        function validateUploadedFile() {
+            $('#uploadErrorID').remove();
+            if ($('#fileUploader').val().length == 0) {
+                $('#fileUploader').after('<span id="uploadErrorID" class="requiredError">*</span>');
+                return false;
+            }
+            else {
+                var fileName = $('#fileUploader').val();
+                var fileExt = fileName.split('.').pop().toLowerCase();
+                if (fileName.indexOf(".") == -1 || fileExt != "pdf" && fileExt != "jpeg" && fileExt != "jpg") {
+                    $('#artDocument').prepend('<div class="alert alert-error"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>Document file type is not accepted; please upload jpg, gif or pdf.</div>');
+                    $('#imageModal').modal('hide');
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+
+        //Function to clear user document
+        function clearDocument(docID) {
+            if (window.confirm("Are you sure you want to clear the document?")) {
+                $('#loading').show();
+
+                var value = {
+                    "docID": docID
+                }
+
+                //Post request to clear user document
+                $.post("@Url.Action("ClearDocument", "Document")", value, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $('#artDocument').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully cleared your document.</div>');
+                        $('#tblDocs').trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+        }
+
+    </script>
+}

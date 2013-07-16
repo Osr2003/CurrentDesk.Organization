@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C4B3124E-C559-4701-A587-B2ED6DA42572}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TestingDAL</RootNamespace>
+    <AssemblyName>TestingDAL</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccountCurrency.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AccountType.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Client.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Client.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Client.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="ClientInformation.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CorporateAccountInformation.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CurrentDeskModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CurrentDeskModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="CurrentDeskModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DemoLead.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Employee.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IndividualAccountInformation.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="IntroducingBroker.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="JointAccountInformation.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LeadNote.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LiveLead.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_Account.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountFormType.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AccountTypeValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_AnnualIncomeValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CommissionIncrementValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CompanyTypeValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_Country.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_CurrencyValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_IDInformationType.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_InitialInvestment.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_Languages.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_LiquidAssetsValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_NetWorthEuros.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_RecievingBank.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TicketSize.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingExperience.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TradingPlatformValues.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_TrusteeTypeValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="L_WidenSpreadsValue.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sysdiagram.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TradingPlatform.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TrustAccountInformation.cs">
+      <DependentUpon>CurrentDeskModel.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Client.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Client.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="CurrentDeskModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CurrentDeskModel.Context.cs</LastGenOutput>
+    </None>
+    <None Include="CurrentDeskModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CurrentDeskModel.cs</LastGenOutput>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

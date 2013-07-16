@@ -1,0 +1,242 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientNoteHistoryModel
+@{
+    ViewBag.Title = "ClientNoteHistory";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="@Url.Action("Index", "AssetManagerClients")">My Clients</a> : <a href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })">@Model.ClientName.Replace('@', ' ')</a> :</span> Client Note History</h1>
+            </div>
+
+            <!-- Notes Section -->
+            <article id="artNotes" class="no-margin">
+                <ul class="button-bar">
+                    <li><button class="btn btn-mini" data-toggle="modal" data-target="#modalNewNote">New Client Note</button></li>
+                </ul>
+                <h2 class="inline-block">Client Notes</h2>
+                <div class="content-section clearfix">
+
+                    <!-- note List Section -->
+                    <div class="msg-list">
+                        <table id="tblNotes">
+                            <tr>
+                                <td />
+                            </tr>
+                        </table>
+                        <div id="pager-0"></div>
+                    </div>
+
+                    <!-- note Content Section -->
+                    <div class="msg-content">
+                        <ul class="header-box">
+                            <li>&nbsp;</li>
+                        </ul>
+                        <div class="msg-header">
+                            <h4><span id="spnSubject"></span></h4>
+                            <p>Written by: @Model.PartnerDisplayName</p>
+                            <p class="date-time">
+                                <span id="spnLongDate"></span>
+                            </p>
+                        </div>
+                        <div class="msg-body">
+                            <span id="spnNote"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="primary" href="@Url.Action("ClientDetails", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID })"><span class="arrow"></span><strong>@Model.ClientName.Replace('@', ' ')</strong>@Model.AccountID</a></li>
+                <li><a class="single accounts" href="@Url.Action("ClientAccounts", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Accounts</strong></a></li>
+                <li><a class="single documents" href="@Url.Action("ClientDocuments", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Documents</strong></a></li>
+                <li><a class="single history" href="@Url.Action("ClientActivity", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Activity</strong></a></li>
+                <li class="active"><a class="notes" href="@Url.Action("ClientNoteHistory", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Client Note</strong>History</a></li>
+                <li><a class="fund" href="@Url.Action("DepositClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Deposit</strong>Client Funds</a></li>
+                <li><a class="internal" href="@Url.Action("TransferClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Transfer</strong>Client Funds</a></li>
+                <li><a class="withdraw" href="@Url.Action("WithdrawClientFund", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Withdraw</strong>Client Funds</a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAccount", "AssetManagerClients", new { clientID = Model.ClientID, accountID = Model.AccountID, clientName = Model.ClientName })"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewNote" class="modal hide fade large">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+		<small class="right required"><strong>*Required Fields</strong></small>
+		<h2 class="inline-block h2">New Client Note</h2>
+	</div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns seven">
+                <label class="h3">Client</label>
+                @Model.ClientName.Replace('@', ' ')
+            </li>
+            <li class="columns five">
+                <label class="h3">Written By</label>
+                @Model.PartnerDisplayName
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <label class="h3">Subject Line</label>
+                <input id="txtSubject" class="input-text width-full" type="text" />
+            </li>
+        </ul>
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Note <span class="required">*</span></label>
+                <textarea id="txtNote" class="input-text width-full" style="height: 180px;"></textarea>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Cancel</button>
+		<button class="btn btn-primary" onclick="addNewClientNote()">Submit</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+
+            $("#tblNotes").jqGrid({
+                url: 'GetAllNotesOfClient?clientID=@Model.ClientID',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                cellLayout: '20',
+                height: '525',
+                forceFit: true,
+                scrollOffset: '0',
+                pager: '#pager-0',
+                pagerpos: 'right',
+                rowNum: '15',
+                recordpos: 'left',
+                viewrecords: true,
+                sortname: 'Timestamp',
+                sortable: true,
+                loadonce: true,
+                sortorder: 'desc',
+                colNames: ['Subject', 'Written By', 'Date', 'Note', 'Day', 'LongDate'],
+                colModel: [
+                    { name: 'Subject', title: false },
+                    { name: 'from', width: '150', fixed: true, title: false, formatter: function () {
+                        return "@Model.PartnerDisplayName";
+                    }
+                    },
+                    { name: 'Timestamp', width: '150', fixed: true, align: 'center', title: false, sorttype: 'date', datefmt: "d/m/Y h:i:s A" },
+                    { name: 'Note', hidden: true },
+                    { name: 'TimestampDay', hidden: true },
+                    { name: 'TimestampLong', hidden: true }
+                ],
+                onSelectRow: function(selRowId){
+                    $('#spnSubject').text($('#tblNotes').jqGrid('getCell', selRowId, 'Subject'));
+                    $('#spnNote').html($('#tblNotes').jqGrid('getCell', selRowId, 'Note'));
+                    $('#spnLongDate').text($('#tblNotes').jqGrid('getCell', selRowId, 'TimestampLong'));
+                },
+                loadComplete: function(){
+                    $('#tblNotes').jqGrid('setSelection', 1, true);
+                }
+            });
+
+        });//End of ready
+
+        //Function to add new client note by IB
+        function addNewClientNote() {
+            $('.requiredError').remove();
+
+            if ($('#txtNote').val() != '') {
+                $('#loading').show();
+
+                var values = {
+                    "clientID": @Model.ClientID,
+                    "subject": $('#txtSubject').val(),
+                    "note": $('#txtNote').val()
+                }
+
+                //Post request to add new client note
+                $.post("@Url.Action("AddNewClientNote", "AssetManagerClients")", values, function (data) {
+                    if (data) {
+                        $('#loading').hide();
+                        $('#artNotes').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>A new note has been created.</div>');
+                        $('#modalNewNote').modal('hide');
+                        $("#tblNotes").setGridParam({datatype: "json"}).trigger('reloadGrid');
+                    }
+                    else {
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+            else {
+                $('#txtNote').after('<span class="requiredError">*Required</span>');
+            }
+        }
+
+    </script>
+}

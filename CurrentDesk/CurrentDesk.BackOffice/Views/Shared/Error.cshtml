@@ -1,0 +1,60 @@
+﻿@model CurrentDesk.BackOffice.Models.Error.ErrorModel
+
+@{
+    ViewBag.Title = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- BEGIN WRAPPER -->
+<div class="wrapper">
+
+    <!-- Header Styles -->
+    <div class="header">
+        <img src="Images/logo.png" alt="FastQuote Securities" /></div>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+        <div class="wrapper">
+
+            <!-- Begin Error Page Content -->
+            <h1 class="error">ERROR</h1>
+            <div class="content-section">
+
+                <div class="form-box">
+                    <dl class="form-list row">
+                        <dt class="columns twelve"><strong class="error">Error Message:</strong></dt>
+                        <dd class="columns twelve"><span class="error">@Html.DisplayFor(model => model.ErrorMessage)</span></dd>
+                    </dl>
+                    <dl class="form-list row">
+                        <dt class="columns twelve"><strong class="error">Error Message:</strong></dt>
+                        <dd class="columns twelve"><span class="error">@Html.DisplayFor(model => model.DisplayMessage)</span></dd>
+                    </dl>
+                </div>
+
+            </div>
+            <!-- End Demo Account Signup Form -->
+
+        </div>
+    </div>
+    <!-- End Main Content Section -->
+
+    <div class="push"></div>
+</div>
+<!-- END WRAPPER -->
+
+
+<!-- Footer Section -->
+<div class="footer">
+
+    <!-- Disclamer Section -->
+    <div class="disclaimer">
+        <div class="wrapper">
+            <h2>&copy; Copyright 2013. All Rights Reserved. Powered by CurrentDesk.</h2>
+            <p><strong>HIGH RISK WARNING:</strong> Foreign exchange trading carries a high level of risk that may not be suitable for all investors. Leverage creates additional risk and loss exposure. Before you decide to trade foreign exchange, carefully consider your investment objectives, experience level, and risk tolerance. You could lose some or all of your initial investment; do not invest money that you cannot afford to lose. Educate yourself on the risks associated with foreign exchange trading, and seek advice from an independent financial or tax advisor if you have any questions.</p>
+            <p><strong>ADVISORY WARNING:</strong> FQ Securities provides references and links to selected blogs and other sources of economic and market information as an educational service to its clients and prospects and does not endorse the opinions or recommendations of the blogs or other sources of information. Clients and prospects are advised to carefully consider the opinions and analysis offered in the blogs or other information sources in the context of the client or prospect’s individual analysis and decision making. None of the blogs or other sources of information is to be considered as constituting a track record. Past performance is no guarantee of future results and FQ Securities specifically advises clients and prospects to carefully review all claims and representations made by advisors, bloggers, money managers and system vendors before investing any funds or opening an account with any Forex dealer. Any news, opinions, research, data, or other information contained within this website is provided as general market commentary and does not constitute investment or trading advice. FQ Securities expressly disclaims any liability for any lost principal or profits without limitation which may arise directly or indirectly from the use of or reliance on such information. As with all such advisory services, past results are never a guarantee of future results.</p>
+        </div>
+    </div>
+
+</div>
+<!-- End Footer Section -->
+

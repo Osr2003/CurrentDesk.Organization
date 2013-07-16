@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "AssetManagerRebateAccDetails";
+    Layout = "~/Areas/SuperAdmin/Views/Shared/SuperAdminMaster.cshtml.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="clients"><span class="normal"><a href="clients.html">Clients</a> : <a href="client-details-ib.html">[client name]</a> : <a href="client-accounts-am.html">AM Accounts</a> :</span> 000-000-0000000</h1>
+            </div>
+
+            <!-- Account Details Section -->
+            <article>
+                <h2 class="inline-block">Account Details: 000-000-00000000</h2>
+                <div class="content-section">
+
+                    <table class="column-table">
+                        <tr>
+                            <td>
+                                <h3>Account Name</h3>
+                                <strong>[account name]</strong><br>
+                                <a href="#" data-toggle="modal" data-target="#modalRename">rename account</a></td>
+                            <td>
+                                <h3>Balance</h3>
+                                <strong>$00,000,000.00</strong></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+            <!-- Quick Reports Section -->
+            <article>
+                <h2 class="inline-block">Quick Reports</h2>
+                <div class="content-section">
+
+                    <table class="row-table">
+                        <tr>
+                            <td><strong>Summary</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Deposits/Withdraws</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Volume</strong></td>
+                            <td class="text-right"><a href="#" data-toggle="modal" data-target="#modalReports">Download</a></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+            <!-- Recent Transactions Section -->
+            <article>
+                <h2 class="inline-block">Recent Transactions</h2>
+                <div class="content-section">
+
+                    <table class="row-table">
+                        <tr>
+                            <td>[date]</td>
+                            <td>Deposit</td>
+                            <td class="text-right"><strong>+$0,000.00</strong></td>
+                        </tr>
+                        <tr>
+                            <td>[date]</td>
+                            <td>Withdrawal</td>
+                            <td class="text-right"><strong>-$0,000.00</strong></td>
+                        </tr>
+                        <tr>
+                            <td>[date]</td>
+                            <td>Transfer</td>
+                            <td class="text-right"><strong>+$0,000.00</strong></td>
+                        </tr>
+                    </table>
+
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="accounts" href="@Url.Action("AssetManagerRebateAccDetails", "Clients")"><span class="arrow"></span><strong>Account Details</strong>000-000-00000000</a></li>
+                <li><a class="single internal" href="#"><span class="arrow"></span><strong>Transfer Funds</strong></a></li>
+                <li><a class="single withdraw" href="#"><span class="arrow"></span><strong>Withdraw Funds</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalRename" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Rename Account</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Account Name</label>
+                <input class=" width-250" type="text" value="[account name]">
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Save Changes</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalReports" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <h2 class="inline-block h2">Select Dates Range</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns six">
+                <label class="h3">Start Date</label>
+                <div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+                    <input class="width-80" size="16" type="text" readonly="">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </li>
+            <li class="columns six">
+                <label class="h3">End Date</label>
+                <div class="input-append date" data-date="" data-date-format="dd-mm-yyyy">
+                    <input class="width-80" size="16" type="text" readonly="">
+                    <span class="add-on"><i class="icon-calendar"></i></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Download Report</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+@section Scripts{
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    <script>
+        //Ready  function
+        $(document).ready(function () {
+            $('.top-nav ul li#liClients').addClass('active');
+            $('.date').datepicker();
+        });//End of ready
+    </script>
+}

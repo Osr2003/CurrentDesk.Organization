@@ -1,0 +1,170 @@
+﻿@model CurrentDesk.BackOffice.Areas.AssetManager.Models.Profile.IntroducingBrokerProfitShareModel
+@{
+    ViewBag.Title = "IntroducingBrokerProfitShare";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="profile"><span class="normal"><a href="#">My Profile</a> : <a href="@Url.Action("ManagedAccountProgram", "Profile")">Managed Account Programs</a> : <a href="@Url.Action("ProgramDetails", "Profile", new { programID = Model.ProgramID})">@Model.ProgramName</a> :</span> IB Profit Share</h1>
+            </div>
+
+            <!-- Personal Information Section -->
+            <article id="artIBProfit" class="row">
+                <div class="columns seven">
+                    <small class="right required margin-right"><strong>*Required Fields</strong></small>
+                    <dl class="form-box">
+                        <dt>
+                            <label>Performance Fee Share %</label></dt>
+                        <dd>
+                            <input id="sldrPerformanceFeeShare" type="text" value="@Model.IBPerformanceFeeShare" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Management Fee Share %</label></dt>
+                        <dd>
+                            <input id="sldrManagementFeeShare" type="text" value="@Model.IBManagemantFeeShare" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Commission Markup Share %</label></dt>
+                        <dd>
+                            <input id="sldrCommMarkupShare" type="text" value="@Model.IBCommissionMarkupShare" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Spread Markup Share %</label></dt>
+                        <dd>
+                            <input id="sldrSpreadMarkupShare" type="text" value="@Model.IBSpreadMarkupShare" data-slider="true" data-slider-range="0,100" /></dd>
+                        <dt>
+                            <label>Masked Offering</label><a class="icn-sm help tip" href="#" title="This is if the AM is willing to let the IB offer the program without disclosing who the asset manager is."></a></dt>
+                        <dd>
+                            @if(Model.IBMaskedOffering)
+                            {
+                            <input type="radio" name="unrevealdOffering" value="false" />
+                            <label class="h3" for="offeringNo">No</label>
+                            <input type="radio" name="unrevealdOffering" checked="" value="true" />
+                            <label class="h3" for="offeringYes">Yes</label>
+                            }
+                            else
+                            {
+                            <input type="radio" name="unrevealdOffering" checked="" value="false" />
+                            <label class="h3" for="offeringNo">No</label>
+                            <input type="radio" name="unrevealdOffering" value="true" />
+                            <label class="h3" for="offeringYes">Yes</label>
+                            }
+                        </dd>
+                    </dl>
+                    <div class="button-box">
+                        <button id="btnIbProfitShareSubmit" class="btn btn-primary">Submit</button></div>
+                </div>
+                <div class="columns five">
+                    <div class="information-box">
+                        <div class="info-group">
+                            <strong class="icn-sm pin">Helpful Tip</strong>
+                            <p>[content]</p>
+                        </div>
+                        <div class="info-group">
+                            <strong class="icn-sm info">Did You Know?</strong>
+                            <p>[content]</p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="single program" href="@Url.Action("ProgramDetails", "Profile", new { programID = Model.ProgramID })"><span class="arrow"></span><strong>Program Details</strong></a></li>
+                <li class="active"><a class="referrals" href="@Url.Action("IntroducingBrokerProfitShare", "Profile", new { programID = Model.ProgramID, programName = Model.ProgramName})"><span class="arrow"></span><strong>Introducing Broker</strong>Profit Share</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Close Window</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    <script src="~/Scripts/simple-slider.min.js"></script>
+    <script src="~/Scripts/jquery.tipTip.minified.js"></script>
+    @Scripts.Render("~/bundles/bootstrap")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#clientProfile').addClass('active');
+
+            $('[data-slider]').each(function () {
+                var input = $(this);
+                $('<input value="0" type="text">').addClass('output width-25 text-center margin-left').insertAfter($(this));
+            }).bind("slider:ready slider:changed", function (event, data) {
+                $(this).nextAll('.output:first').val(data.value.toFixed(0));
+            });
+
+            $('.output').keyup(function () {
+                var value = $(this).val();
+                $(this).prevAll('[data-slider]').simpleSlider('setValue', value);
+            });
+
+            //Tool tip
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+        });//End of ready
+
+        //Button click event to update IB profit share
+        $('#btnIbProfitShareSubmit').click(function () {
+            $("#loading").show();
+
+            var values = {
+                "ProgramID": @Model.ProgramID,
+                "IBPerformanceFeeShare": Math.round($('#sldrPerformanceFeeShare').val()),
+                "IBManagemantFeeShare": Math.round($('#sldrManagementFeeShare').val()),
+                "IBCommissionMarkupShare": Math.round($('#sldrCommMarkupShare').val()),
+                "IBSpreadMarkupShare": Math.round($('#sldrSpreadMarkupShare').val()),
+                "IBMaskedOffering": $('input[name=unrevealdOffering]:radio:checked').val()
+            }
+
+            //Post request to update IB profit share
+            $.post("@Url.Action("UpdateIBProfitShare", "Profile")", values, function (data) {
+                if (data) {
+                    $("#loading").hide();
+                    $('#artIBProfit').prepend('<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully set IB profit share.</div>');
+                }
+                else {
+                    $("#loading").hide();
+                    $('#modalConfirmError').modal('show');
+                }
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,301 @@
+﻿@model CurrentDesk.BackOffice.Models.Dashboard.DashboardModel
+@using System.Globalization
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- First row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Accounts Overview -->
+        <div class="columns six">
+            <h2>Accounts Overview</h2>
+            <div class="content-box">
+
+                <div class="scroll-head">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Account Number</th>
+                                <th class="text-right width-30">Equity</th>
+                                <th class="text-right width-25">Change</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="scroll-table" style="height: 180px;">
+                    @{NumberFormatInfo nfi;
+                      nfi = new NumberFormatInfo();
+                      nfi.CurrencySymbol = "";}
+                    <table>
+                        <tbody>
+                            @foreach (var acc in Model.UserAccInformation)
+                            {
+                                <tr class="header-row">
+                                    <td colspan="3">@acc.AccountCurrency</td>
+                                </tr>
+                                foreach (var currAcc in acc.UserAccountList)
+                                {
+                                <tr>
+                                    @if (currAcc.TradingAccount == null)
+                                    {
+                                        <td><a href="/MyAccount/ShowAccountDetails?accountNumber=@currAcc.LandingAccount">@currAcc.LandingAccount</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="/MyAccount/ShowAccountDetails?accountNumber=@currAcc.TradingAccount">@currAcc.TradingAccount</a></td>
+                                    }
+                                    <td class="text-right width-30">@(currAcc.Equity != null ? String.Format(nfi, "{0:C}", currAcc.Equity) : "NA")</td>
+                                    <td class="text-right width-25"><span class="green">+0.23%</span></td>
+                                </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="columns six">
+            <h2>Recent Activity</h2>
+            <div class="content-box" style="height:210px;">
+
+                <table id="tblActivityTrader">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Second row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Overall Percentage Change -->
+			<div class="columns three">
+				<h2>Overall Percentage Change</h2>
+				<div class="content-box">
+					<div class="percent-box">
+					
+						<div id="chartOPCAbsolute" style="height: 175px;"></div>
+						
+					</div>
+				</div>
+			</div>
+
+        <!-- Market Hours -->
+        <div class="columns six">
+            <div class="select-bar">
+                <select id="drpMarketHours" class="chzn-select width-150">
+                    <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                    <option></option>
+                    <option value="">GMT-11:00</option>
+                    <option value="">GMT-10:00</option>
+                    <option value="">GMT-09:00</option>
+                    <option value="">GMT-08:00</option>
+                    <option value="">GMT-07:00</option>
+                    <option value="">GMT-06:00</option>
+                    <option value="">GMT-05:00</option>
+                    <option value="">GMT-04:00</option>
+                    <option value="">GMT-03:00</option>
+                    <option value="">GMT-02:00</option>
+                    <option value="">GMT-01:00</option>
+                    <option value="">GMT</option>
+                    <option value="">GMT+01:00</option>
+                    <option value="">GMT+02:00</option>
+                    <option value="">GMT+03:00</option>
+                    <option value="">GMT+04:00</option>
+                    <option value="">GMT+05:00</option>
+                    <option value="">GMT+06:00</option>
+                    <option value="">GMT+07:00</option>
+                    <option value="">GMT+08:00</option>
+                    <option value="">GMT+09:00</option>
+                    <option value="">GMT+10:00</option>
+                    <option value="">GMT+11:00</option>
+                    <option value="">GMT+12:00</option>
+                    <option value="">GMT+13:00</option>
+                    <option value="">GMT+14:00</option>
+                </select>
+            </div>
+            <h2>Market Hours</h2>
+            <div class="content-box">
+                <div class="market-box">
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Quotes -->
+        <div class="columns three">
+            <h2>Live Quotes</h2>
+            <div class="content-box">
+                <div class="percent-box">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- First row of dashboard items -->
+    <div class="row content-row">
+
+        <!-- Market News -->
+        <div class="columns twelve" style="margin-right: -300px;">
+            <h2>Market Calender</h2>
+            <div class="content-box" style="margin-right: 325px;">
+
+                <div class="scroll-head">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="marketNewsWidth-15">Time</th>
+                                <th class="marketNewsWidth-15">Currency</th>
+                                <th>Details</th>
+                                <th class="width-10">Impact</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="scroll-table" style="height:207px;">
+                    <table>
+                        <tbody>
+                            @foreach (var news in Model.MarketNews)
+                            {
+                            <tr>
+                                <td class="marketNewsWidth-15">@news.NewsDateTime</td>
+                                <td class="marketNewsWidth-15">@news.Currency</td>
+                                <td><a href="#">@news.Title</a></td>
+                                @if(news.Impact == "Low")
+                                {
+                                <td class="width-10">
+                                    <img src="Images/impact-low.png" alt="Low" /></td>
+                                }
+                                else if (news.Impact == "Medium")
+                                {
+                                <td class="width-10">
+                                    <img src="Images/impact-med.png" alt="Medium" /></td>
+                                }
+                                else if (news.Impact == "High")
+                                {
+                                <td class="width-10">
+                                    <img src="Images/impact-high.png" alt="High" /></td>
+                                }
+                                else
+                                {
+                                <td class="width-10">
+                                    <img src="Images/impact-none.png" alt="None" /></td>
+                                }
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Broker Promo -->
+        <div class="columns">
+            <h2>Broker Promo</h2>
+            <div class="promo-box">
+                @if(Model.BrokerPromoImgName != String.Empty)
+                {
+                <img src="../MarketingImages/@Model.BrokerPromoImgName" width="300" height="250" alt="" />
+                }
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/morris")
+    <script>
+
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liDashboard').addClass('active');
+
+            $('#drpMarketHours').chosen();
+
+            new Morris.Bar({
+                // ID of the element in which to draw the chart.
+                element: 'chartOPCAbsolute',
+                // Chart data records -- each entry in this array corresponds to a point on
+                // the chart.
+                data: [
+                  { y: 'Absolute', a: 38.12 },
+                  { y: 'MTD', a: 12.21 },
+                  { y: '24 Hr', a: -22.12 }
+                ],
+                xkey: 'y',
+                ykeys: ['a'],
+                labels: ['PCT']
+            });
+
+            $("#tblActivityTrader").jqGrid({
+                url: 'Dashboard/GetClientRecentActivityDetails',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '180',
+                forceFit: true,
+                scrollOffset: '17',
+                loadonce: true,
+                sortable: true,
+                sortname: 'ActivityTimestamp',
+                sortorder: 'desc',
+                colNames: ['Date/Time', 'Activity Details'],
+                colModel: [
+                    {
+                        name: 'ActivityTimestamp', width: '110', fixed: true, title: false, sorttype: 'date', datefmt: "d/m/Y h:i:s A", formatter: function (cellValue, options, rowObject) {
+                            if (rowObject["IsSeen"] == false) {
+                                return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                            }
+                            else {
+                                return cellValue;
+                            }
+                        }
+                    },
+                    {
+                        name: 'ActivityDetails', title: false, sortable: false, formatter: function (cellValue, options, rowObject) {
+                            if (rowObject["IsSeen"] == false) {
+                                return "<span class='red'><strong>" + cellValue + "</strong></span>";
+                            }
+                            else {
+                                return cellValue;
+                            }
+                        }
+                    }
+                ]
+            });
+
+        });//End of ready
+
+    </script>
+}

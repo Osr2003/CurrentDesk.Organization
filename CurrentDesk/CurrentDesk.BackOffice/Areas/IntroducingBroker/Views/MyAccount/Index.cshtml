@@ -1,0 +1,128 @@
+﻿@model CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients.ClientAccountsModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/IntroducingBroker/Views/Shared/IntroducingBrokerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="accounts"><span class="normal">My Accounts : </span>Accounts List</h1>
+            </div>
+
+            @foreach (var item in Model.CurrencyAccountDetails)
+                {
+                    <article>
+                        <div class="landing-header @item.CurrencyImage clearfix">
+                            <div class="left">
+                                <h2>@item.LandingAccount</h2>
+                                <h3>@item.CurrencyName Landing Account</h3>
+                            </div>
+                            <div class="right">
+                                <h3>Balance:<span class="balance"><small></small>@item.LAccBalance</span></h3>
+                            </div>
+                        </div>
+                        <table id="@item.CurrencyName">
+                            <tr>
+                                <td />
+                            </tr>
+                        </table>
+                    </article>
+                }
+            
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="accounts" href="@Url.Action("Index", "MyAccount")"><span class="arrow"></span><strong>Accounts List</strong><span id="spnCurrList"></span></a></li>
+                <li><a class="landing" href="@Url.Action("CreateNewLandingAcc", "MyAccount")"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/jqgrid")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyAccount').addClass('active');
+            $('#drpProgram, #drpAccountType, #drpCurrencyPopUp').css("width", "200px");
+            $('#drpProgram, #drpAccountType, #drpCurrencyPopUp').chosen();
+            
+            //Disable currency for create new landing acc that are already created
+            @foreach(var item in Model.CurrencyAccountDetails)
+            {
+                <text>
+            $('#drpAccountCurrency option:contains("@item.CurrencyName")').attr("disabled", "disabled");
+            $("#drpAccountCurrency").trigger("liszt:updated");
+            </text>
+            }
+
+            var currList = '';
+
+            @foreach (var item in Model.CurrencyAccountDetails)
+            {
+                <text>
+            $("#@item.CurrencyName").jqGrid({
+                url: 'MyAccount/GetAccountInformtion?currencyID=@item.CurrencyID',
+		        jsonReader: {
+		            root: "rows",
+		            page: "page",
+		            total: "total",
+		            records: "records",
+		            repeatitems: false,
+		            cell: "cell",
+		            id: "id",
+		            userdata: "userdata",
+		        },
+		        datatype: 'json',		        
+		        sortname: 'Account',
+		        gridview: true,
+		        altRows: true,
+		        autowidth: true,
+		        height: 'auto',
+		        forceFit: true,
+		        sortable: true,
+                loadonce: true,
+		        colNames: ['Type', 'Account', 'Balance'],
+		        colModel :[
+                    { name: 'Type', width: 55, fixed: true, title: false, sortable: false },
+                    {
+                        name: 'Account', formatter: function (cellValue, options, rowObject) {
+                        return "<a href='MyAccount/ShowAccountDetails?accountNumber=" + cellValue.substring(0, 15) + "'>" + cellValue.substring(0, 15) + "</a>" + cellValue.substring(15, cellValue.length);
+                    }, title: false },
+                    { name: 'Balance', width: 300, fixed: true, align: 'right', sorttype: 'currency', title: false }
+		        ]
+                    
+		    });
+            currList += '@item.CurrencyName' + ', ';
+		    </text>
+            }
+            $('#spnCurrList').text(currList.substring(0, currList.length - 2));
+
+        });//End of ready
+        
+    </script>
+}

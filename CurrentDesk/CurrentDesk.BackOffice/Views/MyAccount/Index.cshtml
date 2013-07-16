@@ -1,0 +1,441 @@
+﻿@model CurrentDesk.BackOffice.Models.MyAccount.MyAccountModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="accounts"><span class="normal">My Accounts : </span><span id="spnHeaderType">Accounts List</span></h1>
+            </div>
+
+            <div id="divAccountList">
+                
+                @foreach (var item in Model.CurrencyAccountDetails)
+                {
+                    <article>
+                        <div class="landing-header @item.CurrencyImage clearfix">
+                            <div class="left">
+                                <h2>@item.LandingAccount</h2>
+                                <h3>@item.CurrencyName Landing Account</h3>
+                            </div>
+                            <div class="right">
+                                <h3>Balance:<span class="balance"><small></small>@item.LAccBalance</span></h3>
+                            </div>
+                        </div>
+                        <table id="@item.CurrencyName">
+                            <tr>
+                                <td />
+                            </tr>
+                        </table>
+                        <div class="button-box text-right">
+                            <button class="btn" data-toggle="modal" data-target="#modalAddAccount" onclick="addNewCurrAcc('@item.CurrencyName')"><i class="icon-plus-sign"></i> Add @item.CurrencyName Account</button></div>
+                    </article>
+                }
+
+            </div>
+            <div id="divCreateNewLandingAcc">
+                <!-- Personal Information Section -->
+				<article class="row">
+					<div class="columns seven">
+						<small class="right required margin-right"><strong>*Required Fields</strong></small>
+						<dl class="form-box">
+							<dt><label>Select Currency <span class="required">*</span></label></dt>
+							<dd>
+								@Html.DropDownListFor(model => model.Currency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], "", new { @id = "drpAccountCurrency" })
+							</dd>
+							<dd>
+								<small class="inline-block width-large">The Electronic Signature eliminates paper use and expedites the overall application process.To submit an electronic signature, simply type your name into the “Enter Electronic Signature” text field and click “Confirm Signature.”</small>
+							</dd>
+							<dt><label for="modalSignature">Enter Electronic Signature <span class="required">*</span></label></dt>
+							<dd><input id="modalSignature" class="width-250" type="text" placeholder="type your full name here" /><button class="btn btn-small margin-left">Confirm Signature</button></dd>
+						</dl>
+						<div class="button-box"><button class="btn btn-primary" onclick="createNewLandingAcc(this)">Submit</button></div>
+					</div>
+                    <div class="columns five">
+                        <div class="information-box">
+                            <div class="info-group">
+                                <strong class="icn-sm pin">Helpful Tip</strong>
+                                <p>
+                                    Here are a few tips you should know about Landing Accounts.
+                                </p>
+                                <p>• One Landing Account per currency</p>
+                                <p>• A trading account is automatically created with a new Landing Account</p>
+                                <p>• Processing Time: Immediate</p>
+                                <p>
+                                    • You can move funds in/out of any Landing Account
+                                </p>
+                            </div>
+                            <div class="info-group">
+                                <strong class="icn-sm info">Did You Know?</strong>
+                                <p>
+                                    Landing Accounts are simply an account for clients to hold funds outside of a trading account. Landing accounts are also used for withdraws and deposits.
+                            </div>
+                        </div>
+                    </div>
+				</article>
+            </div>
+        </div>
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li id="liAccountList" class="active" onclick="showAccountList()"><a class="accounts" href="#"><span class="arrow"></span><strong>Accounts List</strong><span id="spnCurrList"></span></a></li>
+                <li id="liCreateLandingAcc" onclick="showCreateNewLandingAcc()"><a class="landing" href="#"><span class="arrow"></span><strong>Create New</strong>Landing Account</a></li>
+                <li><a class="managed" href="#"><span class="arrow"></span><strong>Connect To</strong>Managed Account</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalAddAccount" class="modal hide fade1 large">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Add New Account</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <label class="h3">Account Type <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.AccountCode, (IEnumerable<SelectListItem>)ViewData["AccountCode"], "", new { @id = "drpAccountType", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns six">
+                <label class="h3">Select Program <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.TradingPlatform, (IEnumerable<SelectListItem>)ViewData["TradingPlatform"], "", new { @id = "drpProgram", })
+            </li>
+            <li class="columns six">
+                <label class="h3">Select Currency <span class="required">*</span></label>
+                @Html.DropDownListFor(model => model.Currency, (IEnumerable<SelectListItem>)ViewData["AccountCurrency"], new { @id = "drpCurrencyPopUp", })
+            </li>
+        </ul>
+        <ul class="row border">
+            <li class="columns twelve">
+                <div class="scroll-box" style="height: 160px;">
+                    <h2>TERMS OF BUSINESS</h2>
+                    <h3>MetaTrader</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="content-section">
+        <ul class="row">
+            <li class="columns twelve">
+                <small>The Electronic Signature eliminates paper use and expedites the overall application process.To submit an electronic signature, simply type your name into the “Enter Electronic Signature” text field and click “Confirm Signature.”</small>
+                <label class="h3" for="modalSignature">Enter Electronic Signature <span class="required">*</span></label>
+                <input id="modalSignaturePopUp" class="width-250" type="text" placeholder="type your full name here" /><button class="btn btn-small margin-left">Confirm Signature</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary" onclick="addAccountInModal(this)">Add Account</button>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION UPDATE ERROR CONFIRMATION -->
+<div id="modalConfirmError" class="modal hide fade medium">
+    
+    <!-- Modal Header -->
+	<div class="modal-header">
+        <p class="padding">Some Error Ocurred</p>
+    </div>
+
+    <!-- Modal Footer -->
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal">Close Window</button>
+	</div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts {
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script type="text/javascript">
+        var accCurr;
+        // jqGrid plugin for handling tabular data: http://www.trirand.com/blog/
+        $(function(){
+            $('.top-nav ul li#liMyAccount').addClass('active');
+            $('#divCreateNewLandingAcc').hide();
+            $('#drpAccountCurrency, #drpAccountType, #drpProgram').attr("data-placeholder", "Please Select");
+            $('#drpAccountCurrency, #drpProgram, #drpAccountType, #drpCurrencyPopUp').css("width", "200px");
+            $('#drpAccountCurrency, #drpProgram, #drpAccountType, #drpCurrencyPopUp').chosen();
+
+            //Get different currency accounts for the user
+            @*$.post("@Url.Action("GetAllCurrencyAccountsForUser", "MyAccount")", function (data) {
+		        
+		    });*@
+
+            //Disable currency for create new landing acc that are already created
+            @foreach(var item in Model.CurrencyAccountDetails)
+            {
+                <text>
+            $('#drpAccountCurrency option:contains("@item.CurrencyName")').attr("disabled","disabled");
+            $("#drpAccountCurrency").trigger("liszt:updated");
+            </text>
+            }
+
+            var currList = '';
+
+            @foreach (var item in Model.CurrencyAccountDetails)
+            {
+                <text>
+            $("#@item.CurrencyName").jqGrid({
+                url: 'MyAccount/GetAccountInformtion?currencyID=' + @item.CurrencyID,
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: 'json',		        
+                sortname: 'Account',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                sortable: true,
+                loadonce: true,
+                colNames:['Type', 'Account','Balance','Floating P/L','Equity','Latest Change', 'IsTradingAccount','PlatFormLogin'],
+                colModel :[
+                    {name:'Type', width: 55, fixed: true, align: 'center', title: false, sortable: false},
+                    { name: 'Account', title: false, formatter: function (cellValue, options, rowObject) {
+                            
+                        return "<a href='/MyAccount/ShowAccountDetails?accountNumber="+ cellValue.substring(0, 15) +"'>" + cellValue.substring(0, 15) + "</a>" + cellValue.substring(15, cellValue.length);
+                            
+                    }},
+                    { name: 'Balance', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Floating', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Equity', width: 120, align: 'right', sorttype: 'currency', title: false },
+                    { name: 'Change', width: 125, fixed: true, align: 'right', sorttype: 'number', title: false },
+                    { name: 'IsTradingAccount', hidden: true},
+                    { name: 'PlatFormLogin', hidden: true}
+                ]
+                    
+            });
+            currList += '@item.CurrencyName' + ', ';
+            </text>
+            }
+            $('#spnCurrList').text(currList.substring(0, currList.length - 2));
+
+            window.setTimeout(EquityRefresh,5000)
+          
+          
+          
+        });
+
+        //Function to show Account List div
+        function showAccountList(){
+            $('#spnHeaderType').text('Accounts List');
+            $('#divCreateNewLandingAcc').hide();
+            $('#divAccountList').show();
+
+            $('#liAccountList').addClass('active');
+            $('#liCreateLandingAcc').removeClass('active');
+        }
+
+        //Function to show Create New Landing Acc div
+        function showCreateNewLandingAcc(){
+            $('#spnHeaderType').text('New Landing Account');
+            $('#divAccountList').hide();
+            $('#divCreateNewLandingAcc').show();
+
+            $('#liCreateLandingAcc').addClass('active');
+            $('#liAccountList').removeClass('active');
+        }
+
+        //Function to select currency in pop-up on click of Add New Currency Account button
+        function addNewCurrAcc(curr){
+            accCurr = curr;
+            var drpCurr = document.getElementById('drpCurrencyPopUp');
+            for (var ctOption = 0; ctOption < drpCurr.options.length; ctOption++) 
+            {
+                if (drpCurr.options[ctOption].text === curr) 
+                {
+                    drpCurr.selectedIndex = ctOption;
+                    break;
+                }
+            }
+            //Update chosen list
+            $('#drpCurrencyPopUp').attr("disabled", "disabled");
+            $("#drpCurrencyPopUp").trigger("liszt:updated");
+        }
+
+        //Function to create new landing account
+        function createNewLandingAcc(btnCntrl){
+            if($('#drpAccountCurrency').val() != '' && $('#modalSignature').val() != ''){
+                $(btnCntrl).attr("disabled", "disabled");
+                $('#loading').show();
+
+                var values = {
+                    "currencyID": $('#drpAccountCurrency').val()
+                }
+
+                $.post("@Url.Action("CreateNewLandingAccount", "MyAccount")", values, function (data) {
+                    if(data){
+                        window.location.reload();
+                    }
+                    else{
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+            else{
+                alert('Select currency and enter signature!');
+            }
+        }
+
+        //Function to add new currency trading account in modal pop-up
+        function addAccountInModal(btnCntrl){
+            if($('#drpAccountType').val() != '' && $('#drpProgram').val() != '' && $('#modalSignaturePopUp').val() != ''){
+                $(btnCntrl).attr("disabled", "disabled");
+                $('#loading').show();
+
+                var values = {
+                    "currencyID": $('#drpCurrencyPopUp').val(),
+                    "accountTypeID": $('#drpAccountType').val(),
+                    "platformID": $('#drpProgram').val()
+                }
+
+                //Post request to create new trading account
+                $.post("@Url.Action("CreateNewTradingAccount", "MyAccount")", values, function (data) {
+                    //If created successfully
+                    if(data){
+                        //window.location.reload();
+                        $('#loading').hide();
+                        $('#modalAddAccount').modal('hide');
+                        $('#divAccountList').prepend('<div class="alert alert-success" style="margin:25px 25px 0;"><a href="#" class="close" data-dismiss="alert" title="Close">&times;</a>You have successfully added a new ' + accCurr + ' Account.</div>');
+                        $('#' + accCurr).setGridParam({datatype:'json'}).trigger('reloadGrid');
+                    }
+                    else{
+                        $('#loading').hide();
+                        $('#modalConfirmError').modal('show');
+                    }
+                });
+            }
+            else{
+                alert('Select dropdowns and enter signature!');
+            }
+        }
+
+        var isGridEqUpdated = true;
+        var logins = '';
+        var  arrLogin =  new Array();
+        var arrTR =  new    Array();
+
+        function EquityRefresh()
+        {
+            setInterval(function () {
+                if (isGridEqUpdated) {
+                    isGridEqUpdated = false;
+                    UpdateGrid()
+                }
+            }, 800);
+
+        }
+
+    
+        function UpdateGrid()
+        {
+
+            try
+            {
+                if(logins == '')
+                {
+               
+                    $(".ui-jqgrid-btable").each(function(index,item){
+            
+                        var tableId =  $(this).attr("id");
+                   
+                        $("#"+tableId + ' tr:gt(0)').each(function(rowIndex,rowItem){
+                            var login = $(rowItem).find('td').eq(7).html();
+                            var isTrading = $(rowItem).find('td').eq(6).html();
+                            if(isTrading == 'true' && login!="0")
+                            {
+                                arrTR.push(rowItem);
+                                arrLogin.push(login);
+                            }
+                        });
+                    });
+                }
+
+                if(arrLogin.length > 0)
+                {
+                    logins = arrLogin.toString();
+                    var values = {
+                        "strLogin": logins
+                    }
+                    // alert(logins);
+                    $.get("@Url.Action("GetEquityList", "MyAccount")", values, function (data) {
+                        if (data != '') {
+                           
+
+                            $(arrTR).each(function(index,item){
+                            
+                                var login = $(item).find('td').eq(7).html();
+                               
+                                //var obj = jQuery.grep(data, function (a) { return data.Login> == login; });
+                                $(data).each(function(di,ditem){
+                                
+                                    if(ditem.Pl.toString() == login)
+                                    {
+                                        $(item).find('td').eq(2).html(ditem.Bal);
+                                        $(item).find('td').eq(3).html(ditem.Pnl);
+                                        $(item).find('td').eq(4).html(ditem.Equ);
+                                        return false;
+                                    }
+                                });
+                            });
+                           
+                        }
+                    });
+                }
+
+                //alert("Comp");
+                isGridEqUpdated = true;
+            }
+            catch(error)
+            {
+                isGridEqUpdated = true;
+            }
+        }
+	</script>
+}

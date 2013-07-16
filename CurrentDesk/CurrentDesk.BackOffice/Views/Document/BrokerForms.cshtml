@@ -1,0 +1,107 @@
+﻿@{
+    ViewBag.Title = "BrokerForms";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="documents"><span class="normal">Documents :</span> Broker Forms</h1>
+            </div>
+
+            <!-- Clients List Section -->
+            <article>
+                <h2 class="inline-block">Broker Forms</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="tblBrokerForms">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="single documents" href="@Url.Action("Index", "Document")"><span class="arrow"></span><strong>My Documents</strong></a></li>
+                <li class="active"><a class="single forms" href="@Url.Action("BrokerForms", "Document")"><span class="arrow"></span><strong>Broker Forms</strong></a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/tip")
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liDocument').addClass('active');
+
+            $("#tblBrokerForms").jqGrid({
+                url: 'GetBrokerFormDetails',
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "id",
+                    userdata: "userdata",
+                },
+                datatype: "json",
+                sortname: 'DocumentID',
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                forceFit: true,
+                colNames: ['DocumentID', 'Document Name', 'Actions'],
+                colModel: [
+                    { name: 'DocumentID', hidden: true },
+                    {
+                        name: 'DocumentName', title: false, sortable: false, formatter: function (cellValue, options, rowObject) {
+                            return '<a class="tip" href="#" title="Personal Identification must be in the form of a notoraized Passport or Government ID that is not expired. ">' + cellValue + '</a>';
+                        }
+                    },
+                    {
+                        name: 'Actions', width:80, fixed:true, align:'center', title:false, sortable:false, formatter: function (cellValue, options, rowObject) {
+                            return '<a class="icon download tip" href="/Document/DownloadBrokerForm?brokerFormID=' + rowObject["DocumentID"] + '&fileName=' + rowObject["DocumentName"] + '" title="Download Document">download</a>';
+                        }
+                    }
+                ],
+                loadComplete: function () {
+                    //Show tool tip
+                    $('.tooltip').tipTip({ defaultPosition: 'top' });
+                }
+            });
+
+        });//End of ready
+
+    </script>
+}

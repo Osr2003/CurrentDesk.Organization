@@ -1,0 +1,512 @@
+﻿@{
+    ViewBag.Title = "ReportGroups";
+    Layout = "~/Views/Shared/BackOfficeMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table">
+
+        <!-- Left column content goes here. -->
+        <div class="content-left">
+            <!-- Page Title Bar -->
+            <div class="page-title">
+                <h1 class="reports"><span class="normal">Reports :</span> Reporting Groups</h1>
+            </div>
+
+            <!-- Reporting Groups Section -->
+            <article>
+                <ul class="button-bar">
+                    <li><a class="btn btn-mini" href="#" data-toggle="modal" data-target="#modalNewGroup" data-backdrop="static">Create New Group</a></li>
+                </ul>
+                <h2 class="inline-block">Reporting Groups</h2>
+                <div class="content-section no-border-bottom">
+                    <table id="TableGroups">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+            </article>
+
+        </div>
+
+        <!-- This <div> is for 2 column layouts as a container for the right column background. -->
+        <div class="bg-right"></div>
+
+    </div>
+
+    <!-- Right Column content goes here. -->
+    <aside class="content-aside">
+        <!-- Sub Navigation Section -->
+        <nav class="sub-nav">
+            <ul>
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li><a class="single reports" href="@Url.Action("Index", "Reports")"><span class="arrow"></span><strong>Account Reports</strong></a></li>
+                <li class="active"><a class="groups" href="@Url.Action("ReportGroups", "Reports")"><span class="arrow"></span><strong>Reporting</strong>Groups</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
+            </ul>
+        </nav>
+    </aside>
+
+</div>
+<!-- END CONTENT SECTION -->
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalNewGroup" class="modal hide fade xxlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Create New Reporting Group</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+
+        <!-- Group Name Section -->
+        <div class="content-section no-border-bottom">
+            <ul class="row border">
+                <li class="columns six">
+                    <label class="h3">Group Name <span class="required">*</span></label><input class="width-350" type="text" /></li>
+                <li class="columns six padding-top margin-top-sm"><a class="icn-sm help tip margin-top" href="#" title="Below you can select accounts and add them to this group. You can also review the added accounts and remove any that you wish."></a><span class="h3 inline margin-left">Select accounts below that you would like to add to this group. &darr;</span></li>
+            </ul>
+        </div>
+
+        <!-- Tab Navigation Section -->
+        <ul class="nav nav-tabs padding-tabs" id="tabsNewGroup">
+            <li><a href="#tabAccounts" data-toggle="tab">All Accounts</a></li>
+            <li><a href="#tabSelected" data-toggle="tab">Accounts in Group</a></li>
+        </ul>
+
+
+
+        <!-- BEGIN TAB CONTENT SECTION -->
+        <div class="tab-content">
+
+            <!-- Accounts Tab -->
+            <div class="tab-pane active" id="tabAccounts">
+
+                <div class="content-section" style="height: 247px;">
+                    <table id="TableAccounts">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- Selected Accounts Tab -->
+            <div class="tab-pane" id="tabSelected">
+
+                <div class="content-section" style="height: 247px;">
+                    <table id="TableSelected">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- END TAB CONTENT SECTION -->
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <div class="columns six">
+            <button class="btn" disabled="">Add Selected</button>
+        </div>
+        <div class="columns six text-right">
+            <button class="btn" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary">Create Group</button>
+        </div>
+    </div>
+
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+
+<!-- BEGIN MODAL CONTENT SECTION -->
+<div id="modalEditGroup" class="modal hide fade xxlarge">
+
+    <!-- Modal Header -->
+    <div class="modal-header">
+        <small class="right required"><strong>*Required Fields</strong></small>
+        <h2 class="inline-block h2">Edit Reporting Group</h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body no-scroll">
+        <!-- Group Name Section -->
+        <div class="content-section no-border-bottom">
+            <ul class="row border">
+                <li class="columns six">
+                    <label class="h3">Group Name <span class="required">*</span></label><input class="width-350" type="text" placeholder="[group name]" /></li>
+                <li class="columns six padding-top margin-top-sm"><a class="icn-sm help tip margin-top" href="#" title="Below you can select accounts and add them to this group. You can also review the added accounts and remove any that you wish."></a><span class="h3 inline margin-left">Below you may add or remove accounts to this group. &darr;</span></li>
+            </ul>
+        </div>
+
+        <!-- Tab Navigation Section -->
+        <ul class="nav nav-tabs padding-tabs">
+            <li><a href="#tabAccountsEdit" data-toggle="tab">All Accounts</a></li>
+            <li><a href="#tabSelectedEdit" data-toggle="tab">Accounts in Group</a></li>
+        </ul>
+
+
+        <!-- BEGIN TAB CONTENT SECTION -->
+        <div class="tab-content">
+
+            <!-- Accounts Tab -->
+            <div class="tab-pane active" id="tabAccountsEdit">
+
+                <div class="content-section" style="height: 247px;">
+                    <table id="TableAccountsEdit">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- Selected Accounts Tab -->
+            <div class="tab-pane" id="tabSelectedEdit">
+
+                <div class="content-section" style="height: 247px;">
+                    <table id="TableSelectedEdit">
+                        <tr>
+                            <td />
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- END TAB CONTENT SECTION -->
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+        <div class="columns six">
+            <button class="btn" disabled="">Clear Selected</button>
+        </div>
+        <div class="columns six text-right">
+            <button class="btn" data-dismiss="modal">Cancel</button>
+            <button class="btn btn-primary">Save Changes</button>
+        </div>
+    </div>
+</div>
+<!-- END MODAL CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqgrid")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/jquery.tipTip.minified.js"></script>
+    <script>
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liReports').addClass('active');
+            $('#tabsNewGroup a:first').tab('show');
+
+            $("#TableGroups").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: 'auto',
+                colNames: ['Group Name', 'Actions'],
+                colModel: [
+                    { name: 'group', title: false, sortable: false },
+                    { name: 'actions', width: 100, fixed: true, align: 'center', title: false, sortable: false }
+                ],
+                data: [
+                    {
+                        'group': '[group name]',
+                        'actions': '<input id="buttonEditGroup" class="icon view-edit tip" title="View/Edit Group" type="button" value="View/Edit Group"><input class="icon delete tip" title="Delete Group" type="button" value="Delete Group">'
+                    }
+                ]
+            });
+
+            $('a[href="#tabSelected"]').on('shown', function (e) {
+                e.target
+                $("#TableSelected").jqGrid({
+                    datatype: "clientSide",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: '209',
+                    forceFit: true,
+                    scrollOffset: '17',
+                    multiselect: true,
+                    multiselectWidth: '34',
+                    recordpos: 'left',
+                    viewrecords: true,
+                    sortname: 'account',
+                    colNames: ['Account', 'Name', 'Fee Group', 'Equity', 'Balance'],
+                    colModel: [
+                        { name: 'account', title: false },
+                        { name: 'name', title: false },
+                        { name: 'fee', title: false },
+                        { name: 'equity', align: 'right', title: false },
+                        { name: 'balance', align: 'right', title: false }
+                    ],
+                    data: [
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        }
+                    ]
+                });
+            });
+
+            $("#TableAccounts").jqGrid({
+                datatype: "clientSide",
+                gridview: true,
+                altRows: true,
+                autowidth: true,
+                height: '209',
+                forceFit: true,
+                scrollOffset: '17',
+                multiselect: true,
+                multiselectWidth: '34',
+                recordpos: 'left',
+                viewrecords: true,
+                sortname: 'account',
+                colNames: ['Account', 'Name', 'Fee Group', 'Equity', 'Balance'],
+                colModel: [
+                    { name: 'account', title: false },
+                    { name: 'name', title: false },
+                    { name: 'fee', title: false },
+                    { name: 'equity', align: 'right', title: false },
+                    { name: 'balance', align: 'right', title: false }
+                ],
+                data: [
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    },
+                    {
+                        'account': '<a href="account-details.html">100-001-0000000</a>',
+                        'name': '[first name] [last name]',
+                        'fee': '[fee group]',
+                        'equity': '$0,00,000.00',
+                        'balance': '$0,00,000.00'
+                    }
+                ]
+            });
+
+            $('a[href="#tabAccountsEdit"]').on('shown', function (e) {
+                e.target
+                $("#TableAccountsEdit").jqGrid({
+                    datatype: "clientSide",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: '209',
+                    forceFit: true,
+                    scrollOffset: '17',
+                    multiselect: true,
+                    multiselectWidth: '34',
+                    recordpos: 'left',
+                    viewrecords: true,
+                    sortname: 'account',
+                    colNames: ['Account', 'Name', 'Fee Group', 'Equity', 'Balance'],
+                    colModel: [
+                        { name: 'account', title: false },
+                        { name: 'name', title: false },
+                        { name: 'fee', title: false },
+                        { name: 'equity', align: 'right', title: false },
+                        { name: 'balance', align: 'right', title: false }
+                    ],
+                    data: [
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        }
+                    ]
+                });
+            });
+
+            $('a[href="#tabSelectedEdit"]').on('shown', function (e) {
+                e.target
+                $("#TableSelectedEdit").jqGrid({
+                    datatype: "clientSide",
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: '209',
+                    forceFit: true,
+                    scrollOffset: '17',
+                    multiselect: true,
+                    multiselectWidth: '34',
+                    recordpos: 'left',
+                    viewrecords: true,
+                    sortname: 'account',
+                    colNames: ['Account', 'Name', 'Fee Group', 'Equity', 'Balance'],
+                    colModel: [
+                        { name: 'account', title: false },
+                        { name: 'name', title: false },
+                        { name: 'fee', title: false },
+                        { name: 'equity', align: 'right', title: false },
+                        { name: 'balance', align: 'right', title: false }
+                    ],
+                    data: [
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        },
+                        {
+                            'account': '<a href="account-details.html">100-001-0000000</a>',
+                            'name': '[first name] [last name]',
+                            'fee': '[fee group]',
+                            'equity': '$0,00,000.00',
+                            'balance': '$0,00,000.00'
+                        }
+                    ]
+                });
+            });
+
+            $('#buttonEditGroup').click(function (e) {
+                e.preventDefault();
+                $('#modalEditGroup').modal('show');
+                $('#tabsEditGroup a[href="#tabSelectedEdit"]').tab('show');
+            });
+
+            $('.tip').tipTip({ defaultPosition: 'top' });
+
+        });//End of ready
+    </script>
+}

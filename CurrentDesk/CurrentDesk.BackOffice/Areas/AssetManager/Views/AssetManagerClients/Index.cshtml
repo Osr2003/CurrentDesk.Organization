@@ -1,0 +1,192 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/AssetManager/Views/Shared/AssetManagerMaster.cshtml";
+}
+
+<!-- BEGIN CONTENT SECTION -->
+<div class="content-wrapper">
+    <!-- This <div> is for 2 column layouts and contains the left column content and a container for the right column background. -->
+    <div class="content-table1">
+
+        <!-- Page Title Bar -->
+        <div class="page-title">
+            <h1 class="clients">My Clients</h1>
+        </div>
+
+        <div class="select-barMyClients">
+            <select id="drpCategory" class="chzn-select width-150">
+                <!-- This first <option> is needed here for the Chosen plugin: http://harvesthq.github.com/chosen/ -->
+                <option></option>
+                <option value="1" selected="">Clients List</option>
+                <option value="2">Accounts List</option>
+            </select>
+        </div>
+
+        <!-- Clients List Section -->
+        <article id="artClientList">
+            <h2 class="inline-block">Clients List</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tblClients">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+
+        <!-- Accounts List Section -->
+        <article id="artAccList">
+            <h2 class="inline-block">Accounts List</h2>
+            <div class="content-section no-border-bottom">
+                <table id="tblAccounts">
+                    <tr>
+                        <td />
+                    </tr>
+                </table>
+            </div>
+        </article>
+    </div>
+</div>
+<!-- END CONTENT SECTION -->
+
+@section Scripts{
+    @Scripts.Render("~/bundles/choosen")
+    @Scripts.Render("~/bundles/jqgrid")
+
+    <script>
+
+        //Ready function
+        $(document).ready(function () {
+            $('.top-nav ul li#liMyClients').addClass('active');
+            $('select').chosen();
+            $('#artAccList').hide();
+            
+            //Load Clients List on page load
+            $('#drpCategory').trigger('change');
+
+        });//End of ready
+
+        //Onchange event of Category dropdown
+        $('#drpCategory').change(function () {
+            //If clients list selected
+            if ($('#drpCategory').val() == 1) {
+                $('#artClientList').show();
+                $('#artAccList').hide();
+
+                //Load all clients of IB
+                $("#tblClients").jqGrid({
+                    url: '/AssetManagerClients/GetClientsList',
+                    jsonReader: {
+                        root: "rows",
+                        page: "page",
+                        total: "total",
+                        records: "records",
+                        repeatitems: false,
+                        cell: "cell",
+                        id: "id",
+                        userdata: "userdata",
+                    },
+                    datatype: "json",
+                    sortname: 'AccountID',
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: 'auto',
+                    forceFit: true,
+                    sortable: true,
+                    loadonce: true,
+                    colNames: ['PK_ClientID', 'Activity', 'Account ID', 'First Name', 'Last Name', 'Company Name', 'Tags', 'Status'],
+                    colModel: [
+                        { name: 'PK_ClientID', hidden: true },
+                        {
+                            name: 'Activity', width: 75, fixed: true, align: 'center', title: false, search: false, formatter: function (cellValue, options, rowObject) {
+                                if (cellValue == 'active') {
+                                    return '<img src="../Images/activity-green.png" alt="" title="Active">'
+                                }
+                                else if (cellValue == 'inactive') {
+                                    return '<img src="../Images/activity-yellow.png" alt="" title="Inactive">'
+                                }
+                                else if (cellValue == 'dormant') {
+                                    return '<img src="../Images/activity-red.png" alt="" title="Dormant">'
+                                }
+                                else if (cellValue == 'new') {
+                                    return '<img src="../Images/activity-gray.png" alt="" title="New Account">'
+                                }
+                            }
+                        },
+                        {
+                            name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                                return "<a href='AssetManagerClients/ClientDetails?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue + "'>" + cellValue + "</a>"
+                            }
+                        },
+                        { name: 'FirstName', title: false },
+                        { name: 'LastName', title: false },
+                        { name: 'CompanyName', title: false },
+                        { name: 'tags', title: false },
+                        { name: 'Status', title: false, stype: false }
+                    ]
+                });
+
+                $("#tblClients").filterToolbar({
+                    searchOnEnter: true
+                });
+
+            }
+            //If accounts list selected
+            else if ($('#drpCategory').val() == 2) {
+                $('#artAccList').show();
+                $('#artClientList').hide();
+
+                //Load all accounts of clients of IB
+                $("#tblAccounts").jqGrid({
+                    url: '/AssetManagerClients/GetAccountList',
+                    jsonReader: {
+                        root: "rows",
+                        page: "page",
+                        total: "total",
+                        records: "records",
+                        repeatitems: false,
+                        cell: "cell",
+                        id: "id",
+                        userdata: "userdata",
+                    },
+                    datatype: "json",
+                    sortname: 'AccountID',
+                    gridview: true,
+                    altRows: true,
+                    autowidth: true,
+                    height: 'auto',
+                    forceFit: true,
+                    sortable: true,
+                    loadonce: true,
+                    colNames: ['PK_ClientID', 'Type', 'Account Number', 'First Name', 'Last Name', 'Company Name', 'Group', 'Equity'],
+                    colModel: [
+                        { name: 'PK_ClientID', hidden: true },
+                        { name: 'Type', width: 55, fixed: true, title: false, search: false, sortable: false },
+                        {
+                            name: 'AccountID', title: false, formatter: function (cellValue, options, rowObject) {
+                                if (cellValue.split('-')[1] != 000) {
+                                    return "<a href='AssetManagerClients/ClientAccountDetails?clientID=" + rowObject["PK_ClientID"] + "&accountNumber=" + cellValue + "&clientName=" + rowObject["FirstName"] + "@@" + rowObject["LastName"] + "'>" + cellValue + "</a>"
+                                }
+                                else {
+                                    return "<a href='AssetManagerClients/ClientAccounts?clientID=" + rowObject["PK_ClientID"] + "&accountID=" + cellValue.split('-')[2] + "&clientName=" + rowObject["FirstName"] + "@@" + rowObject["LastName"] + "'>" + cellValue + "</a>"
+                                }
+                            }
+                        },
+                        { name: 'FirstName', title: false },
+                        { name: 'LastName', title: false },
+                        { name: 'CompanyName', title: false },
+                        { name: 'Group', title: false },
+                        { name: 'Equity', title: false, search: false }
+                    ]
+                });
+
+                $("#tblAccounts").filterToolbar({
+                    searchOnEnter: true
+                });
+
+            }
+        });
+
+    </script>
+}
