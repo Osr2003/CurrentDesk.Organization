@@ -657,7 +657,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="accountType">accountType</param>
         /// <param name="userDisplayName">userDisplayName</param>
         /// <returns></returns>
-        public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName)
+        public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName, ref int organizationID)
         {
             try
             {
@@ -675,6 +675,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     {
                         accountType = (int)selectedClient.FK_AccountTypeID;
                         accountCode = (int)selectedClient.FK_AccountID;
+                        organizationID = selectedClient.FK_OrganizationID;
 
                         if (accountType == Constants.K_PARTNER_INDIVIDUAL)
                         {

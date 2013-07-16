@@ -26,6 +26,13 @@ namespace CurrentDesk.BackOffice.Security
     /// </summary>
     public static class LoginVerification
     {
+        /// <summary>
+        /// This action returns true if user is valid user
+        /// and sets required session values
+        /// </summary>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// <returns></returns>
         public static bool ValidateUser(string username, string password)
         {
             bool isValidated = false;
@@ -33,13 +40,14 @@ namespace CurrentDesk.BackOffice.Security
             int userType = 0;
             int userID = 0;
             int accountCode = 0;
+            int organizationID = 0;
             string userDisplayName = string.Empty;           
 
             try
             {               
 
                 var userBO = new UserBO();
-                isValidated = userBO.ValidateUser(username, password,ref userID , ref userType, ref accountType, ref accountCode, ref userDisplayName);
+                isValidated = userBO.ValidateUser(username, password,ref userID , ref userType, ref accountType, ref accountCode, ref userDisplayName, ref organizationID);
                 
                 //if true
                 if (isValidated)
@@ -69,6 +77,7 @@ namespace CurrentDesk.BackOffice.Security
                     SessionManagement.DisplayName = userDisplayName;
                     SessionManagement.ImageURL = GetImageURL(loginInfo.UserID);
                     SessionManagement.IsLoginAuthenticated = true;
+                    SessionManagement.OrganizationID = organizationID;
 
                     return true;
                 }
@@ -81,6 +90,11 @@ namespace CurrentDesk.BackOffice.Security
             }
         }
 
+        /// <summary>
+        /// This action returns image path of an user
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <returns></returns>
         public static string GetImageURL(int userID)
         {
             try

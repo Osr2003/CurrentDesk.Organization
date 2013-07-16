@@ -57,7 +57,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="accountType">accountType</param>
         /// <param name="userDisplayName">userDisplayName</param>
         /// <returns></returns>
-        public bool ValidateUser(string userName, string password, ref int userID, ref int userType, ref int accountType, ref int accountCode, ref string userDisplayName)
+        public bool ValidateUser(string userName, string password, ref int userID, ref int userType, ref int accountType, ref int accountCode, ref string userDisplayName, ref int organizationID)
         {
              var currentDeskSecurity = new CurrentDeskSecurity();
              try
@@ -84,12 +84,12 @@ namespace CurrentDesk.Repository.CurrentDesk
                              if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_LIVE)
                              {                                 
                                  var clientBO = new ClientBO();
-                                 return clientBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName);                                 
+                                 return clientBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName, ref organizationID);                                 
                              }
                              else if(selectedUsers.FK_UserTypeID == Constants.K_BROKER_PARTNER)
                              {
                                  var introducingBrokerBO = new IntroducingBrokerBO();
-                                 return introducingBrokerBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName);
+                                 return introducingBrokerBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName, ref organizationID);
                              }
                              else if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_ADMIN)
                              {
@@ -158,8 +158,8 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<User> userObjSet =
                       ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
 
-                    //Get all live and partnet clients
-                    var allClients = userObjSet.Where(usr => usr.FK_UserTypeID == Constants.K_BROKER_LIVE || usr.FK_UserTypeID == Constants.K_BROKER_PARTNER).Take(10).ToList();
+                    //Get all live and partner clients
+                    var allClients = userObjSet.Where(usr => usr.FK_UserTypeID == Constants.K_BROKER_LIVE || usr.FK_UserTypeID == Constants.K_BROKER_PARTNER).ToList();
 
                     //Get live and partner clients names with a/c numbers
                     var liveClients = clientBO.GetClientNames(allClients);
