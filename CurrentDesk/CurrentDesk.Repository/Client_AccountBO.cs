@@ -560,7 +560,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                             new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -658,7 +658,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                                 new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -680,6 +680,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         //Add landing acc
                         Client_Account newLandingAcc = new Client_Account();
                         newLandingAcc.FK_ClientID = existingUserAccNumber.FK_ClientID;
+                        newLandingAcc.FK_OrganizationID = existingUserAccNumber.FK_OrganizationID;
                         newLandingAcc.FK_CurrencyID = currID;
                         newLandingAcc.AccountNumber = existingUserAccNumber.AccountNumber;
                         newLandingAcc.LandingAccount = currencyBO.GetCurrencyAccountCode(currID) + "-" + existingUserAccNumber.LandingAccount.Split('-')[1] + "-" + existingUserAccNumber.LandingAccount.Split('-')[2];
@@ -731,6 +732,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         if (tradingAcc != null)
                         {
                             newTradingAcc.FK_ClientID = tradingAcc.FirstOrDefault().FK_ClientID;
+                            newTradingAcc.FK_OrganizationID = tradingAcc.FirstOrDefault().FK_OrganizationID;
                             newTradingAcc.FK_CurrencyID = currID;
                             newTradingAcc.LandingAccount = tradingAcc.FirstOrDefault().LandingAccount;
                             newTradingAcc.AccountNumber = tradingAcc.FirstOrDefault().AccountNumber;
@@ -752,6 +754,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         if (tradingAcc != null)
                         {
                             newTradingAcc.FK_IntroducingBrokerID = tradingAcc.FirstOrDefault().FK_IntroducingBrokerID;
+                            newTradingAcc.FK_OrganizationID = tradingAcc.FirstOrDefault().FK_OrganizationID;
                             newTradingAcc.FK_CurrencyID = currID;
                             newTradingAcc.LandingAccount = tradingAcc.FirstOrDefault().LandingAccount;
                             newTradingAcc.AccountNumber = tradingAcc.FirstOrDefault().AccountNumber;
@@ -806,6 +809,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         if (landingAcc != null)
                         {
                             newManagedAcc.FK_ClientID = landingAcc.FirstOrDefault().FK_ClientID;
+                            newManagedAcc.FK_OrganizationID = landingAcc.FirstOrDefault().FK_OrganizationID;
                             newManagedAcc.FK_CurrencyID = currID;
                             newManagedAcc.LandingAccount = landingAcc.FirstOrDefault().LandingAccount;
                             newManagedAcc.AccountNumber = landingAcc.FirstOrDefault().AccountNumber;
@@ -828,6 +832,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         if (landingAcc != null)
                         {
                             newManagedAcc.FK_IntroducingBrokerID = landingAcc.FirstOrDefault().FK_IntroducingBrokerID;
+                            newManagedAcc.FK_OrganizationID = landingAcc.FirstOrDefault().FK_OrganizationID;
                             newManagedAcc.FK_CurrencyID = currID;
                             newManagedAcc.LandingAccount = landingAcc.FirstOrDefault().LandingAccount;
                             newManagedAcc.AccountNumber = landingAcc.FirstOrDefault().AccountNumber;
@@ -1050,6 +1055,36 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method returns account details of 
+        /// a particular account
+        /// </summary>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public Client_Account GetAccountDetails(string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objeset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    return clientAccObjSet.Where(acc => acc.TradingAccount == accountNumber && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method adds or edit account name
         /// </summary>
         /// <param name="accName">accName</param>
@@ -1086,6 +1121,43 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method adds or edit account name
+        /// </summary>
+        /// <param name="accName">accName</param>
+        /// <param name="accNumber">accNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool SaveAccountName(string accName, string accNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objeset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    var account = clientAccObjSet.Where(acc => acc.TradingAccount == accNumber && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    if (account != null)
+                    {
+                        account.AccountName = accName;
+                        clientAccRepo.Save();
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method returns all dashboard accounts of user
         /// </summary>
         /// <param name="accType">accType</param>
@@ -1100,7 +1172,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                                 new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 

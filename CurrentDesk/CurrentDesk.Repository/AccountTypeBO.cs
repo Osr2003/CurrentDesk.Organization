@@ -118,5 +118,34 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
+
+        /// <summary>
+        /// This Function will return account type value and form type value
+        /// </summary>
+        /// <param name="formAccountType">formAccountType</param>
+        /// <returns></returns>
+        public AccountType GetAccountTypeAndFormTypeValue(int formAccountType)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var accountCurrencyRepo =
+                        new AccountTypeRepository(new EFRepository<AccountType>(), unitOfWork);
+
+                    ObjectSet<AccountType> currencyObjSet =
+                       ((CurrentDeskClientsEntities)accountCurrencyRepo.Repository.UnitOfWork.Context).AccountTypes;
+
+
+                    return
+                        currencyObjSet.Where(accur => accur.PK_AccountType == formAccountType).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
 	}
 }

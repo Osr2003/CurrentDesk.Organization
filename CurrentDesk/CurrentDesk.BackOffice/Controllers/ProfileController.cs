@@ -9,20 +9,17 @@
 #region
 using System.Web.Mvc;
 using CurrentDesk.BackOffice.Security;
-using System.Threading;
 using CurrentDesk.Common;
 using CurrentDesk.Repository.CurrentDesk;
 using CurrentDesk.BackOffice.Models;
 using System.Linq;
 using System;
-using System.Web.Profile;
 using System.Collections.Generic;
 using CurrentDesk.Models;
 using CurrentDesk.BackOffice.Models.Edit;
 using System.Web;
 using System.IO;
 using System.Web.Script.Serialization;
-using CurrentDesk.BackOffice.Models.Error;
 using CurrentDesk.Logging;
 using CurrentDesk.BackOffice.Custom;
 #endregion
@@ -69,52 +66,38 @@ namespace CurrentDesk.BackOffice.Controllers
 
         #endregion
 
-        [Authorize]
+        /// <summary>
+        /// This actions redirects to proper profile view as per account type
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
             try
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    //var loginInfo = System.Web.HttpContext.Current.Session["UserInfo"];
-                    //var accountType = ((LoginInformation)loginInfo).AccountType;
-
                     var loginInfo = SessionManagement.UserInfo;
                     var accountType = loginInfo.AccountType;
 
+                    //Get account type details
+                    var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue(accountType);
 
-                    //Get The Account Type
-                    //var clientBO = new ClientBO();
-                    //var accountType = (int)clientBO.GetClientInformation(Thread.CurrentPrincipal.Identity.Name).FK_AccountTypeID;
-
-                    if (accountType == Constants.K_LIVE_INDIVIDUAL)
+                    if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                     {
                         return RedirectToAction("IndividualProfile");
                     }
-                    else if (accountType == Constants.K_LIVE_JOINT)
+                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                     {
                         return RedirectToAction("JointProfile");
                     }
-                    else if (accountType == Constants.K_LIVE_CORPORATE)
+                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                     {
                         return RedirectToAction("CorporateProfile");
                     }
-                    else if (accountType == Constants.K_LIVE_TRUST)
+                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                     {
                         return RedirectToAction("TrustProfile");
                     }
-                    else if (accountType == Constants.K_PARTNER_INDIVIDUAL)
-                    {
-                        return RedirectToAction("PartnerIndividualProfile");
-                    }
-                    else if (accountType == Constants.K_PARTNER_JOINT)
-                    {
-                        return RedirectToAction("PartnerJointProfile");
-                    }
-                    else if (accountType == Constants.K_PARTNER_CORPORATE)
-                    {
-                        return RedirectToAction("PartnerCorporateProfile");
-                    }
                     else
                     {
                         return View("");
@@ -132,65 +115,20 @@ namespace CurrentDesk.BackOffice.Controllers
             }
         }
 
-        [Authorize]
-        public ActionResult PartnerIndex()
-        {
-            try
-            {
-                if (SessionManagement.UserInfo != null)
-                {
-                    var loginInfo = SessionManagement.UserInfo;
-                    var accountType = loginInfo.AccountType;
-
-                    //var loginInfo = System.Web.HttpContext.Current.Session["UserInfo"];
-                    //var accountType = ((LoginInformation)loginInfo).AccountType;
-
-                    //Get The Account Type
-                    //var introducingBrokerBO = new IntroducingBrokerBO();
-                    //var accountType = (int)introducingBrokerBO.GetClientInformation(Thread.CurrentPrincipal.Identity.Name).FK_AccountTypeID;
-
-
-                    if (accountType == Constants.K_PARTNER_INDIVIDUAL)
-                    {
-                        return RedirectToAction("PartnerIndividualProfile");
-                    }
-                    else if (accountType == Constants.K_PARTNER_JOINT)
-                    {
-                        return RedirectToAction("PartnerJointProfile");
-                    }
-                    else if (accountType == Constants.K_PARTNER_CORPORATE)
-                    {
-                        return RedirectToAction("PartnerCorporateProfile");
-                    }
-                    else
-                    {
-                        return View("");
-                    }
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                CurrentDeskLog.Error(ex.Message, ex);
-                return View("ErrorMessage");
-            }
-        }
-
-        [Authorize]
+        /// <summary>
+        /// This actions returns Individual profile view with required data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult IndividualProfile()
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     //Get Individual Account details for the user
                     var selectedClient = clientBO.GetIndividualAccountDetails(loginInfo.UserID);
@@ -273,18 +211,20 @@ namespace CurrentDesk.BackOffice.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// This actions returns Joint profile view with required data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult JointProfile()
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     //Get Joint Account details for the user
                     var selectedClient = clientBO.GetJointAccountDetails(loginInfo.UserID);
@@ -381,18 +321,20 @@ namespace CurrentDesk.BackOffice.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// This actions returns Corporate profile view with required data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult CorporateProfile()
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     var selectedResult = clientBO.GetCorporateAccountDetails(loginInfo.UserID);
                     var userInformation = selectedResult.User;
@@ -484,18 +426,20 @@ namespace CurrentDesk.BackOffice.Controllers
             }
         }
 
-        [Authorize]
+        /// <summary>
+        /// This actions returns Trust profile view with required data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult TrustProfile()
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     var selectedResult = clientBO.GetTrustAccountDetails(loginInfo.UserID);
                     var userInformation = selectedResult.User;
@@ -635,320 +579,6 @@ namespace CurrentDesk.BackOffice.Controllers
         }
 
         /// <summary>
-        /// This action gets partner individual profile
-        /// details and sends them to view
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public ActionResult PartnerIndividualProfile()
-        {
-            try
-            {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
-                if (SessionManagement.UserInfo != null)
-                {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                    //Get Individual Account details for the partner user
-                    var selectedClient = introducingBrokerBO.GetIndividualAccountDetails(loginInfo.UserID);
-                    var userInformation = selectedClient.User;
-                    var clientInformations = selectedClient.IndividualAccountInformations.FirstOrDefault();
-                    var bankInformationList = selectedClient.BankAccountInformations;
-                    var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
-                    var bankList = new List<BankAccountModel>();
-
-                    //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
-                    model.Title = clientInformations.Title != null ? (clientInformations.Title == "1" ? "Mr." : "Mrs.") : "";
-                    model.FirstName = clientInformations.FirstName ?? "";
-                    model.MiddleName = clientInformations.MiddleName ?? "";
-                    model.LastName = clientInformations.LastName ?? "";
-                    model.DobMonth = Convert.ToDateTime(clientInformations.BirthDate).Month.ToString("D2");
-                    model.DobDay = Convert.ToDateTime(clientInformations.BirthDate).Day.ToString("D2");
-                    model.DobYear = Convert.ToDateTime(clientInformations.BirthDate).Year;
-                    model.Gender = clientInformations.Gender != null ? (clientInformations.Gender == true ? "Male" : "Female") : "";
-                    model.Citizenship = clientInformations.FK_CitizenShipCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_CitizenShipCountryID) : "";
-                    model.IdInfo = clientInformations.FK_IDInformationID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_IDInformationID) : "";
-                    model.IdNumber = clientInformations.IDNumber != null ? clientInformations.IDNumber : "";
-                    model.ResidenceCountry = countryBO.GetSelectedCountry((int)clientInformations.FK_ResidenceCountryID);
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
-                    model.PhoneID = clientInformations.PhoneID ?? "";
-
-                    model.ResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
-                    model.ResidentialCity = clientInformations.ResidentialAddressCity ?? "";
-                    model.ResidentialCountry = clientInformations.FK_ResidentialAddressCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_ResidentialAddressCountryID) : "";
-                    model.ResidentialPostalCode = clientInformations.ResidentialAddressPostalCode ?? "";
-                    model.YearsInCurrentAdd = clientInformations.MonthsAtCurrentAddress != null ? (int)(clientInformations.MonthsAtCurrentAddress / 12) : 0;
-                    model.MonthsInCurrentAdd = clientInformations.MonthsAtCurrentAddress != null ? (int)(clientInformations.MonthsAtCurrentAddress % 12) : 0;
-                    model.PreviousAddLine1 = clientInformations.PreviousAddress != null ? (clientInformations.PreviousAddress.Split('@')[0] + " " + clientInformations.PreviousAddress.Split('@')[1]) : "";
-                    model.PreviousCity = clientInformations.PreviousAddressCity ?? "";
-                    model.PreviousCountry = clientInformations.FK_PreviousAddressCounrtyID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PreviousAddressCounrtyID) : "";
-                    model.PreviousPostalCode = clientInformations.PreviousAddressPostalCode ?? "";
-                    model.TelNumberCountryCode = string.IsNullOrWhiteSpace(clientInformations.TelephoneNumber.Split('-')[0] + clientInformations.TelephoneNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.TelephoneNumber.Split('-')[0]);
-                    model.TelNumber = string.IsNullOrWhiteSpace(clientInformations.TelephoneNumber.Split('-')[0] + clientInformations.TelephoneNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.TelephoneNumber.Split('-')[1]);
-                    model.MobileNumberCountryCode = string.IsNullOrWhiteSpace(clientInformations.MobileNumber.Split('-')[0] + clientInformations.MobileNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.MobileNumber.Split('-')[0]);
-                    model.MobileNumber = string.IsNullOrWhiteSpace(clientInformations.MobileNumber.Split('-')[0] + clientInformations.MobileNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.MobileNumber.Split('-')[1]);
-                    model.EmailAddress = userInformation.UserEmailID ?? "";
-
-                    if (bankInformationList != null)
-                    {
-                        foreach (var item in bankInformationList)
-                        {
-                            var bankAccountModel = new BankAccountModel()
-                            {
-                                BankAccountID = item.PK_BankAccountInformationID,
-                                BankName = item.BankName ?? "",
-                                AccountNumber = item.AccountNumber ?? "",
-                                BicOrSwiftCode = item.BicNumberOrSwiftCode ?? "",
-                                ReceivingBankInfoId = item.FK_ReceivingBankInformationID != null ? receivingBankInfoBO.GetSelectedRecievingBankInfo((int)item.FK_ReceivingBankInformationID) : "",
-                                ReceivingBankInfo = item.ReceivingBankInfo ?? "",
-                                BankAddLine1 = item.BankingAddress != null ? item.BankingAddress.Split('@')[0] : "",
-                                BankAddLine2 = item.BankingAddress != null ? item.BankingAddress.Split('@')[1] : "",
-                                BankCity = item.City ?? "",
-                                BankCountry = item.FK_CountryID != null ? countryBO.GetSelectedCountry((int)item.FK_CountryID) : "",
-                                BankPostalCode = item.PostalCode ?? ""
-                            };
-
-                            bankList.Add(bankAccountModel);
-                        }
-                        model.BankAccountModelList = bankList;
-                    }
-
-
-                    //Return IndividualProfile view with above model
-                    return View("IndividualProfile", model);
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                CurrentDeskLog.Error(ex.Message, ex);
-                return View("ErrorMessage");
-            }
-        }
-
-        /// <summary>
-        /// This action gets partner joint profile
-        /// details and sends them to view
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public ActionResult PartnerJointProfile()
-        {
-            try
-            {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
-                if (SessionManagement.UserInfo != null)
-                {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                    //Get Joint Account details for the partner user
-                    var selectedClient = introducingBrokerBO.GetJointAccountDetails(loginInfo.UserID);
-                    var userInformation = selectedClient.User;
-                    var clientInformations = selectedClient.JointAccountInformations.FirstOrDefault();
-                    var bankInformationList = selectedClient.BankAccountInformations;
-                    var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
-                    var bankList = new List<BankAccountModel>();
-
-                    //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
-                    model.PrimaryAccountHolderTitle = clientInformations.PrimaryAccountHolderTitle != null ? (clientInformations.PrimaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
-                    model.PrimaryAccountHolderFirstName = clientInformations.PrimaryAccountHolderFirstName ?? "";
-                    model.PrimaryAccountHolderMiddleName = clientInformations.PrimaryAccountHolderMiddleName ?? "";
-                    model.PrimaryAccountHolderLastName = clientInformations.PrimaryAccountHolderLastName ?? "";
-                    model.PrimaryAccountHolderDobMonth = Convert.ToDateTime(clientInformations.PrimaryAccountHolderBirthDate).Month.ToString("D2");
-                    model.PrimaryAccountHolderDobDay = Convert.ToDateTime(clientInformations.PrimaryAccountHolderBirthDate).Day.ToString("D2");
-                    model.PrimaryAccountHolderDobYear = Convert.ToDateTime(clientInformations.PrimaryAccountHolderBirthDate).Year;
-                    model.PrimaryAccountHolderGender = clientInformations.PrimaryAccountHolderGender != null ? (clientInformations.PrimaryAccountHolderGender == true ? "Male" : "Female") : "";
-                    model.PrimaryAccountHolderCitizenship = clientInformations.FK_PrimaryAccountHolderCitizenshipCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PrimaryAccountHolderCitizenshipCountryID) : "";
-                    model.PrimaryAccountHolderIdInfo = clientInformations.FK_PrimaryAccountHolderIDTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_PrimaryAccountHolderIDTypeID) : "";
-                    model.PrimaryAccountHolderIdNumber = clientInformations.PrimaryAccountHolderIDNumber ?? "";
-                    model.PrimaryAccountHolderResidenceCountry = clientInformations.FK_PrimaryAccountHolderResidenceCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PrimaryAccountHolderResidenceCountryID) : "";
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
-                    model.PhoneID = clientInformations.PhoneID ?? "";
-
-                    model.PrimaryAccountHolderResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
-                    model.PrimaryAccountHoldeResidentialCity = clientInformations.ResidentialAddressCity ?? "";
-                    model.PrimaryAccountHoldeResidentialCountry = clientInformations.FK_PrimaryAccountHolderResidenceCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PrimaryAccountHolderResidenceCountryID) : "";
-                    model.PrimaryAccountHoldeResidentialPostalCode = clientInformations.ResidentialAddressPostalCode ?? "";
-                    model.PrimaryAccountHoldeYearsInCurrentAdd = clientInformations.MonthsAtCurrentAddress != null ? (int)(clientInformations.MonthsAtCurrentAddress / 12) : 0;
-                    model.PrimaryAccountHoldeMonthsInCurrentAdd = clientInformations.MonthsAtCurrentAddress != null ? (int)(clientInformations.MonthsAtCurrentAddress % 12) : 0;
-                    model.PrimaryAccountHoldePreviousAddLine1 = clientInformations.PreviousAddress != null ? (clientInformations.PreviousAddress.Split('@')[0] + " " + clientInformations.PreviousAddress.Split('@')[1]) : "";
-                    model.PrimaryAccountHoldePreviousCity = clientInformations.PreviousAddressCity ?? "";
-                    model.PrimaryAccountHoldePreviousCountry = clientInformations.FK_PreviousAddressCounrtyID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PreviousAddressCounrtyID) : "";
-                    model.PrimaryAccountHoldePreviousPostalCode = clientInformations.PreviousAddressPostalCode ?? "";
-                    model.PrimaryAccountHoldeTelNumberCountryCode = string.IsNullOrWhiteSpace(clientInformations.TelephoneNumber.Split('-')[0] + clientInformations.TelephoneNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.TelephoneNumber.Split('-')[0]);
-                    model.PrimaryAccountHoldeTelNumber = string.IsNullOrWhiteSpace(clientInformations.TelephoneNumber.Split('-')[0] + clientInformations.TelephoneNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.TelephoneNumber.Split('-')[1]);
-                    model.PrimaryAccountHoldeMobileNumberCountryCode = string.IsNullOrWhiteSpace(clientInformations.MobileNumber.Split('-')[0] + clientInformations.MobileNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.MobileNumber.Split('-')[0]);
-                    model.PrimaryAccountHoldeMobileNumber = string.IsNullOrWhiteSpace(clientInformations.MobileNumber.Split('-')[0] + clientInformations.MobileNumber.Split('-')[1]) ? 0 : Convert.ToInt64(clientInformations.MobileNumber.Split('-')[1]);
-                    model.PrimaryAccountHoldeEmailAddress = userInformation.UserEmailID ?? "";
-
-                    model.SecondaryAccountHolderTitle = clientInformations.SecondaryAccountHolderTitle != null ? (clientInformations.SecondaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
-                    model.SecondaryAccountHolderFirstName = clientInformations.SecondaryAccountHolderFirstName ?? "";
-                    model.SecondaryAccountHolderMiddleName = clientInformations.SecondaryAccountHolderMiddleName ?? "";
-                    model.SecondaryAccountHolderLastName = clientInformations.SecondaryAccountHolderLastName ?? "";
-                    model.SecondaryAccountHolderDobMonth = Convert.ToDateTime(clientInformations.SecondaryAccountHolderBirthDate).Month.ToString("D2");
-                    model.SecondaryAccountHolderDobDay = Convert.ToDateTime(clientInformations.SecondaryAccountHolderBirthDate).Day.ToString("D2");
-                    model.SecondaryAccountHolderDobYear = Convert.ToDateTime(clientInformations.SecondaryAccountHolderBirthDate).Year;
-                    model.SecondaryAccountHolderGender = clientInformations.SecondaryAccountHolderGender != null ? (clientInformations.SecondaryAccountHolderGender == true ? "Male" : "Female") : "";
-                    model.SecondaryAccountHolderCitizenship = clientInformations.FK_SecondaryAccountHolderCitizenshipCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_SecondaryAccountHolderCitizenshipCountryID) : "";
-                    model.SecondaryAccountHolderIdInfo = clientInformations.FK_SecondaryAccountHolderIDTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_SecondaryAccountHolderIDTypeID) : "";
-                    model.SecondaryAccountHolderIdNumber = clientInformations.SecondaryAccountHolderIDNumber ?? "";
-                    model.SecondaryAccountHolderResidenceCountry = clientInformations.FK_SecondaryAccountHolderResidenceCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_SecondaryAccountHolderResidenceCountryID) : "";
-
-                    if (bankInformationList != null)
-                    {
-                        foreach (var item in bankInformationList)
-                        {
-                            var bankAccountModel = new BankAccountModel()
-                            {
-                                BankAccountID = item.PK_BankAccountInformationID,
-                                BankName = item.BankName ?? "",
-                                AccountNumber = item.AccountNumber ?? "",
-                                BicOrSwiftCode = item.BicNumberOrSwiftCode ?? "",
-                                ReceivingBankInfoId = item.FK_ReceivingBankInformationID != null ? receivingBankInfoBO.GetSelectedRecievingBankInfo((int)item.FK_ReceivingBankInformationID) : "",
-                                ReceivingBankInfo = item.ReceivingBankInfo ?? "",
-                                BankAddLine1 = item.BankingAddress != null ? item.BankingAddress.Split('@')[0] : "",
-                                BankAddLine2 = item.BankingAddress != null ? item.BankingAddress.Split('@')[1] : "",
-                                BankCity = item.City ?? "",
-                                BankCountry = item.FK_CountryID != null ? countryBO.GetSelectedCountry((int)item.FK_CountryID) : "",
-                                BankPostalCode = item.PostalCode ?? ""
-                            };
-
-                            bankList.Add(bankAccountModel);
-                        }
-                        model.BankAccountModelList = bankList;
-                    }
-
-                    //Return JointProfile view with above model
-                    return View("JointProfile", model);
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                CurrentDeskLog.Error(ex.Message, ex);
-                return View("ErrorMessage");
-            }
-        }
-
-        /// <summary>
-        /// This action gets partner corporate profile
-        /// details and sends them to view
-        /// </summary>
-        /// <returns></returns>
-        [Authorize]
-        public ActionResult PartnerCorporateProfile()
-        {
-            try
-            {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
-                if (SessionManagement.UserInfo != null)
-                {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                    //Get Corporate Account details for the partner user
-                    var selectedResult = introducingBrokerBO.GetCorporateAccountDetails(loginInfo.UserID);
-                    var userInformation = selectedResult.User;
-                    var corporateAccountInformation = selectedResult.CorporateAccountInformations.FirstOrDefault();
-                    var bankInformationList = selectedResult.BankAccountInformations;
-                    var clientAccInfo = selectedResult.Client_Account.FirstOrDefault();
-                    var bankList = new List<BankAccountModel>();
-
-                    //Assigning properties to CorporateAccountReviewModel object
-                    var corporateAccountReviewModel = new CorporateAccountReviewModel()
-                    {
-                        CompanyName = corporateAccountInformation.CompanyName,
-                        CompanyType = companyTypeValuesBO.GetSelectedCompany((int)corporateAccountInformation.FK_CompanyTypeID),
-                        CompanyAddLine1 = corporateAccountInformation.CompanyAddress.Split('@')[0] + " " + corporateAccountInformation.CompanyAddress.Split('@')[1],
-                        CompanyAddLine2 = "",
-                        CompanyCity = corporateAccountInformation.City,
-                        CompanyCountry = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_CompanyCountryID),
-                        CompanyPostalCode = corporateAccountInformation.CompanyPostalCode,
-                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "",
-                        PhoneID = corporateAccountInformation.PhoneID ?? "",
-
-                        AuthOfficerTitle = corporateAccountInformation.AuthOfficerTitle == "1" ? "Mr" : "Mrs",
-                        AuthOfficerFirstName = corporateAccountInformation.AuthOfficerFirstName,
-                        AuthOfficerMiddleName = corporateAccountInformation.AuthOfficerMiddleName,
-                        AuthOfficerLastName = corporateAccountInformation.AuthOfficerLastName,
-                        AuthOfficerDobMonth = ((DateTime)corporateAccountInformation.AuthOfficerBirthDate).Month.ToString("D2"),
-                        AuthOfficerDobDay = ((DateTime)corporateAccountInformation.AuthOfficerBirthDate).Day.ToString("D2"),
-                        AuthOfficerDobYear = ((DateTime)corporateAccountInformation.AuthOfficerBirthDate).Year,
-                        AuthOfficerGender = (bool)corporateAccountInformation.AuthOfficerGender ? "Male" : "Female",
-                        AuthOfficerCitizenship = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_AuthOfficerCitizenshipCountryID),
-                        AuthOfficerIdInfo = idInfoTypeBO.GetSelectedIDInformation((int)corporateAccountInformation.FK_AuthOfficerInformationTypeID),
-                        AuthOfficerIdNumber = corporateAccountInformation.AuthOfficerIDNumber,
-
-                        AuthOfficerResidenceCountry = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_AuthOfficerResidenceCountryID),
-                        AuthOfficerAddLine1 = corporateAccountInformation.AuthOfficerAddress.Split('@')[0] + " " + corporateAccountInformation.AuthOfficerAddress.Split('@')[1],
-                        AuthOfficerAddLine2 = "",
-                        AuthOfficerCity = corporateAccountInformation.AuthOfficerCity,
-                        AuthOfficerCountry = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_AuthOfficerCountryID),
-                        AuthOfficerPostalCode = corporateAccountInformation.AuthOfficerPostalCode,
-                        AuthOfficerTelNumberCountryCode = Convert.ToInt64(corporateAccountInformation.AuthOfficerTelephoneNumber.Split('-')[0]),
-                        AuthOfficerTelNumber = Convert.ToInt64(corporateAccountInformation.AuthOfficerTelephoneNumber.Split('-')[1]),
-                        AuthOfficerMobileNumberCountryCode = Convert.ToInt64(corporateAccountInformation.AuthOfficerMobileNumber.Split('-')[0]),
-                        AuthOfficerMobileNumber = Convert.ToInt64(corporateAccountInformation.AuthOfficerMobileNumber.Split('-')[1]),
-                        AuthOfficerEmailAddress = userInformation.UserEmailID,
-                        IsLive = false
-                    };
-
-                    if (bankInformationList != null)
-                    {
-                        foreach (var item in bankInformationList)
-                        {
-                            var bankAccountModel = new BankAccountModel()
-                            {
-                                BankAccountID = item.PK_BankAccountInformationID,
-                                BankName = item.BankName ?? "",
-                                AccountNumber = item.AccountNumber ?? "",
-                                BicOrSwiftCode = item.BicNumberOrSwiftCode ?? "",
-                                ReceivingBankInfoId = item.FK_ReceivingBankInformationID != null ? receivingBankInfoBO.GetSelectedRecievingBankInfo((int)item.FK_ReceivingBankInformationID) : "",
-                                ReceivingBankInfo = item.ReceivingBankInfo ?? "",
-                                BankAddLine1 = item.BankingAddress != null ? item.BankingAddress.Split('@')[0] : "",
-                                BankAddLine2 = item.BankingAddress != null ? item.BankingAddress.Split('@')[1] : "",
-                                BankCity = item.City ?? "",
-                                BankCountry = item.FK_CountryID != null ? countryBO.GetSelectedCountry((int)item.FK_CountryID) : "",
-                                BankPostalCode = item.PostalCode ?? ""
-                            };
-
-                            bankList.Add(bankAccountModel);
-                        }
-                        corporateAccountReviewModel.BankAccountModelList = bankList;
-                    }
-
-                    //Return CorporateProfile view with above model
-                    return View("CorporateProfile", corporateAccountReviewModel);
-                }
-                else
-                {
-                    return RedirectToAction("Login", "Account");
-                }
-            }
-            catch (Exception ex)
-            {
-                CurrentDeskLog.Error(ex.Message, ex);
-                return View("ErrorMessage");
-            }
-        }
-
-        /// <summary>
         /// This Function Will Update New Bank Information
         /// </summary>
         /// <param name="bankAccountModel">bankAccountModel</param>
@@ -1056,8 +686,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -1102,8 +730,6 @@ namespace CurrentDesk.BackOffice.Controllers
                     EmailAddress = model.EmailID
                 };
 
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -1147,8 +773,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -1193,8 +817,6 @@ namespace CurrentDesk.BackOffice.Controllers
                     EmailAddress = model.EmailID
                 };
 
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -1238,8 +860,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1249,7 +869,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         clientBO.UpdateTrustInformation(loginInfo.UserID, model.PhoneID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateTrustInformation(loginInfo.UserID, model.PhoneID);
@@ -1278,8 +898,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1289,7 +907,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         clientBO.UpdateTrusteeCmpyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateTrusteeCmpyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
@@ -1321,8 +939,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1332,7 +948,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         clientBO.UpdateTrusteeIndividualAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateTrusteeIndividualAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
@@ -1368,8 +984,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1379,7 +993,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         clientBO.UpdateCompanyInformation(loginInfo.UserID, model.PhoneID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateCompanyInformation(loginInfo.UserID, model.PhoneID);
@@ -1408,8 +1022,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1419,7 +1031,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         clientBO.UpdateCompanyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateCompanyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
@@ -1444,6 +1056,11 @@ namespace CurrentDesk.BackOffice.Controllers
 
         #endregion
 
+        /// <summary>
+        /// This actions adds new profile image of user
+        /// </summary>
+        /// <param name="file">file</param>
+        /// <returns></returns>
         [HttpPost]
         public string AddImage(HttpPostedFileBase file)
         {
@@ -1452,13 +1069,10 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (file.ContentLength > 0)
                 {
-                    //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                     if (SessionManagement.UserInfo != null)
                     {
                         var loginInfo = SessionManagement.UserInfo;
                       
-
                         //If there is a existing file with different extension delete
                         if (Directory.EnumerateFileSystemEntries(Server.MapPath("~/UploadedImages"), loginInfo.UserID + ".*").Any())
                         {
@@ -1499,8 +1113,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1510,8 +1122,8 @@ namespace CurrentDesk.BackOffice.Controllers
                     {
                         return Json(false);
                     }
-                    //Check if email present in Clients or IB
-                    return Json(userBO.CheckIfEmailExistsInUser(emailID));
+                    //Check if email present in Users table
+                    return Json(userBO.CheckIfEmailExistsInUser(emailID, (int)SessionManagement.OrganizationID));
                 }
 
                 return Json(true);
@@ -1531,9 +1143,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-
-                //var loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;

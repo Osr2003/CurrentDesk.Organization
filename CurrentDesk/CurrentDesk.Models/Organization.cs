@@ -471,6 +471,44 @@ public partial class Organization
     }
     private ICollection<AccountCreationRule> _accountCreationRules;
 
+
+
+    public virtual ICollection<User> Users
+    {
+        get
+        {
+            if (_users == null)
+            {
+
+                var newCollection = new FixupCollection<User>();
+                newCollection.CollectionChanged += FixupUsers;
+                _users = newCollection;
+
+            }
+            return _users;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_users, value))
+            {
+                var previousValue = _users as FixupCollection<User>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupUsers;
+                }
+                _users = value;
+                var newValue = value as FixupCollection<User>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupUsers;
+                }
+            }
+
+        }
+    }
+    private ICollection<User> _users;
+
         #endregion
 
         #region Association Fixup
@@ -761,6 +799,33 @@ public partial class Organization
         if (e.OldItems != null)
         {
             foreach (AccountCreationRule item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupUsers(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (User item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (User item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.Organization, this))

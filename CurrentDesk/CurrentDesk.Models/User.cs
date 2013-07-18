@@ -88,6 +88,45 @@ public partial class User
 
     private Nullable<int> _fK_UserTypeID;
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            try
+            {
+                _settingFK = true;
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
@@ -756,6 +795,24 @@ public partial class User
     }
     private ICollection<ConversionActivity> _conversionActivities1;
 
+
+
+    public virtual Organization Organization
+    {
+
+        get { return _organization; }
+        set
+        {
+            if (!ReferenceEquals(_organization, value))
+            {
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
+            }
+        }
+    }
+    private Organization _organization;
+
         #endregion
 
         #region Association Fixup
@@ -793,6 +850,33 @@ public partial class User
         {
 
             FK_UserTypeID = null;
+
+        }
+
+    }
+
+
+    private void FixupOrganization(Organization previousValue)
+    {
+
+        if (previousValue != null && previousValue.Users.Contains(this))
+        {
+            previousValue.Users.Remove(this);
+        }
+
+
+        if (Organization != null)
+        {
+            if (!Organization.Users.Contains(this))
+            {
+                Organization.Users.Add(this);
+            }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
 
         }
 

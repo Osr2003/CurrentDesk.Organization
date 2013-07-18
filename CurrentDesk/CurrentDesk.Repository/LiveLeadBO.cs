@@ -239,8 +239,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns true if passed emailID exists in LiveLead table
         /// </summary>
         /// <param name="emailID">emailID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns>bool</returns>
-        public bool CheckIfEmailExistsInLiveLead(string emailID)
+        public bool CheckIfEmailExistsInLiveLead(string emailID, int organizationID)
         {
             try
             {
@@ -254,7 +255,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                       ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
 
                     //Return true if email id exists else false                   
-                    return liveLeadObjSet.Where(lead => lead.EmailAddress == emailID).FirstOrDefault() != null ? true : false;
+                    return liveLeadObjSet.Where(lead => lead.EmailAddress == emailID && lead.FK_OrganizationID == organizationID).FirstOrDefault() != null ? true : false;
                 }
             }
             catch(Exception ex)

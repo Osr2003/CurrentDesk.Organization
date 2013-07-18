@@ -252,7 +252,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var transferLogRepo =
                      new TransferLogRepository(new EFRepository<TransferLog>(), unitOfWork);
 
-                    //Creating TransferLog Objectset to Query
+                    //Creating TransferLog ObjectSet to Query
                     ObjectSet<TransferLog> transferLogObjSet =
                       ((CurrentDeskClientsEntities)transferLogRepo.Repository.UnitOfWork.Context).TransferLogs;
 

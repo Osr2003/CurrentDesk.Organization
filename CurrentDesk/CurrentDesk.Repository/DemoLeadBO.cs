@@ -189,7 +189,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="emailID">emailID</param>
         /// <returns>bool</returns>
-        public bool CheckIfEmailExistsInDemoLead(string emailID)
+        public bool CheckIfEmailExistsInDemoLead(string emailID, int organizationID)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                       ((CurrentDeskClientsEntities)demoLeadRepo.Repository.UnitOfWork.Context).DemoLeads;
 
                     //Return true if email id exists else false                   
-                    return demoLeadObjSet.Where(lead => lead.EmailAddress == emailID).FirstOrDefault() != null ? true : false;
+                    return demoLeadObjSet.Where(lead => lead.EmailAddress == emailID && lead.FK_OrganizationID == organizationID).FirstOrDefault() != null ? true : false;
                 }
             }
             catch(Exception ex)

@@ -139,6 +139,36 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method returns true if passed emailID exists in Users table
+        /// </summary>
+        /// <param name="emailID">emailID</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns>bool</returns>
+        public bool CheckIfEmailExistsInUser(string emailID, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var userRepo =
+                          new UserRepository(new EFRepository<User>(), unitOfWork);
+
+
+                    ObjectSet<User> userObjSet =
+                      ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
+
+                    //Return true if email id exists else false                   
+                    return userObjSet.Where(usr => usr.UserEmailID == emailID && usr.FK_OrganizationID == organizationID).FirstOrDefault() != null ? true : false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return true;
+            }
+        }
+
+        /// <summary>
         /// This method returns all clients of broker with name and account number
         /// </summary>
         /// <returns></returns>

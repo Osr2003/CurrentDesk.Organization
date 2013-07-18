@@ -891,6 +891,10 @@
             <End Role="L_TrusteeTypeValue" EntitySet="L_TrusteeTypeValue" />
             <End Role="TrustAccountInformation" EntitySet="TrustAccountInformation" />
           </AssociationSet>
+          <AssociationSet Name="FK_Users_Organization" Association="CurrentDeskClientsModel.Store.FK_Users_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AccountActivity">
           <Key>
@@ -2173,6 +2177,7 @@
           <Property Name="UserEmailID" Type="nvarchar" MaxLength="100" />
           <Property Name="Password" Type="nvarchar" MaxLength="100" />
           <Property Name="FK_UserTypeID" Type="int" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK__AccountAc__Curre__5FB337D6">
           <End Role="L_CurrencyValue" Type="CurrentDeskClientsModel.Store.L_CurrencyValue" Multiplicity="0..1" />
@@ -4586,6 +4591,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Users_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="Users" Type="CurrentDeskClientsModel.Store.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="GetCFDTradesVolumeByDay" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="IntroducingBrokerID" Type="int" Mode="In" />
           <Parameter Name="FromDate" Type="bigint" Mode="In" />
@@ -5520,6 +5537,10 @@
           <AssociationSet Name="FK_AccountCreationRules_Organization" Association="CurrentDeskClientsModel.FK_AccountCreationRules_Organization">
             <End Role="Organization" EntitySet="Organizations" />
             <End Role="AccountCreationRule" EntitySet="AccountCreationRules" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Organization" Association="CurrentDeskClientsModel.FK_Users_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="User" EntitySet="Users" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AccountCurrency">
@@ -7631,6 +7652,8 @@
           <NavigationProperty Name="TransferActivities1" Relationship="CurrentDeskClientsModel.FK__TransferA__FK_To__03DB89B3" FromRole="User" ToRole="TransferActivity" />
           <NavigationProperty Name="ConversionActivities" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_Fr__06B7F65E" FromRole="User" ToRole="ConversionActivity" />
           <NavigationProperty Name="ConversionActivities1" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_To__05C3D225" FromRole="User" ToRole="ConversionActivity" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_Users_Organization" FromRole="User" ToRole="Organization" />
         </EntityType>
         <Association Name="FK__AssetMana__FK_Us__7A3223E8">
           <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
@@ -9282,6 +9305,7 @@
           <NavigationProperty Name="IntroducingBrokers" Relationship="CurrentDeskClientsModel.FK_IntroducingBrokers_Organization" FromRole="Organization" ToRole="IntroducingBroker" />
           <NavigationProperty Name="Client_Account" Relationship="CurrentDeskClientsModel.FK_Client_Account_Organization" FromRole="Organization" ToRole="Client_Account" />
           <NavigationProperty Name="AccountCreationRules" Relationship="CurrentDeskClientsModel.FK_AccountCreationRules_Organization" FromRole="Organization" ToRole="AccountCreationRule" />
+          <NavigationProperty Name="Users" Relationship="CurrentDeskClientsModel.FK_Users_Organization" FromRole="Organization" ToRole="User" />
         </EntityType>
         <Association Name="FK_AccountCurrency_OrganizationID">
           <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
@@ -9617,6 +9641,18 @@
               <PropertyRef Name="PK_OrganizationID" />
             </Principal>
             <Dependent Role="AccountCreationRule">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="User">
               <PropertyRef Name="FK_OrganizationID" />
             </Dependent>
           </ReferentialConstraint>
@@ -10277,6 +10313,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
                 <ScalarProperty Name="FK_UserTypeID" ColumnName="FK_UserTypeID" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="UserEmailID" ColumnName="UserEmailID" />
@@ -13805,6 +13842,7 @@
         <AssociationConnector Association="CurrentDeskClientsModel.FK_R_AssetManager_ClientAccount_Trader_ClientAccount" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.AccountCreationRule" Width="1.5" PointX="0.36545760574073416" PointY="0.30584560348924511" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK_AccountCreationRules_Organization" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_Users_Organization" />
         </Diagram>
     </Diagrams>
   </Designer>

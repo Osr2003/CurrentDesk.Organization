@@ -5,7 +5,7 @@
 * Date          :- 2nd Jan 2013
 * Modified Date :- 16th April 2013
 * Description   :- This file will deal with all the 
-                   opertion related to all the account signup(live trust individual corpoarate)
+                   operation related to all the account signup(live trust individual corporate)
 ****************************************************************/
 
 
@@ -593,7 +593,7 @@ namespace CurrentDesk.BackOffice.Controllers
         }
 
         /// <summary>
-        /// Inser Individual Live Information
+        /// Insert Individual Live Information
         /// </summary>
         /// <param name="model"></param>
         public void InsertLiveJointInformation(JointAccountModel jointAccountModel)
@@ -621,6 +621,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_LIVE;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
                 
@@ -969,6 +970,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_LIVE;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
                 
@@ -1292,7 +1294,7 @@ namespace CurrentDesk.BackOffice.Controllers
         }
 
         /// <summary>
-        /// Inser Individual Live Information
+        /// Insert Individual Live Information
         /// </summary>
         /// <param name="model"></param>
         public void InsertLiveIndividualInformation(IndividualAccountModel model)
@@ -1320,6 +1322,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_LIVE;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
 
@@ -1615,6 +1618,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_LIVE;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
                 
@@ -2101,6 +2105,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_PARTNER;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
 
@@ -2480,6 +2485,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_PARTNER;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
 
@@ -2861,6 +2867,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 newUser.UserEmailID = liveLead.EmailAddress;
                 newUser.Password = liveLead.Password;
                 newUser.FK_UserTypeID = Constants.K_BROKER_PARTNER;
+                newUser.FK_OrganizationID = (int)organizationID;
 
                 userBO.AddNewUser(newUser);
 
@@ -3180,14 +3187,14 @@ namespace CurrentDesk.BackOffice.Controllers
         /// <summary>
         /// This action returns false if emailID already exists in Users table
         /// </summary>
-        /// <param name="emailID">emailID</param>
+        /// <param name="UserEmail">UserEmail</param>
         /// <returns></returns>
         public ActionResult CheckIfDuplicateEmail(string UserEmail)
         {
             try
             {
                 //Check if email present in Users or LiveLead table
-                return Json(!(userBO.CheckIfEmailExistsInUser(UserEmail) || liveLeadBO.CheckIfEmailExistsInLiveLead(UserEmail)), JsonRequestBehavior.AllowGet);
+                return Json(!(userBO.CheckIfEmailExistsInUser(UserEmail, (int)SessionManagement.OrganizationID) || liveLeadBO.CheckIfEmailExistsInLiveLead(UserEmail, (int)SessionManagement.OrganizationID)), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -3199,14 +3206,14 @@ namespace CurrentDesk.BackOffice.Controllers
         /// <summary>
         /// This action returns false if emailID already exists in DemoLead table
         /// </summary>
-        /// <param name="emailID">emailID</param>
+        /// <param name="EmailAddress">EmailAddress</param>
         /// <returns></returns>
         public ActionResult CheckIfDuplicateDemoAccountEmail(string EmailAddress)
         {
             try
             {
                 //Check if email present in DemoLead table
-                return Json(!demoLeadBO.CheckIfEmailExistsInDemoLead(EmailAddress), JsonRequestBehavior.AllowGet);
+                return Json(!demoLeadBO.CheckIfEmailExistsInDemoLead(EmailAddress, (int)SessionManagement.OrganizationID), JsonRequestBehavior.AllowGet);
             }
             catch(Exception ex)
             {

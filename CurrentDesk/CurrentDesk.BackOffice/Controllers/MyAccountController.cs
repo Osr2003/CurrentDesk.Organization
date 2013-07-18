@@ -66,11 +66,12 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    int organizationID = (int)SessionManagement.OrganizationID;
                     string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID).TrimEnd('/').Split('/');
 
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, organizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
                     ViewData["AccountCode"] = new SelectList(accountCodeBO.GetSelectedAccount(Constants.K_BROKER_LIVE), "PK_AccountID", "AccountName");
-                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
+                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE, organizationID), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
 
                     MyAccountModel currModel = new MyAccountModel();
                     currModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
@@ -109,10 +110,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                //TODO EXCEPTION HNDLING WITH SESSION MANAGEMENT
-
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 LoginInformation loginInfo = SessionManagement.UserInfo;
                 return clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID);
 
@@ -316,12 +313,12 @@ namespace CurrentDesk.BackOffice.Controllers
         /// </summary>
         /// <param name="currencyID">currencyID</param>
         /// <returns></returns>
-        public ActionResult GetAccountInformtion(string currencyID)
+        public ActionResult GetAccountInformtion(int currencyID)
         {
             try
             {
                 LoginInformation loginInfo = SessionManagement.UserInfo;
-                var tradingAccs = clientAccBo.GetAllTradingAccountsForCurrency(loginInfo.LogAccountType, loginInfo.UserID, Convert.ToInt32(currencyID));
+                var tradingAccs = clientAccBo.GetAllTradingAccountsForCurrency(loginInfo.LogAccountType, loginInfo.UserID, currencyID);
 
                 List<CurrencyAccountModel> tradingAccList = new List<CurrencyAccountModel>();
 
@@ -338,7 +335,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         {
                             accModel.Account = acc.TradingAccount + "<br/>Trading Account";
                         }
-                        if (acc.FK_PlatformID == Constants.K_META_TRADER)
+                        if (tradingPlatformBO.GetTradingPlatformLookUpID((int)acc.FK_PlatformID) == Constants.K_META_TRADER_ID)
                         {
                             accModel.Type = "<img src='../Images/account-metatrader.png' title='MetaTrader 4' alt='MetaTrader 4'>";
                         }
@@ -401,7 +398,7 @@ namespace CurrentDesk.BackOffice.Controllers
 
                     int accCreationResult = clientAccBo.CreateNewTraderLandingAccount(loginInfo.UserID, currLookupValue);
 
-                    //If landing account creation successfull
+                    //If landing account creation successful
                     if (accCreationResult != 0)
                     {
                         //Logs new account creation in db
@@ -487,7 +484,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     AccountDetailsModel model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
-                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber);
+                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber, (int)SessionManagement.OrganizationID);
                     var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber);
 
                     System.Globalization.NumberFormatInfo nfi;
@@ -539,7 +536,7 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    return Json(clientAccBo.SaveAccountName(accountName, accNumber));
+                    return Json(clientAccBo.SaveAccountName(accountName, accNumber, (int)SessionManagement.OrganizationID));
                 }
                 else
                 {
@@ -565,7 +562,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
@@ -672,7 +669,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
