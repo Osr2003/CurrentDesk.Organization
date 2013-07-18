@@ -11,11 +11,10 @@
 
 #region Namespace Used
 using CurrentDesk.BackOffice.Custom;
-using CurrentDesk.BackOffice.Filters;
-using CurrentDesk.BackOffice.Models.Error;
 using CurrentDesk.BackOffice.Models.MyAccount;
 using CurrentDesk.BackOffice.Models.Transfers;
 using CurrentDesk.BackOffice.Security;
+using CurrentDesk.BackOffice.Utilities;
 using CurrentDesk.Common;
 using CurrentDesk.Logging;
 using CurrentDesk.Models;
@@ -24,7 +23,6 @@ using CurrentDesk.Repository.CurrentDesk;
 using Microsoft.ApplicationServer.Caching;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -75,11 +73,7 @@ namespace CurrentDesk.BackOffice.Controllers
 
                     MyAccountModel currModel = new MyAccountModel();
                     currModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
+                    
                     foreach (var curr in currencyIds)
                     {
                         MyAccountCurrencyModel model = new MyAccountCurrencyModel();
@@ -88,7 +82,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
                         model.CurrencyImage = lCurrValueBO.GetCurrencyImageClass(Convert.ToInt32(curr));
                         model.LandingAccount = landingAccDetails.LandingAccount;
-                        model.LAccBalance = String.Format(nfi, "{0:C}", landingAccDetails.CurrentBalance);
+                        model.LAccBalance = Utility.FormatCurrencyValue((decimal)landingAccDetails.CurrentBalance, "");
                         currModel.CurrencyAccountDetails.Add(model);
                     }
 
@@ -353,13 +347,10 @@ namespace CurrentDesk.BackOffice.Controllers
                         accModel.Type = "<img src='../Images/account-managed.png' title='Managed Account' alt='Managed Account'>";
                     }
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-                    accModel.Balance = String.Format(nfi, "{0:C}", acc.CurrentBalance);
+                    accModel.Balance = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
 
                     accModel.Floating = "10,000.00";
-                    accModel.Equity = acc.Equity != null ? String.Format(nfi, "{0:C}", acc.Equity) : "NA";
+                    accModel.Equity = acc.Equity != null ? Utility.FormatCurrencyValue((decimal)acc.Equity, "") : "NA";
                     accModel.Change = "1.42";
                     accModel.IsTradingAccount = acc.IsTradingAccount;
                     accModel.PlatFormLogin = acc.PlatformLogin ?? 0;
@@ -482,28 +473,26 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
                     AccountDetailsModel model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
-                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber, (int)SessionManagement.OrganizationID);
-                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber);
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
+                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
+                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber, organizationID);
 
                     foreach (var tran in latestTransactions)
                     {
                         TransferLogDetails log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
-                        log.TransactionAmount = String.Format(nfi, "{0:C}", tran.Amount);
+                        log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
                         model.TransferLogDetails.Add(log);
                     }
 
                     model.AccountNumber = accountNumber;
 
-                    model.Balance = String.Format(nfi, "{0:C}", accountDetails.CurrentBalance);
-                    model.Equity = accountDetails.Equity != null ? String.Format(nfi, "{0:C}", accountDetails.Equity) : "NA";
+                    model.Balance = Utility.FormatCurrencyValue((decimal)accountDetails.CurrentBalance, "");
+                    model.Equity = accountDetails.Equity != null ? Utility.FormatCurrencyValue((decimal)accountDetails.Equity, "") : "NA";
 
                     model.AccountName = accountDetails.AccountName;
                     model.IsTradingAcc = accountDetails.IsTradingAccount;
@@ -587,10 +576,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }
@@ -695,10 +681,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }

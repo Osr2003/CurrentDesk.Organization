@@ -509,6 +509,196 @@ public partial class Organization
     }
     private ICollection<User> _users;
 
+
+
+    public virtual ICollection<TransactionSetting> TransactionSettings
+    {
+        get
+        {
+            if (_transactionSettings == null)
+            {
+
+                var newCollection = new FixupCollection<TransactionSetting>();
+                newCollection.CollectionChanged += FixupTransactionSettings;
+                _transactionSettings = newCollection;
+
+            }
+            return _transactionSettings;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_transactionSettings, value))
+            {
+                var previousValue = _transactionSettings as FixupCollection<TransactionSetting>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupTransactionSettings;
+                }
+                _transactionSettings = value;
+                var newValue = value as FixupCollection<TransactionSetting>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupTransactionSettings;
+                }
+            }
+
+        }
+    }
+    private ICollection<TransactionSetting> _transactionSettings;
+
+
+
+    public virtual ICollection<FundingSource> FundingSources
+    {
+        get
+        {
+            if (_fundingSources == null)
+            {
+
+                var newCollection = new FixupCollection<FundingSource>();
+                newCollection.CollectionChanged += FixupFundingSources;
+                _fundingSources = newCollection;
+
+            }
+            return _fundingSources;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_fundingSources, value))
+            {
+                var previousValue = _fundingSources as FixupCollection<FundingSource>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupFundingSources;
+                }
+                _fundingSources = value;
+                var newValue = value as FixupCollection<FundingSource>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupFundingSources;
+                }
+            }
+
+        }
+    }
+    private ICollection<FundingSource> _fundingSources;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
+
+
+
+    public virtual ICollection<Transaction> Transactions
+    {
+        get
+        {
+            if (_transactions == null)
+            {
+
+                var newCollection = new FixupCollection<Transaction>();
+                newCollection.CollectionChanged += FixupTransactions;
+                _transactions = newCollection;
+
+            }
+            return _transactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_transactions, value))
+            {
+                var previousValue = _transactions as FixupCollection<Transaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupTransactions;
+                }
+                _transactions = value;
+                var newValue = value as FixupCollection<Transaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<Transaction> _transactions;
+
+
+
+    public virtual ICollection<TransferLog> TransferLogs
+    {
+        get
+        {
+            if (_transferLogs == null)
+            {
+
+                var newCollection = new FixupCollection<TransferLog>();
+                newCollection.CollectionChanged += FixupTransferLogs;
+                _transferLogs = newCollection;
+
+            }
+            return _transferLogs;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_transferLogs, value))
+            {
+                var previousValue = _transferLogs as FixupCollection<TransferLog>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupTransferLogs;
+                }
+                _transferLogs = value;
+                var newValue = value as FixupCollection<TransferLog>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupTransferLogs;
+                }
+            }
+
+        }
+    }
+    private ICollection<TransferLog> _transferLogs;
+
         #endregion
 
         #region Association Fixup
@@ -826,6 +1016,141 @@ public partial class Organization
         if (e.OldItems != null)
         {
             foreach (User item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupTransactionSettings(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (TransactionSetting item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (TransactionSetting item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupFundingSources(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (FundingSource item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (FundingSource item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (Transaction item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (Transaction item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.Organization, this))
+                {
+                    item.Organization = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupTransferLogs(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (TransferLog item in e.NewItems)
+            {
+
+                item.Organization = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (TransferLog item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.Organization, this))

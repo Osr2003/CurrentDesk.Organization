@@ -115,6 +115,45 @@ public partial class TransferLog
 
     private Nullable<int> _fK_TransactionID;
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            try
+            {
+                _settingFK = true;
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
@@ -136,6 +175,24 @@ public partial class TransferLog
         }
     }
     private Transaction _transaction;
+
+
+
+    public virtual Organization Organization
+    {
+
+        get { return _organization; }
+        set
+        {
+            if (!ReferenceEquals(_organization, value))
+            {
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
+            }
+        }
+    }
+    private Organization _organization;
 
         #endregion
 
@@ -174,6 +231,33 @@ public partial class TransferLog
         {
 
             FK_TransactionID = null;
+
+        }
+
+    }
+
+
+    private void FixupOrganization(Organization previousValue)
+    {
+
+        if (previousValue != null && previousValue.TransferLogs.Contains(this))
+        {
+            previousValue.TransferLogs.Remove(this);
+        }
+
+
+        if (Organization != null)
+        {
+            if (!Organization.TransferLogs.Contains(this))
+            {
+                Organization.TransferLogs.Add(this);
+            }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
 
         }
 

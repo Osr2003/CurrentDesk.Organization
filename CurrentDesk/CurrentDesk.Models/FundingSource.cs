@@ -361,48 +361,49 @@ public partial class FundingSource
 
     private Nullable<int> _fK_OutgoingWireFeeCurrency;
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            try
+            {
+                _settingFK = true;
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
     
-
-
-    public virtual ICollection<AdminTransaction> AdminTransactions
-    {
-        get
-        {
-            if (_adminTransactions == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions;
-                _adminTransactions = newCollection;
-
-            }
-            return _adminTransactions;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions, value))
-            {
-                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions;
-                }
-                _adminTransactions = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions;
-
 
 
     public virtual L_Country L_Country
@@ -530,6 +531,62 @@ public partial class FundingSource
         }
     }
     private L_CurrencyValue _l_CurrencyValue1;
+
+
+
+    public virtual Organization Organization
+    {
+
+        get { return _organization; }
+        set
+        {
+            if (!ReferenceEquals(_organization, value))
+            {
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
+            }
+        }
+    }
+    private Organization _organization;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
 
         #endregion
 
@@ -714,30 +771,30 @@ public partial class FundingSource
     }
 
 
-    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    private void FixupOrganization(Organization previousValue)
     {
-        if (e.NewItems != null)
+
+        if (previousValue != null && previousValue.FundingSources.Contains(this))
         {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.FundingSource = this;
-
-            }
+            previousValue.FundingSources.Remove(this);
         }
 
-        if (e.OldItems != null)
+
+        if (Organization != null)
         {
-            foreach (AdminTransaction item in e.OldItems)
+            if (!Organization.FundingSources.Contains(this))
             {
-
-                if (ReferenceEquals(item.FundingSource, this))
-                {
-                    item.FundingSource = null;
-                }
-
+                Organization.FundingSources.Add(this);
             }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
+
         }
+
     }
 
 
@@ -756,6 +813,33 @@ public partial class FundingSource
         if (e.OldItems != null)
         {
             foreach (FundingSourceAcceptedCurrency item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.FundingSource, this))
+                {
+                    item.FundingSource = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.FundingSource = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.FundingSource, this))

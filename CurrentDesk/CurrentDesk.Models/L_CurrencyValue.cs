@@ -245,44 +245,6 @@ public partial class L_CurrencyValue
 
 
 
-    public virtual ICollection<AdminTransaction> AdminTransactions
-    {
-        get
-        {
-            if (_adminTransactions == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions;
-                _adminTransactions = newCollection;
-
-            }
-            return _adminTransactions;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions, value))
-            {
-                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions;
-                }
-                _adminTransactions = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions;
-
-
-
     public virtual ICollection<FundingSourceAcceptedCurrency> FundingSourceAcceptedCurrencies
     {
         get
@@ -435,44 +397,6 @@ public partial class L_CurrencyValue
 
 
 
-    public virtual ICollection<AdminTransaction> AdminTransactions1
-    {
-        get
-        {
-            if (_adminTransactions1 == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions1;
-                _adminTransactions1 = newCollection;
-
-            }
-            return _adminTransactions1;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions1, value))
-            {
-                var previousValue = _adminTransactions1 as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions1;
-                }
-                _adminTransactions1 = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions1;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions1;
-
-
-
     public virtual ICollection<DepositOrWithdrawActivity> DepositOrWithdrawActivities
     {
         get
@@ -546,6 +470,82 @@ public partial class L_CurrencyValue
         }
     }
     private ICollection<Client_Account> _client_Account;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions1
+    {
+        get
+        {
+            if (_adminTransactions1 == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions1;
+                _adminTransactions1 = newCollection;
+
+            }
+            return _adminTransactions1;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions1, value))
+            {
+                var previousValue = _adminTransactions1 as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions1;
+                }
+                _adminTransactions1 = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions1;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions1;
 
         #endregion
 
@@ -687,33 +687,6 @@ public partial class L_CurrencyValue
     }
 
 
-    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.L_CurrencyValue = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.L_CurrencyValue, this))
-                {
-                    item.L_CurrencyValue = null;
-                }
-
-            }
-        }
-    }
-
-
     private void FixupFundingSourceAcceptedCurrencies(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -822,33 +795,6 @@ public partial class L_CurrencyValue
     }
 
 
-    private void FixupAdminTransactions1(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.L_CurrencyValue1 = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.L_CurrencyValue1, this))
-                {
-                    item.L_CurrencyValue1 = null;
-                }
-
-            }
-        }
-    }
-
-
     private void FixupDepositOrWithdrawActivities(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -896,6 +842,60 @@ public partial class L_CurrencyValue
                 if (ReferenceEquals(item.L_CurrencyValue, this))
                 {
                     item.L_CurrencyValue = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.L_CurrencyValue = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.L_CurrencyValue, this))
+                {
+                    item.L_CurrencyValue = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions1(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.L_CurrencyValue1 = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.L_CurrencyValue1, this))
+                {
+                    item.L_CurrencyValue1 = null;
                 }
 
             }

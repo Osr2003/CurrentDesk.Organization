@@ -328,44 +328,6 @@ public partial class BankAccountInformation
 
 
 
-    public virtual ICollection<AdminTransaction> AdminTransactions
-    {
-        get
-        {
-            if (_adminTransactions == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions;
-                _adminTransactions = newCollection;
-
-            }
-            return _adminTransactions;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions, value))
-            {
-                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions;
-                }
-                _adminTransactions = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions;
-
-
-
     public virtual ICollection<DepositOrWithdrawActivity> DepositOrWithdrawActivities
     {
         get
@@ -401,6 +363,44 @@ public partial class BankAccountInformation
         }
     }
     private ICollection<DepositOrWithdrawActivity> _depositOrWithdrawActivities;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
 
         #endregion
 
@@ -550,33 +550,6 @@ public partial class BankAccountInformation
     }
 
 
-    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.BankAccountInformation = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.BankAccountInformation, this))
-                {
-                    item.BankAccountInformation = null;
-                }
-
-            }
-        }
-    }
-
-
     private void FixupDepositOrWithdrawActivities(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -592,6 +565,33 @@ public partial class BankAccountInformation
         if (e.OldItems != null)
         {
             foreach (DepositOrWithdrawActivity item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.BankAccountInformation, this))
+                {
+                    item.BankAccountInformation = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.BankAccountInformation = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.BankAccountInformation, this))

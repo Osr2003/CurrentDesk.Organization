@@ -927,6 +927,72 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="fromAcc">fromAcc</param>
         /// <param name="toAcc">toAcc</param>
         /// <param name="amount">amount</param>
+        /// <param name="exchangeRate">exchangeRate</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool TransferFundInternal(string fromAcc, string toAcc, double amount, double exchangeRate, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    var fromAccount = clientAccObjSet.Where(acc => acc.TradingAccount == fromAcc && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    if (fromAccount == null)
+                    {
+                        fromAccount = clientAccObjSet.Where(acc => acc.LandingAccount == fromAcc && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    }
+
+                    //If balance is greater than transaction amount
+                    if (fromAccount.CurrentBalance >= Convert.ToDecimal(amount))
+                    {
+                        //Not a platform account
+                        if (fromAccount.PlatformLogin == null)
+                        {
+                            fromAccount.CurrentBalance = Math.Round((Convert.ToDecimal(fromAccount.CurrentBalance) - Convert.ToDecimal(amount)), 2);
+                        }
+
+                        var toAccount = clientAccObjSet.Where(acc => acc.TradingAccount == toAcc && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                        if (toAccount == null)
+                        {
+                            toAccount = clientAccObjSet.Where(acc => acc.LandingAccount == toAcc && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                        }
+
+                        //Not a platform account
+                        if (toAccount.PlatformLogin == null)
+                        {
+                            toAccount.CurrentBalance = Math.Round((Convert.ToDecimal(toAccount.CurrentBalance) + (Convert.ToDecimal(amount * exchangeRate))), 2);
+                        }
+
+                        clientAccRepo.Save();
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This method transfers funds between two trading accounts
+        /// </summary>
+        /// <param name="fromAcc">fromAcc</param>
+        /// <param name="toAcc">toAcc</param>
+        /// <param name="amount">amount</param>
         /// <param name="fee">fee</param>
         /// <param name="exchangeRate">exchangeRate</param>
         /// <returns></returns>
@@ -1706,6 +1772,43 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method returns account details of 
+        /// a particular account
+        /// </summary>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public Client_Account GetAnyAccountDetails(string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objeset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    var accDetails = clientAccObjSet.Where(acc => acc.TradingAccount == accountNumber && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+
+                    //If  landing acc
+                    if (accDetails == null)
+                    {
+                        accDetails = clientAccObjSet.Where(acc => acc.LandingAccount == accountNumber && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    }
+
+                    return accDetails;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
 
         #region "Spread Markup Rvenue"
 

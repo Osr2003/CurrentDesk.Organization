@@ -97,6 +97,34 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
-		
+
+        /// <summary>
+        /// This method returns transaction setting details
+        /// for a particular transaction type
+        /// </summary>
+        /// <param name="transactionType">transactionType</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public TransactionSetting GetTransactionSetting(int transactionType, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var transactionSettingRepo =
+                        new TransactionSettingRepository(new EFRepository<TransactionSetting>(), unitOfWork);
+
+                    ObjectSet<TransactionSetting> transactionSettingObjSet =
+                        ((CurrentDeskClientsEntities)transactionSettingRepo.Repository.UnitOfWork.Context).TransactionSettings;
+
+                    return transactionSettingObjSet.Where(sett => sett.FK_AdminTransactionTypeID == transactionType && sett.FK_OrganizationID == organizationID).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
 	}
 }

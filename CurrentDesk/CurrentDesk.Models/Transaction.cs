@@ -112,6 +112,35 @@ public partial class Transaction
 
     }
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
@@ -154,10 +183,55 @@ public partial class Transaction
     }
     private ICollection<TransferLog> _transferLogs;
 
+
+
+    public virtual Organization Organization
+    {
+
+        get { return _organization; }
+        set
+        {
+            if (!ReferenceEquals(_organization, value))
+            {
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
+            }
+        }
+    }
+    private Organization _organization;
+
         #endregion
 
         #region Association Fixup
     
+
+    private void FixupOrganization(Organization previousValue)
+    {
+
+        if (previousValue != null && previousValue.Transactions.Contains(this))
+        {
+            previousValue.Transactions.Remove(this);
+        }
+
+
+        if (Organization != null)
+        {
+            if (!Organization.Transactions.Contains(this))
+            {
+                Organization.Transactions.Add(this);
+            }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
+
+        }
+
+    }
+
 
     private void FixupTransferLogs(object sender, NotifyCollectionChangedEventArgs e)
     {

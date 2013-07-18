@@ -552,13 +552,6 @@ public partial class CurrentDeskClientsEntities : ObjectContext
     private ObjectSet<BOMAMAlert> _bOMAMAlerts;
 
 
-    public ObjectSet<AdminTransaction> AdminTransactions
-    {
-        get { return _adminTransactions  ?? (_adminTransactions = CreateObjectSet<AdminTransaction>("AdminTransactions")); }
-    }
-    private ObjectSet<AdminTransaction> _adminTransactions;
-
-
     public ObjectSet<FundingSourceAcceptedCurrency> FundingSourceAcceptedCurrencies
     {
         get { return _fundingSourceAcceptedCurrencies  ?? (_fundingSourceAcceptedCurrencies = CreateObjectSet<FundingSourceAcceptedCurrency>("FundingSourceAcceptedCurrencies")); }
@@ -620,6 +613,13 @@ public partial class CurrentDeskClientsEntities : ObjectContext
         get { return _accountCreationRules  ?? (_accountCreationRules = CreateObjectSet<AccountCreationRule>("AccountCreationRules")); }
     }
     private ObjectSet<AccountCreationRule> _accountCreationRules;
+
+
+    public ObjectSet<AdminTransaction> AdminTransactions
+    {
+        get { return _adminTransactions  ?? (_adminTransactions = CreateObjectSet<AdminTransaction>("AdminTransactions")); }
+    }
+    private ObjectSet<AdminTransaction> _adminTransactions;
 
         #endregion
 

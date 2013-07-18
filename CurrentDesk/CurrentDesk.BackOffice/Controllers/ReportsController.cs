@@ -13,7 +13,6 @@
 #region Namespace Used
 using CurrentDesk.BackOffice.Custom;
 using CurrentDesk.BackOffice.Security;
-using CurrentDesk.Common;
 using CurrentDesk.Logging;
 using System;
 using System.Web.Mvc;

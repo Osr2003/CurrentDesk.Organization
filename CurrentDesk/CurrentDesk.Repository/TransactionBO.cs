@@ -70,6 +70,55 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method logs transaction details in Transactions table
+        /// </summary>
+        /// <param name="fromAcc">fromAcc</param>
+        /// <param name="toAcc">toAcc</param>
+        /// <param name="fromCurrID">fromCurrID</param>
+        /// <param name="toCurrID">toCurrID</param>
+        /// <param name="amount">amount</param>
+        /// <param name="exchangeRate">exchangeRate</param>
+        /// <param name="notes">notes</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns>int</returns>
+        public int InternalFundTransfer(string fromAcc, string toAcc, int fromCurrID, int toCurrID, double amount, double exchangeRate, string notes, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var transactionRepo =
+                     new TransactionRepository(new EFRepository<Transaction>(), unitOfWork);
+
+                    ObjectSet<Transaction> transactionObjSet =
+                    ((CurrentDeskClientsEntities)transactionRepo.Repository.UnitOfWork.Context).Transactions;
+
+                    Transaction newTransaction = new Transaction();
+                    newTransaction.FK_FromCurrencyID = fromCurrID;
+                    newTransaction.FK_ToCurrencyID = toCurrID;
+                    newTransaction.Amount = Convert.ToDecimal(amount);
+                    newTransaction.FromAccount = fromAcc;
+                    newTransaction.ToAccount = toAcc;
+                    newTransaction.ExchangeRate = exchangeRate.ToString();
+                    newTransaction.Notes = notes;
+                    newTransaction.TransactionType = "Internal";
+                    newTransaction.TransactionDateTime = DateTime.UtcNow;
+                    newTransaction.FK_OrganizationID = organizationID;
+
+                    transactionRepo.Add(newTransaction);
+                    transactionRepo.Save();
+
+                    return newTransaction.PK_TransactionID;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method logs fee transaction details in Transactions table
         /// </summary>
         /// <param name="fromAcc">fromAcc</param>

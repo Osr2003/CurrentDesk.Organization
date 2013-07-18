@@ -46,44 +46,6 @@ public partial class L_AdminTransactionType
     
 
 
-    public virtual ICollection<AdminTransaction> AdminTransactions
-    {
-        get
-        {
-            if (_adminTransactions == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions;
-                _adminTransactions = newCollection;
-
-            }
-            return _adminTransactions;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions, value))
-            {
-                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions;
-                }
-                _adminTransactions = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions;
-
-
-
     public virtual ICollection<TransactionSetting> TransactionSettings
     {
         get
@@ -120,37 +82,48 @@ public partial class L_AdminTransactionType
     }
     private ICollection<TransactionSetting> _transactionSettings;
 
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
+
         #endregion
 
         #region Association Fixup
     
-
-    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.L_AdminTransactionType = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.L_AdminTransactionType, this))
-                {
-                    item.L_AdminTransactionType = null;
-                }
-
-            }
-        }
-    }
-
 
     private void FixupTransactionSettings(object sender, NotifyCollectionChangedEventArgs e)
     {
@@ -167,6 +140,33 @@ public partial class L_AdminTransactionType
         if (e.OldItems != null)
         {
             foreach (TransactionSetting item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.L_AdminTransactionType, this))
+                {
+                    item.L_AdminTransactionType = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.L_AdminTransactionType = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.L_AdminTransactionType, this))

@@ -22,8 +22,8 @@ using System.Collections.Generic;
 using CurrentDesk.Models;
 using System.Xml;
 using CurrentDesk.Common;
-using System.Globalization;
 using CurrentDesk.BackOffice.Custom;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Controllers
@@ -162,10 +162,6 @@ namespace CurrentDesk.BackOffice.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
                     //Get latest activities
                     var activities = usrActivityBO.GetUserRecentActivityDetails(loginInfo.UserID);
 
@@ -244,9 +240,9 @@ namespace CurrentDesk.BackOffice.Controllers
                                     act.TransferActivities.FirstOrDefault().FK_ToUserID == null)
                                 {
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been transferred from account <a href='MyAccount'>" +
@@ -257,42 +253,54 @@ namespace CurrentDesk.BackOffice.Controllers
                                 else if (act.TransferActivities.FirstOrDefault().FK_FromUserID != null)
                                 {
                                     string fromClientName = String.Empty;
-                                    if (userBO.GetUserDetails((int)act.TransferActivities.FirstOrDefault().FK_FromUserID) !=
+                                    if (
+                                        userBO.GetUserDetails(
+                                            (int) act.TransferActivities.FirstOrDefault().FK_FromUserID) !=
                                         null)
                                     {
-                                        fromClientName = clientBO.GetClientName((int)act.TransferActivities.FirstOrDefault().FK_FromUserID);
+                                        fromClientName =
+                                            clientBO.GetClientName(
+                                                (int) act.TransferActivities.FirstOrDefault().FK_FromUserID);
                                     }
                                     else
                                     {
-                                        fromClientName = introducingBrokerBO.GetPartnerName((int)act.TransferActivities.FirstOrDefault().FK_FromUserID);
+                                        fromClientName =
+                                            introducingBrokerBO.GetPartnerName(
+                                                (int) act.TransferActivities.FirstOrDefault().FK_FromUserID);
                                     }
 
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
-                                                             "</b> has been deposited from " + fromClientName + " to <a href='MyAccount'>" +
+                                                             "</b> has been deposited from " + fromClientName +
+                                                             " to <a href='MyAccount'>" +
                                                              act.TransferActivities.FirstOrDefault().ToAccount + "</a>.";
                                 }
                                 else if (act.TransferActivities.FirstOrDefault().FK_ToUserID != null)
                                 {
                                     string toClientName = String.Empty;
-                                    if (userBO.GetUserDetails((int)act.TransferActivities.FirstOrDefault().FK_ToUserID) !=
+                                    if (
+                                        userBO.GetUserDetails((int) act.TransferActivities.FirstOrDefault().FK_ToUserID) !=
                                         null)
                                     {
-                                        toClientName = clientBO.GetClientName((int)act.TransferActivities.FirstOrDefault().FK_ToUserID);
+                                        toClientName =
+                                            clientBO.GetClientName(
+                                                (int) act.TransferActivities.FirstOrDefault().FK_ToUserID);
                                     }
                                     else
                                     {
-                                        toClientName = introducingBrokerBO.GetPartnerName((int)act.TransferActivities.FirstOrDefault().FK_ToUserID);
+                                        toClientName =
+                                            introducingBrokerBO.GetPartnerName(
+                                                (int) act.TransferActivities.FirstOrDefault().FK_ToUserID);
                                     }
-                                    
+
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been transferred from account <a href='MyAccount'>" +
@@ -303,9 +311,9 @@ namespace CurrentDesk.BackOffice.Controllers
                             else
                             {
                                 usrAct.ActivityDetails = "<b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.TransferActivities.FirstOrDefault()
-                                                                          .TransferAmount) + " " +
+                                                         Utility.FormatCurrencyValue(
+                                                             (decimal) act.TransferActivities.FirstOrDefault()
+                                                                          .TransferAmount, "") + " " +
                                                          act.TransferActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
                                                          "</b> is pending transfer from account <a href='MyAccount'>" +
@@ -324,9 +332,9 @@ namespace CurrentDesk.BackOffice.Controllers
                                     act.ConversionActivities.FirstOrDefault().FK_ToUserID == null)
                                 {
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (int) act.ConversionActivities.FirstOrDefault()
+                                                                          .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from <a href='MyAccount'>" +
@@ -354,24 +362,24 @@ namespace CurrentDesk.BackOffice.Controllers
                                     string fromClientName = String.Empty;
                                     if (
                                         userBO.GetUserDetails(
-                                            (int)act.ConversionActivities.FirstOrDefault().FK_FromUserID) !=
+                                            (int) act.ConversionActivities.FirstOrDefault().FK_FromUserID) !=
                                         null)
                                     {
                                         fromClientName =
                                             clientBO.GetClientName(
-                                                (int)act.ConversionActivities.FirstOrDefault().FK_FromUserID);
+                                                (int) act.ConversionActivities.FirstOrDefault().FK_FromUserID);
                                     }
                                     else
                                     {
                                         fromClientName =
                                             introducingBrokerBO.GetPartnerName(
-                                                (int)act.ConversionActivities.FirstOrDefault().FK_FromUserID);
+                                                (int) act.ConversionActivities.FirstOrDefault().FK_FromUserID);
                                     }
 
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (int) act.ConversionActivities.FirstOrDefault()
+                                                                          .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from " +
@@ -398,24 +406,25 @@ namespace CurrentDesk.BackOffice.Controllers
                                 {
                                     string toClientName = String.Empty;
                                     if (
-                                        userBO.GetUserDetails((int)act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
+                                        userBO.GetUserDetails(
+                                            (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
                                         null)
                                     {
                                         toClientName =
                                             clientBO.GetClientName(
-                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
                                     else
                                     {
                                         toClientName =
                                             introducingBrokerBO.GetPartnerName(
-                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
 
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from <a href='MyAccount'>" +
@@ -442,9 +451,9 @@ namespace CurrentDesk.BackOffice.Controllers
                             else
                             {
                                 usrAct.ActivityDetails = "<b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.ConversionActivities.FirstOrDefault()
-                                                                          .ConversionAmount) + " " +
+                                                         Utility.FormatCurrencyValue(
+                                                             (int) act.ConversionActivities.FirstOrDefault()
+                                                                      .ConversionAmount, "") + " " +
                                                          act.ConversionActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
                                                          "</b>  has been converted from <a href='MyAccount'>" +
@@ -475,18 +484,18 @@ namespace CurrentDesk.BackOffice.Controllers
                                 if (act.DepositOrWithdrawActivities.FirstOrDefault().Type == Constants.K_DEPOSIT)
                                 {
                                     usrAct.ActivityDetails = "You have submitted a deposit of <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.DepositOrWithdrawActivities
-                                                                              .FirstOrDefault().Amount) + " " +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") + " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue + "</b>.";
                                 }
                                 else
                                 {
                                     usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.DepositOrWithdrawActivities
-                                                                              .FirstOrDefault().Amount) +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") +
                                                              " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
@@ -502,9 +511,10 @@ namespace CurrentDesk.BackOffice.Controllers
                             {
                                 if (act.DepositOrWithdrawActivities.FirstOrDefault().Type == Constants.K_DEPOSIT)
                                 {
-                                    usrAct.ActivityDetails = "<b>" + String.Format(nfi, "{0:C}",
-                                                                                   act.DepositOrWithdrawActivities
-                                                                                      .FirstOrDefault().Amount) + " " +
+                                    usrAct.ActivityDetails = "<b>" +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") + " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been received and deposited into <a href='MyAccount'>" +
@@ -513,9 +523,10 @@ namespace CurrentDesk.BackOffice.Controllers
                                 }
                                 else
                                 {
-                                    usrAct.ActivityDetails = "<b>" + String.Format(nfi, "{0:C}",
-                                                                                   act.DepositOrWithdrawActivities
-                                                                                      .FirstOrDefault().Amount) +
+                                    usrAct.ActivityDetails = "<b>" +
+                                                             Utility.FormatCurrencyValue(
+                                                                 (decimal) act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") +
                                                              " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +

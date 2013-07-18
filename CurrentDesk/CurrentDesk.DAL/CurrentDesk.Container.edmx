@@ -387,6 +387,10 @@
             <End Role="Organizations" EntitySet="Organizations" />
             <End Role="AccountType" EntitySet="AccountType" />
           </AssociationSet>
+          <AssociationSet Name="FK_AdminTransactions_Organization" Association="CurrentDeskClientsModel.Store.FK_AdminTransactions_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="AdminTransactions" EntitySet="AdminTransactions" />
+          </AssociationSet>
           <AssociationSet Name="FK_AssetManager_Account" Association="CurrentDeskClientsModel.Store.FK_AssetManager_Account">
             <End Role="L_AccountCode" EntitySet="L_AccountCode" />
             <End Role="AssetManager" EntitySet="AssetManager" />
@@ -554,6 +558,10 @@
           <AssociationSet Name="FK_DemoLead_OrganizationID" Association="CurrentDeskClientsModel.Store.FK_DemoLead_OrganizationID">
             <End Role="Organizations" EntitySet="Organizations" />
             <End Role="DemoLead" EntitySet="DemoLead" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FundingSource_Organization" Association="CurrentDeskClientsModel.Store.FK_FundingSource_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="FundingSource" EntitySet="FundingSource" />
           </AssociationSet>
           <AssociationSet Name="FK_IndividualAccountInformation_Client" Association="CurrentDeskClientsModel.Store.FK_IndividualAccountInformation_Client">
             <End Role="Client" EntitySet="Client" />
@@ -831,6 +839,18 @@
             <End Role="L_TradingPlatformValues" EntitySet="L_TradingPlatformValues" />
             <End Role="TradingPlatform" EntitySet="TradingPlatform" />
           </AssociationSet>
+          <AssociationSet Name="FK_Transactions_Organization" Association="CurrentDeskClientsModel.Store.FK_Transactions_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="Transactions" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionSettings_Organization" Association="CurrentDeskClientsModel.Store.FK_TransactionSettings_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="TransactionSettings" EntitySet="TransactionSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransferLogs_Organization" Association="CurrentDeskClientsModel.Store.FK_TransferLogs_Organization">
+            <End Role="Organizations" EntitySet="Organizations" />
+            <End Role="TransferLogs" EntitySet="TransferLogs" />
+          </AssociationSet>
           <AssociationSet Name="FK_TrustAccountInformation_Client" Association="CurrentDeskClientsModel.Store.FK_TrustAccountInformation_Client">
             <End Role="Client" EntitySet="Client" />
             <End Role="TrustAccountInformation" EntitySet="TrustAccountInformation" />
@@ -959,6 +979,7 @@
           <Property Name="FK_ToUserID" Type="int" />
           <Property Name="ExchangeRate" Type="float" />
           <Property Name="FK_ToCurrencyID" Type="int" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Agent">
           <Key>
@@ -1366,6 +1387,7 @@
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="FK_IncomingWireFeeCurrency" Type="int" />
           <Property Name="FK_OutgoingWireFeeCurrency" Type="int" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="FundingSourceAcceptedCurrency">
           <Key>
@@ -1992,6 +2014,7 @@
           <Property Name="FromAccount" Type="nvarchar" MaxLength="50" />
           <Property Name="ToAccount" Type="nvarchar" MaxLength="50" />
           <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TransactionSettings">
           <Key>
@@ -2007,6 +2030,7 @@
           <Property Name="MarginRestriction" Type="float" />
           <Property Name="ConversionMarkupType" Type="int" />
           <Property Name="ConversionMarkupValue" Type="float" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TransferActivity">
           <Key>
@@ -2033,6 +2057,7 @@
           <Property Name="AccountNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="TransactionDateTime" Type="datetime" />
           <Property Name="FK_TransactionID" Type="int" />
+          <Property Name="FK_OrganizationID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TrustAccountInformation">
           <Key>
@@ -3079,6 +3104,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AdminTransactions_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="AdminTransactions" Type="CurrentDeskClientsModel.Store.AdminTransactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="AdminTransactions">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AssetManager_Account">
           <End Role="L_AccountCode" Type="CurrentDeskClientsModel.Store.L_AccountCode" Multiplicity="0..1" />
           <End Role="AssetManager" Type="CurrentDeskClientsModel.Store.AssetManager" Multiplicity="*" />
@@ -3579,6 +3616,18 @@
               <PropertyRef Name="PK_OrganizationID" />
             </Principal>
             <Dependent Role="DemoLead">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FundingSource_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="FundingSource" Type="CurrentDeskClientsModel.Store.FundingSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="FundingSource">
               <PropertyRef Name="FK_OrganizationID" />
             </Dependent>
           </ReferentialConstraint>
@@ -4408,6 +4457,42 @@
             </Principal>
             <Dependent Role="TradingPlatform">
               <PropertyRef Name="FK_TradingValueID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transactions_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="Transactions" Type="CurrentDeskClientsModel.Store.Transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="Transactions">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionSettings_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="TransactionSettings" Type="CurrentDeskClientsModel.Store.TransactionSettings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="TransactionSettings">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransferLogs_Organization">
+          <End Role="Organizations" Type="CurrentDeskClientsModel.Store.Organizations" Multiplicity="1" />
+          <End Role="TransferLogs" Type="CurrentDeskClientsModel.Store.TransferLogs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organizations">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="TransferLogs">
+              <PropertyRef Name="FK_OrganizationID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5344,30 +5429,13 @@
             <End Role="R_AssetManager_IntroducingBroker_ClientAccount" EntitySet="R_AssetManager_IntroducingBroker_ClientAccount" />
           </AssociationSet>
           <EntitySet Name="BOMAMAlerts" EntityType="CurrentDeskClientsModel.BOMAMAlert" />
-          <EntitySet Name="AdminTransactions" EntityType="CurrentDeskClientsModel.AdminTransaction" />
           <EntitySet Name="FundingSourceAcceptedCurrencies" EntityType="CurrentDeskClientsModel.FundingSourceAcceptedCurrency" />
           <EntitySet Name="L_AdminTransactionType" EntityType="CurrentDeskClientsModel.L_AdminTransactionType" />
-          <AssociationSet Name="FK__AdminTran__FK_Ad__7E57BA87" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7E57BA87">
-            <End Role="L_AdminTransactionType" EntitySet="L_AdminTransactionType" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AdminTran__FK_Cu__7D63964E" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D63964E">
-            <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AdminTran__FK_Us__7B7B4DDC" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Us__7B7B4DDC">
-            <End Role="User" EntitySet="Users" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
           <AssociationSet Name="FK__FundingSo__FK_LC__08D548FA" Association="CurrentDeskClientsModel.FK__FundingSo__FK_LC__08D548FA">
             <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
             <End Role="FundingSourceAcceptedCurrency" EntitySet="FundingSourceAcceptedCurrencies" />
           </AssociationSet>
           <EntitySet Name="FundingSources" EntityType="CurrentDeskClientsModel.FundingSource" />
-          <AssociationSet Name="FK__AdminTran__FK_Fu__7C6F7215" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7C6F7215">
-            <End Role="FundingSource" EntitySet="FundingSources" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
           <AssociationSet Name="FK__FundingSo__FK_Ba__73DA2C14" Association="CurrentDeskClientsModel.FK__FundingSo__FK_Ba__73DA2C14">
             <End Role="L_Country" EntitySet="L_Country" />
             <End Role="FundingSource" EntitySet="FundingSources" />
@@ -5392,10 +5460,6 @@
             <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
             <End Role="FundingSource" EntitySet="FundingSources" />
           </AssociationSet>
-          <AssociationSet Name="FK__AdminTran__FK_Ba__2A363CC5" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__2A363CC5">
-            <End Role="BankAccountInformation" EntitySet="BankAccountInformations" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
           <EntitySet Name="TransactionSettings" EntityType="CurrentDeskClientsModel.TransactionSetting" />
           <AssociationSet Name="FK__Transacti__FK_Ad__3F3159AB" Association="CurrentDeskClientsModel.FK__Transacti__FK_Ad__3F3159AB">
             <End Role="L_AdminTransactionType" EntitySet="L_AdminTransactionType" />
@@ -5404,14 +5468,6 @@
           <AssociationSet Name="FK__Transacti__FK_Cu__40257DE4" Association="CurrentDeskClientsModel.FK__Transacti__FK_Cu__40257DE4">
             <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
             <End Role="TransactionSetting" EntitySet="TransactionSettings" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AdminTran__FK_To__505BE5AD" Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__505BE5AD">
-            <End Role="User" EntitySet="Users" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK__AdminTran__FK_To__636EBA21" Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__636EBA21">
-            <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
-            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
           </AssociationSet>
           <EntitySet Name="DepositOrWithdrawActivities" EntityType="CurrentDeskClientsModel.DepositOrWithdrawActivity" />
           <AssociationSet Name="FK__DepositOr__FK_Ba__795DFB40" Association="CurrentDeskClientsModel.FK__DepositOr__FK_Ba__795DFB40">
@@ -5541,6 +5597,55 @@
           <AssociationSet Name="FK_Users_Organization" Association="CurrentDeskClientsModel.FK_Users_Organization">
             <End Role="Organization" EntitySet="Organizations" />
             <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransactionSettings_Organization" Association="CurrentDeskClientsModel.FK_TransactionSettings_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="TransactionSetting" EntitySet="TransactionSettings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FundingSource_Organization" Association="CurrentDeskClientsModel.FK_FundingSource_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="FundingSource" EntitySet="FundingSources" />
+          </AssociationSet>
+          <EntitySet Name="AdminTransactions" EntityType="CurrentDeskClientsModel.AdminTransaction" />
+          <AssociationSet Name="FK__AdminTran__FK_Ad__7B5B524B" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7B5B524B">
+            <End Role="L_AdminTransactionType" EntitySet="L_AdminTransactionType" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_Ba__7C4F7684" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__7C4F7684">
+            <End Role="BankAccountInformation" EntitySet="BankAccountInformations" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_Cu__7D439ABD" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D439ABD">
+            <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_Fu__7E37BEF6" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7E37BEF6">
+            <End Role="FundingSource" EntitySet="FundingSources" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_To__00200768" Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__00200768">
+            <End Role="L_CurrencyValue" EntitySet="L_CurrencyValue" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_To__7F2BE32F" Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__7F2BE32F">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK__AdminTran__FK_Us__01142BA1" Association="CurrentDeskClientsModel.FK__AdminTran__FK_Us__01142BA1">
+            <End Role="User" EntitySet="Users" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdminTransactions_Organization" Association="CurrentDeskClientsModel.FK_AdminTransactions_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="AdminTransaction" EntitySet="AdminTransactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Transactions_Organization" Association="CurrentDeskClientsModel.FK_Transactions_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="Transaction" EntitySet="Transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransferLogs_Organization" Association="CurrentDeskClientsModel.FK_TransferLogs_Organization">
+            <End Role="Organization" EntitySet="Organizations" />
+            <End Role="TransferLog" EntitySet="TransferLogs" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AccountCurrency">
@@ -5987,14 +6092,14 @@
           <NavigationProperty Name="TransferActivities" Relationship="CurrentDeskClientsModel.FK__TransferA__FK_Cu__61F08603" FromRole="L_CurrencyValue" ToRole="TransferActivity" />
           <NavigationProperty Name="ConversionActivities" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_Cu__64CCF2AE" FromRole="L_CurrencyValue" ToRole="ConversionActivity" />
           <NavigationProperty Name="ConversionActivities1" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_To__67A95F59" FromRole="L_CurrencyValue" ToRole="ConversionActivity" />
-          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D63964E" FromRole="L_CurrencyValue" ToRole="AdminTransaction" />
           <NavigationProperty Name="FundingSourceAcceptedCurrencies" Relationship="CurrentDeskClientsModel.FK__FundingSo__FK_LC__08D548FA" FromRole="L_CurrencyValue" ToRole="FundingSourceAcceptedCurrency" />
           <NavigationProperty Name="FundingSources" Relationship="CurrentDeskClientsModel.FK__FundingSo__Incom__75C27486" FromRole="L_CurrencyValue" ToRole="FundingSource" />
           <NavigationProperty Name="FundingSources1" Relationship="CurrentDeskClientsModel.FK__FundingSo__Outgo__76B698BF" FromRole="L_CurrencyValue" ToRole="FundingSource" />
           <NavigationProperty Name="TransactionSettings" Relationship="CurrentDeskClientsModel.FK__Transacti__FK_Cu__40257DE4" FromRole="L_CurrencyValue" ToRole="TransactionSetting" />
-          <NavigationProperty Name="AdminTransactions1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__636EBA21" FromRole="L_CurrencyValue" ToRole="AdminTransaction" />
           <NavigationProperty Name="DepositOrWithdrawActivities" Relationship="CurrentDeskClientsModel.FK__DepositOr__FK_Cu__7869D707" FromRole="L_CurrencyValue" ToRole="DepositOrWithdrawActivity" />
           <NavigationProperty Name="Client_Account" Relationship="CurrentDeskClientsModel.FK_Client_Account_Currency" FromRole="L_CurrencyValue" ToRole="Client_Account" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D439ABD" FromRole="L_CurrencyValue" ToRole="AdminTransaction" />
+          <NavigationProperty Name="AdminTransactions1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__00200768" FromRole="L_CurrencyValue" ToRole="AdminTransaction" />
           </EntityType>
         <EntityType Name="L_IDInformationType">
           <Key>
@@ -7557,8 +7662,8 @@
           <Property Type="String" Name="ReceivingBankInfo" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="FK_IntroducingBrokerID" />
           <NavigationProperty Name="IntroducingBroker" Relationship="CurrentDeskClientsModel.FK_BankAccountInformation_IntroducingBroker" FromRole="BankAccountInformation" ToRole="IntroducingBroker" />
-          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__2A363CC5" FromRole="BankAccountInformation" ToRole="AdminTransaction" />
           <NavigationProperty Name="DepositOrWithdrawActivities" Relationship="CurrentDeskClientsModel.FK__DepositOr__FK_Ba__795DFB40" FromRole="BankAccountInformation" ToRole="DepositOrWithdrawActivity" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__7C4F7684" FromRole="BankAccountInformation" ToRole="AdminTransaction" />
         </EntityType>
         <Association Name="FK_Bank_Country">
           <End Type="CurrentDeskClientsModel.L_Country" Role="L_Country" Multiplicity="0..1" />
@@ -7646,14 +7751,14 @@
           <NavigationProperty Name="InternalUserMessages" Relationship="CurrentDeskClientsModel.FK__InternalU__FK_Fr__3429BB53" FromRole="User" ToRole="InternalUserMessage" />
           <NavigationProperty Name="InternalUserMessages1" Relationship="CurrentDeskClientsModel.FK__InternalU__FK_To__351DDF8C" FromRole="User" ToRole="InternalUserMessage" />
           <NavigationProperty Name="UserActivities" Relationship="CurrentDeskClientsModel.FK__UserActiv__FK_Us__4A18FC72" FromRole="User" ToRole="UserActivity" />
-          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Us__7B7B4DDC" FromRole="User" ToRole="AdminTransaction" />
-          <NavigationProperty Name="AdminTransactions1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__505BE5AD" FromRole="User" ToRole="AdminTransaction" />
           <NavigationProperty Name="TransferActivities" Relationship="CurrentDeskClientsModel.FK__TransferA__FK_Fr__04CFADEC" FromRole="User" ToRole="TransferActivity" />
           <NavigationProperty Name="TransferActivities1" Relationship="CurrentDeskClientsModel.FK__TransferA__FK_To__03DB89B3" FromRole="User" ToRole="TransferActivity" />
           <NavigationProperty Name="ConversionActivities" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_Fr__06B7F65E" FromRole="User" ToRole="ConversionActivity" />
           <NavigationProperty Name="ConversionActivities1" Relationship="CurrentDeskClientsModel.FK__Conversio__FK_To__05C3D225" FromRole="User" ToRole="ConversionActivity" />
           <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
           <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_Users_Organization" FromRole="User" ToRole="Organization" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__7F2BE32F" FromRole="User" ToRole="AdminTransaction" />
+          <NavigationProperty Name="AdminTransactions1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Us__01142BA1" FromRole="User" ToRole="AdminTransaction" />
         </EntityType>
         <Association Name="FK__AssetMana__FK_Us__7A3223E8">
           <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
@@ -7718,6 +7823,8 @@
           <Property Type="String" Name="ToAccount" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="DateTime" Name="TransactionDateTime" Precision="3" />
           <NavigationProperty Name="TransferLogs" Relationship="CurrentDeskClientsModel.FK__TransferL__FK_Tr__11158940" FromRole="Transaction" ToRole="TransferLog" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_Transactions_Organization" FromRole="Transaction" ToRole="Organization" />
         </EntityType>
         <EntityType Name="TransferLog">
           <Key>
@@ -7731,6 +7838,8 @@
           <Property Type="DateTime" Name="TransactionDateTime" Precision="3" />
           <Property Type="Int32" Name="FK_TransactionID" />
           <NavigationProperty Name="Transaction" Relationship="CurrentDeskClientsModel.FK__TransferL__FK_Tr__11158940" FromRole="TransferLog" ToRole="Transaction" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_TransferLogs_Organization" FromRole="TransferLog" ToRole="Organization" />
         </EntityType>
         <EntityType Name="L_BrokerExchangeRate">
           <Key>
@@ -8878,38 +8987,6 @@
           <Property Type="Int32" Name="BOBMAMAlertID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="Boolean" Name="BOMAMIsAlert" />
         </EntityType>
-        <EntityType Name="AdminTransaction">
-          <Key>
-            <PropertyRef Name="PK_TransactionID" />
-          </Key>
-          <Property Type="Int32" Name="PK_TransactionID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="DateTime" Name="TransactionDate" Precision="3" />
-          <Property Type="Int32" Name="FK_UserID" />
-          <Property Type="String" Name="AccountNumber" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="FK_FundingSourceID" />
-          <Property Type="Int32" Name="FK_CurrencyID" />
-          <Property Type="Decimal" Name="TransactionAmount" Precision="19" Scale="4" />
-          <Property Type="Int32" Name="FK_AdminTransactionTypeID" />
-          <Property Type="Boolean" Name="IsApproved" />
-          <Property Type="Boolean" Name="IsDeleted" />
-          <Property Type="String" Name="Notes" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="ClientName" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="Decimal" Name="FeeAmount" Precision="19" Scale="4" />
-          <Property Type="DateTime" Name="ApprovedDate" Precision="3" />
-          <NavigationProperty Name="L_AdminTransactionType" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7E57BA87" FromRole="AdminTransaction" ToRole="L_AdminTransactionType" />
-          <NavigationProperty Name="L_CurrencyValue" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D63964E" FromRole="AdminTransaction" ToRole="L_CurrencyValue" />
-          <NavigationProperty Name="User" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Us__7B7B4DDC" FromRole="AdminTransaction" ToRole="User" />
-          <NavigationProperty Name="FundingSource" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7C6F7215" FromRole="AdminTransaction" ToRole="FundingSource" />
-          <Property Type="Int32" Name="FK_BankInfoID" />
-          <NavigationProperty Name="BankAccountInformation" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__2A363CC5" FromRole="AdminTransaction" ToRole="BankAccountInformation" />
-          <Property Type="String" Name="ToAccountNumber" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="ToClientName" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="Int32" Name="FK_ToUserID" />
-          <NavigationProperty Name="User1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__505BE5AD" FromRole="AdminTransaction" ToRole="User" />
-          <Property Type="Double" Name="ExchangeRate" />
-          <Property Type="Int32" Name="FK_ToCurrencyID" />
-          <NavigationProperty Name="L_CurrencyValue1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__636EBA21" FromRole="AdminTransaction" ToRole="L_CurrencyValue" />
-        </EntityType>
         <EntityType Name="FundingSourceAcceptedCurrency">
           <Key>
             <PropertyRef Name="PK_ID" />
@@ -8927,45 +9004,9 @@
           </Key>
           <Property Type="Int32" Name="PK_AdminTransactionType" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="AdminTransactionTypeValue" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7E57BA87" FromRole="L_AdminTransactionType" ToRole="AdminTransaction" />
           <NavigationProperty Name="TransactionSettings" Relationship="CurrentDeskClientsModel.FK__Transacti__FK_Ad__3F3159AB" FromRole="L_AdminTransactionType" ToRole="TransactionSetting" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7B5B524B" FromRole="L_AdminTransactionType" ToRole="AdminTransaction" />
         </EntityType>
-        <Association Name="FK__AdminTran__FK_Ad__7E57BA87">
-          <End Type="CurrentDeskClientsModel.L_AdminTransactionType" Role="L_AdminTransactionType" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="L_AdminTransactionType">
-              <PropertyRef Name="PK_AdminTransactionType" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_AdminTransactionTypeID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AdminTran__FK_Cu__7D63964E">
-          <End Type="CurrentDeskClientsModel.L_CurrencyValue" Role="L_CurrencyValue" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="L_CurrencyValue">
-              <PropertyRef Name="PK_CurrencyValueID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_CurrencyID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AdminTran__FK_Us__7B7B4DDC">
-          <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="PK_UserID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_UserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__FundingSo__FK_LC__08D548FA">
           <End Type="CurrentDeskClientsModel.L_CurrencyValue" Role="L_CurrencyValue" Multiplicity="0..1" />
           <End Type="CurrentDeskClientsModel.FundingSourceAcceptedCurrency" Role="FundingSourceAcceptedCurrency" Multiplicity="*" />
@@ -9003,26 +9044,16 @@
           <Property Type="Boolean" Name="IsDeleted" />
           <Property Type="Int32" Name="FK_IncomingWireFeeCurrency" />
           <Property Type="Int32" Name="FK_OutgoingWireFeeCurrency" />
-          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7C6F7215" FromRole="FundingSource" ToRole="AdminTransaction" />
           <NavigationProperty Name="L_Country" Relationship="CurrentDeskClientsModel.FK__FundingSo__FK_Ba__73DA2C14" FromRole="FundingSource" ToRole="L_Country" />
           <NavigationProperty Name="FundingSourceAcceptedCurrencies" Relationship="CurrentDeskClientsModel.FK__FundingSo__FK_Fu__07E124C1" FromRole="FundingSource" ToRole="FundingSourceAcceptedCurrency" />
           <NavigationProperty Name="L_Country1" Relationship="CurrentDeskClientsModel.FK__FundingSo__FK_In__74CE504D" FromRole="FundingSource" ToRole="L_Country" />
           <NavigationProperty Name="L_RecievingBank" Relationship="CurrentDeskClientsModel.FK__FundingSo__FK_Re__72E607DB" FromRole="FundingSource" ToRole="L_RecievingBank" />
           <NavigationProperty Name="L_CurrencyValue" Relationship="CurrentDeskClientsModel.FK__FundingSo__Incom__75C27486" FromRole="FundingSource" ToRole="L_CurrencyValue" />
           <NavigationProperty Name="L_CurrencyValue1" Relationship="CurrentDeskClientsModel.FK__FundingSo__Outgo__76B698BF" FromRole="FundingSource" ToRole="L_CurrencyValue" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_FundingSource_Organization" FromRole="FundingSource" ToRole="Organization" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7E37BEF6" FromRole="FundingSource" ToRole="AdminTransaction" />
         </EntityType>
-        <Association Name="FK__AdminTran__FK_Fu__7C6F7215">
-          <End Type="CurrentDeskClientsModel.FundingSource" Role="FundingSource" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FundingSource">
-              <PropertyRef Name="PK_FundingSourceID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_FundingSourceID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__FundingSo__FK_Ba__73DA2C14">
           <End Type="CurrentDeskClientsModel.L_Country" Role="L_Country" Multiplicity="0..1" />
           <End Type="CurrentDeskClientsModel.FundingSource" Role="FundingSource" Multiplicity="*" />
@@ -9095,18 +9126,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__AdminTran__FK_Ba__2A363CC5">
-          <End Type="CurrentDeskClientsModel.BankAccountInformation" Role="BankAccountInformation" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BankAccountInformation">
-              <PropertyRef Name="PK_BankAccountInformationID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_BankInfoID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="TransactionSetting">
           <Key>
             <PropertyRef Name="PK_TransactionSettingID" />
@@ -9123,6 +9142,8 @@
           <Property Type="Double" Name="MarginRestriction" />
           <Property Type="Int32" Name="ConversionMarkupType" />
           <Property Type="Double" Name="ConversionMarkupValue" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_TransactionSettings_Organization" FromRole="TransactionSetting" ToRole="Organization" />
         </EntityType>
         <Association Name="FK__Transacti__FK_Ad__3F3159AB">
           <End Type="CurrentDeskClientsModel.L_AdminTransactionType" Role="L_AdminTransactionType" Multiplicity="0..1" />
@@ -9145,30 +9166,6 @@
             </Principal>
             <Dependent Role="TransactionSetting">
               <PropertyRef Name="FK_CurrencyID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AdminTran__FK_To__505BE5AD">
-          <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="PK_UserID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_ToUserID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__AdminTran__FK_To__636EBA21">
-          <End Type="CurrentDeskClientsModel.L_CurrencyValue" Role="L_CurrencyValue" Multiplicity="0..1" />
-          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="L_CurrencyValue">
-              <PropertyRef Name="PK_CurrencyValueID" />
-            </Principal>
-            <Dependent Role="AdminTransaction">
-              <PropertyRef Name="FK_ToCurrencyID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -9306,6 +9303,11 @@
           <NavigationProperty Name="Client_Account" Relationship="CurrentDeskClientsModel.FK_Client_Account_Organization" FromRole="Organization" ToRole="Client_Account" />
           <NavigationProperty Name="AccountCreationRules" Relationship="CurrentDeskClientsModel.FK_AccountCreationRules_Organization" FromRole="Organization" ToRole="AccountCreationRule" />
           <NavigationProperty Name="Users" Relationship="CurrentDeskClientsModel.FK_Users_Organization" FromRole="Organization" ToRole="User" />
+          <NavigationProperty Name="TransactionSettings" Relationship="CurrentDeskClientsModel.FK_TransactionSettings_Organization" FromRole="Organization" ToRole="TransactionSetting" />
+          <NavigationProperty Name="FundingSources" Relationship="CurrentDeskClientsModel.FK_FundingSource_Organization" FromRole="Organization" ToRole="FundingSource" />
+          <NavigationProperty Name="AdminTransactions" Relationship="CurrentDeskClientsModel.FK_AdminTransactions_Organization" FromRole="Organization" ToRole="AdminTransaction" />
+          <NavigationProperty Name="Transactions" Relationship="CurrentDeskClientsModel.FK_Transactions_Organization" FromRole="Organization" ToRole="Transaction" />
+          <NavigationProperty Name="TransferLogs" Relationship="CurrentDeskClientsModel.FK_TransferLogs_Organization" FromRole="Organization" ToRole="TransferLog" />
         </EntityType>
         <Association Name="FK_AccountCurrency_OrganizationID">
           <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
@@ -9653,6 +9655,184 @@
               <PropertyRef Name="PK_OrganizationID" />
             </Principal>
             <Dependent Role="User">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransactionSettings_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.TransactionSetting" Role="TransactionSetting" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="TransactionSetting">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FundingSource_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.FundingSource" Role="FundingSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="FundingSource">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AdminTransaction">
+          <Key>
+            <PropertyRef Name="PK_TransactionID" />
+          </Key>
+          <Property Type="Int32" Name="PK_TransactionID" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="TransactionDate" Precision="3" />
+          <Property Type="Int32" Name="FK_UserID" />
+          <Property Type="String" Name="AccountNumber" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="FK_FundingSourceID" />
+          <Property Type="Int32" Name="FK_CurrencyID" />
+          <Property Type="Decimal" Name="TransactionAmount" Precision="19" Scale="4" />
+          <Property Type="Int32" Name="FK_AdminTransactionTypeID" />
+          <Property Type="Boolean" Name="IsApproved" />
+          <Property Type="Boolean" Name="IsDeleted" />
+          <Property Type="String" Name="Notes" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ClientName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Decimal" Name="FeeAmount" Precision="19" Scale="4" />
+          <Property Type="DateTime" Name="ApprovedDate" Precision="3" />
+          <Property Type="Int32" Name="FK_BankInfoID" />
+          <Property Type="String" Name="ToAccountNumber" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="ToClientName" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="FK_ToUserID" />
+          <Property Type="Double" Name="ExchangeRate" />
+          <Property Type="Int32" Name="FK_ToCurrencyID" />
+          <Property Type="Int32" Name="FK_OrganizationID" Nullable="false" />
+          <NavigationProperty Name="L_AdminTransactionType" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7B5B524B" FromRole="AdminTransaction" ToRole="L_AdminTransactionType" />
+          <NavigationProperty Name="BankAccountInformation" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__7C4F7684" FromRole="AdminTransaction" ToRole="BankAccountInformation" />
+          <NavigationProperty Name="L_CurrencyValue" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D439ABD" FromRole="AdminTransaction" ToRole="L_CurrencyValue" />
+          <NavigationProperty Name="FundingSource" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7E37BEF6" FromRole="AdminTransaction" ToRole="FundingSource" />
+          <NavigationProperty Name="L_CurrencyValue1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__00200768" FromRole="AdminTransaction" ToRole="L_CurrencyValue" />
+          <NavigationProperty Name="User" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_To__7F2BE32F" FromRole="AdminTransaction" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="CurrentDeskClientsModel.FK__AdminTran__FK_Us__01142BA1" FromRole="AdminTransaction" ToRole="User" />
+          <NavigationProperty Name="Organization" Relationship="CurrentDeskClientsModel.FK_AdminTransactions_Organization" FromRole="AdminTransaction" ToRole="Organization" />
+        </EntityType>
+        <Association Name="FK__AdminTran__FK_Ad__7B5B524B">
+          <End Type="CurrentDeskClientsModel.L_AdminTransactionType" Role="L_AdminTransactionType" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="L_AdminTransactionType">
+              <PropertyRef Name="PK_AdminTransactionType" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_AdminTransactionTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_Ba__7C4F7684">
+          <End Type="CurrentDeskClientsModel.BankAccountInformation" Role="BankAccountInformation" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BankAccountInformation">
+              <PropertyRef Name="PK_BankAccountInformationID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_BankInfoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_Cu__7D439ABD">
+          <End Type="CurrentDeskClientsModel.L_CurrencyValue" Role="L_CurrencyValue" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="L_CurrencyValue">
+              <PropertyRef Name="PK_CurrencyValueID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_CurrencyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_Fu__7E37BEF6">
+          <End Type="CurrentDeskClientsModel.FundingSource" Role="FundingSource" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FundingSource">
+              <PropertyRef Name="PK_FundingSourceID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_FundingSourceID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_To__00200768">
+          <End Type="CurrentDeskClientsModel.L_CurrencyValue" Role="L_CurrencyValue" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="L_CurrencyValue">
+              <PropertyRef Name="PK_CurrencyValueID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_ToCurrencyID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_To__7F2BE32F">
+          <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="PK_UserID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_ToUserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__AdminTran__FK_Us__01142BA1">
+          <End Type="CurrentDeskClientsModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="PK_UserID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdminTransactions_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.AdminTransaction" Role="AdminTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="AdminTransaction">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Transactions_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.Transaction" Role="Transaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="Transaction">
+              <PropertyRef Name="FK_OrganizationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransferLogs_Organization">
+          <End Type="CurrentDeskClientsModel.Organization" Role="Organization" Multiplicity="1" />
+          <End Type="CurrentDeskClientsModel.TransferLog" Role="TransferLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Organization">
+              <PropertyRef Name="PK_OrganizationID" />
+            </Principal>
+            <Dependent Role="TransferLog">
               <PropertyRef Name="FK_OrganizationID" />
             </Dependent>
           </ReferentialConstraint>
@@ -10324,6 +10504,7 @@
           <EntitySetMapping Name="Transactions">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.Transaction">
               <MappingFragment StoreEntitySet="Transactions">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
                 <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
                 <ScalarProperty Name="ToAccount" ColumnName="ToAccount" />
                 <ScalarProperty Name="FromAccount" ColumnName="FromAccount" />
@@ -10340,6 +10521,7 @@
           <EntitySetMapping Name="TransferLogs">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.TransferLog">
               <MappingFragment StoreEntitySet="TransferLogs">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
                 <ScalarProperty Name="FK_TransactionID" ColumnName="FK_TransactionID" />
                 <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
                 <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
@@ -10855,32 +11037,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="AdminTransactions">
-            <EntityTypeMapping TypeName="CurrentDeskClientsModel.AdminTransaction">
-              <MappingFragment StoreEntitySet="AdminTransactions">
-                <ScalarProperty Name="FK_ToCurrencyID" ColumnName="FK_ToCurrencyID" />
-                <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
-                <ScalarProperty Name="FK_ToUserID" ColumnName="FK_ToUserID" />
-                <ScalarProperty Name="ToClientName" ColumnName="ToClientName" />
-                <ScalarProperty Name="ToAccountNumber" ColumnName="ToAccountNumber" />
-                <ScalarProperty Name="FK_BankInfoID" ColumnName="FK_BankInfoID" />
-                <ScalarProperty Name="ApprovedDate" ColumnName="ApprovedDate" />
-                <ScalarProperty Name="FeeAmount" ColumnName="FeeAmount" />
-                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
-                <ScalarProperty Name="FK_AdminTransactionTypeID" ColumnName="FK_AdminTransactionTypeID" />
-                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
-                <ScalarProperty Name="FK_CurrencyID" ColumnName="FK_CurrencyID" />
-                <ScalarProperty Name="FK_FundingSourceID" ColumnName="FK_FundingSourceID" />
-                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
-                <ScalarProperty Name="FK_UserID" ColumnName="FK_UserID" />
-                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
-                <ScalarProperty Name="PK_TransactionID" ColumnName="PK_TransactionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="FundingSourceAcceptedCurrencies">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.FundingSourceAcceptedCurrency">
               <MappingFragment StoreEntitySet="FundingSourceAcceptedCurrency">
@@ -10902,6 +11058,7 @@
           <EntitySetMapping Name="FundingSources">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.FundingSource">
               <MappingFragment StoreEntitySet="FundingSource">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
                 <ScalarProperty Name="FK_OutgoingWireFeeCurrency" ColumnName="FK_OutgoingWireFeeCurrency" />
                 <ScalarProperty Name="FK_IncomingWireFeeCurrency" ColumnName="FK_IncomingWireFeeCurrency" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
@@ -10929,6 +11086,7 @@
           <EntitySetMapping Name="TransactionSettings">
             <EntityTypeMapping TypeName="CurrentDeskClientsModel.TransactionSetting">
               <MappingFragment StoreEntitySet="TransactionSettings">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
                 <ScalarProperty Name="ConversionMarkupValue" ColumnName="ConversionMarkupValue" />
                 <ScalarProperty Name="ConversionMarkupType" ColumnName="ConversionMarkupType" />
                 <ScalarProperty Name="MarginRestriction" ColumnName="MarginRestriction" />
@@ -11029,6 +11187,33 @@
                 <ScalarProperty Name="Template" ColumnName="Template" />
                 <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="PK_ID" ColumnName="PK_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdminTransactions">
+            <EntityTypeMapping TypeName="CurrentDeskClientsModel.AdminTransaction">
+              <MappingFragment StoreEntitySet="AdminTransactions">
+                <ScalarProperty Name="FK_OrganizationID" ColumnName="FK_OrganizationID" />
+                <ScalarProperty Name="FK_ToCurrencyID" ColumnName="FK_ToCurrencyID" />
+                <ScalarProperty Name="ExchangeRate" ColumnName="ExchangeRate" />
+                <ScalarProperty Name="FK_ToUserID" ColumnName="FK_ToUserID" />
+                <ScalarProperty Name="ToClientName" ColumnName="ToClientName" />
+                <ScalarProperty Name="ToAccountNumber" ColumnName="ToAccountNumber" />
+                <ScalarProperty Name="FK_BankInfoID" ColumnName="FK_BankInfoID" />
+                <ScalarProperty Name="ApprovedDate" ColumnName="ApprovedDate" />
+                <ScalarProperty Name="FeeAmount" ColumnName="FeeAmount" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsApproved" ColumnName="IsApproved" />
+                <ScalarProperty Name="FK_AdminTransactionTypeID" ColumnName="FK_AdminTransactionTypeID" />
+                <ScalarProperty Name="TransactionAmount" ColumnName="TransactionAmount" />
+                <ScalarProperty Name="FK_CurrencyID" ColumnName="FK_CurrencyID" />
+                <ScalarProperty Name="FK_FundingSourceID" ColumnName="FK_FundingSourceID" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="FK_UserID" ColumnName="FK_UserID" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="PK_TransactionID" ColumnName="PK_TransactionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -13786,27 +13971,19 @@
         <EntityTypeShape EntityType="CurrentDeskClientsModel.R_AssetManager_IntroducingBroker_ClientAccount" Width="1.5" PointX="0.202360941191372" PointY="28.575264258578077" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK_R_AssetMaanger_IntroducingBroker_ClientAccount_IntroducingBroker" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.BOMAMAlert" Width="1.5" PointX="3.00992301805407" PointY="5.0288308584265558" />
-        <EntityTypeShape EntityType="CurrentDeskClientsModel.AdminTransaction" Width="1.5" PointX="10.464533797681581" PointY="21.759975324273096" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.FundingSourceAcceptedCurrency" Width="1.5" PointX="11.756599657124188" PointY="12.455967819530502" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.L_AdminTransactionType" Width="1.5" PointX="3.3894850813734743" PointY="17.782546960647473" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7E57BA87" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D63964E" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Us__7B7B4DDC" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__FK_LC__08D548FA" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.FundingSource" Width="1.5" PointX="6.0320917340144948" PointY="12.557622796184207" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7C6F7215" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__FK_Ba__73DA2C14" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__FK_Fu__07E124C1" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__FK_In__74CE504D" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__FK_Re__72E607DB" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__Incom__75C27486" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__FundingSo__Outgo__76B698BF" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__2A363CC5" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.TransactionSetting" Width="1.5" PointX="0.98420998872453813" PointY="17.708242528936008" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__Transacti__FK_Ad__3F3159AB" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__Transacti__FK_Cu__40257DE4" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__505BE5AD" />
-        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__636EBA21" />
         <EntityTypeShape EntityType="CurrentDeskClientsModel.DepositOrWithdrawActivity" Width="1.5" PointX="10.884192214759157" PointY="4.0641591418833283" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__DepositOr__FK_Ba__795DFB40" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK__DepositOr__FK_Cu__7869D707" />
@@ -13843,6 +14020,19 @@
         <EntityTypeShape EntityType="CurrentDeskClientsModel.AccountCreationRule" Width="1.5" PointX="0.36545760574073416" PointY="0.30584560348924511" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK_AccountCreationRules_Organization" />
         <AssociationConnector Association="CurrentDeskClientsModel.FK_Users_Organization" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_TransactionSettings_Organization" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_FundingSource_Organization" />
+        <EntityTypeShape EntityType="CurrentDeskClientsModel.AdminTransaction" Width="1.5" PointX="8.9652269971395029" PointY="21.607487614083798" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ad__7B5B524B" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Ba__7C4F7684" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Cu__7D439ABD" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Fu__7E37BEF6" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__00200768" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_To__7F2BE32F" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK__AdminTran__FK_Us__01142BA1" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_AdminTransactions_Organization" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_Transactions_Organization" />
+        <AssociationConnector Association="CurrentDeskClientsModel.FK_TransferLogs_Organization" />
         </Diagram>
     </Diagrams>
   </Designer>

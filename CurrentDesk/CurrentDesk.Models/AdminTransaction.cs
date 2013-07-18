@@ -56,11 +56,11 @@ public partial class AdminTransaction
 
             {
 
-                if (User != null && User.PK_UserID != value)
+                if (User1 != null && User1.PK_UserID != value)
 
                 {
 
-                    User = null;
+                    User1 = null;
 
                 }
 
@@ -341,11 +341,11 @@ public partial class AdminTransaction
 
             {
 
-                if (User1 != null && User1.PK_UserID != value)
+                if (User != null && User.PK_UserID != value)
 
                 {
 
-                    User1 = null;
+                    User = null;
 
                 }
 
@@ -412,6 +412,45 @@ public partial class AdminTransaction
 
     private Nullable<int> _fK_ToCurrencyID;
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            try
+            {
+                _settingFK = true;
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
@@ -436,6 +475,24 @@ public partial class AdminTransaction
 
 
 
+    public virtual BankAccountInformation BankAccountInformation
+    {
+
+        get { return _bankAccountInformation; }
+        set
+        {
+            if (!ReferenceEquals(_bankAccountInformation, value))
+            {
+                var previousValue = _bankAccountInformation;
+                _bankAccountInformation = value;
+                FixupBankAccountInformation(previousValue);
+            }
+        }
+    }
+    private BankAccountInformation _bankAccountInformation;
+
+
+
     public virtual L_CurrencyValue L_CurrencyValue
     {
 
@@ -451,24 +508,6 @@ public partial class AdminTransaction
         }
     }
     private L_CurrencyValue _l_CurrencyValue;
-
-
-
-    public virtual User User
-    {
-
-        get { return _user; }
-        set
-        {
-            if (!ReferenceEquals(_user, value))
-            {
-                var previousValue = _user;
-                _user = value;
-                FixupUser(previousValue);
-            }
-        }
-    }
-    private User _user;
 
 
 
@@ -490,21 +529,39 @@ public partial class AdminTransaction
 
 
 
-    public virtual BankAccountInformation BankAccountInformation
+    public virtual L_CurrencyValue L_CurrencyValue1
     {
 
-        get { return _bankAccountInformation; }
+        get { return _l_CurrencyValue1; }
         set
         {
-            if (!ReferenceEquals(_bankAccountInformation, value))
+            if (!ReferenceEquals(_l_CurrencyValue1, value))
             {
-                var previousValue = _bankAccountInformation;
-                _bankAccountInformation = value;
-                FixupBankAccountInformation(previousValue);
+                var previousValue = _l_CurrencyValue1;
+                _l_CurrencyValue1 = value;
+                FixupL_CurrencyValue1(previousValue);
             }
         }
     }
-    private BankAccountInformation _bankAccountInformation;
+    private L_CurrencyValue _l_CurrencyValue1;
+
+
+
+    public virtual User User
+    {
+
+        get { return _user; }
+        set
+        {
+            if (!ReferenceEquals(_user, value))
+            {
+                var previousValue = _user;
+                _user = value;
+                FixupUser(previousValue);
+            }
+        }
+    }
+    private User _user;
 
 
 
@@ -526,21 +583,21 @@ public partial class AdminTransaction
 
 
 
-    public virtual L_CurrencyValue L_CurrencyValue1
+    public virtual Organization Organization
     {
 
-        get { return _l_CurrencyValue1; }
+        get { return _organization; }
         set
         {
-            if (!ReferenceEquals(_l_CurrencyValue1, value))
+            if (!ReferenceEquals(_organization, value))
             {
-                var previousValue = _l_CurrencyValue1;
-                _l_CurrencyValue1 = value;
-                FixupL_CurrencyValue1(previousValue);
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
             }
         }
     }
-    private L_CurrencyValue _l_CurrencyValue1;
+    private Organization _organization;
 
         #endregion
 
@@ -585,6 +642,41 @@ public partial class AdminTransaction
     }
 
 
+    private void FixupBankAccountInformation(BankAccountInformation previousValue)
+    {
+
+        if (previousValue != null && previousValue.AdminTransactions.Contains(this))
+        {
+            previousValue.AdminTransactions.Remove(this);
+        }
+
+
+        if (BankAccountInformation != null)
+        {
+            if (!BankAccountInformation.AdminTransactions.Contains(this))
+            {
+                BankAccountInformation.AdminTransactions.Add(this);
+            }
+
+            if (FK_BankInfoID != BankAccountInformation.PK_BankAccountInformationID)
+
+            {
+                FK_BankInfoID = BankAccountInformation.PK_BankAccountInformationID;
+            }
+
+        }
+
+        else if (!_settingFK)
+
+        {
+
+            FK_BankInfoID = null;
+
+        }
+
+    }
+
+
     private void FixupL_CurrencyValue(L_CurrencyValue previousValue)
     {
 
@@ -614,41 +706,6 @@ public partial class AdminTransaction
         {
 
             FK_CurrencyID = null;
-
-        }
-
-    }
-
-
-    private void FixupUser(User previousValue)
-    {
-
-        if (previousValue != null && previousValue.AdminTransactions.Contains(this))
-        {
-            previousValue.AdminTransactions.Remove(this);
-        }
-
-
-        if (User != null)
-        {
-            if (!User.AdminTransactions.Contains(this))
-            {
-                User.AdminTransactions.Add(this);
-            }
-
-            if (FK_UserID != User.PK_UserID)
-
-            {
-                FK_UserID = User.PK_UserID;
-            }
-
-        }
-
-        else if (!_settingFK)
-
-        {
-
-            FK_UserID = null;
 
         }
 
@@ -690,76 +747,6 @@ public partial class AdminTransaction
     }
 
 
-    private void FixupBankAccountInformation(BankAccountInformation previousValue)
-    {
-
-        if (previousValue != null && previousValue.AdminTransactions.Contains(this))
-        {
-            previousValue.AdminTransactions.Remove(this);
-        }
-
-
-        if (BankAccountInformation != null)
-        {
-            if (!BankAccountInformation.AdminTransactions.Contains(this))
-            {
-                BankAccountInformation.AdminTransactions.Add(this);
-            }
-
-            if (FK_BankInfoID != BankAccountInformation.PK_BankAccountInformationID)
-
-            {
-                FK_BankInfoID = BankAccountInformation.PK_BankAccountInformationID;
-            }
-
-        }
-
-        else if (!_settingFK)
-
-        {
-
-            FK_BankInfoID = null;
-
-        }
-
-    }
-
-
-    private void FixupUser1(User previousValue)
-    {
-
-        if (previousValue != null && previousValue.AdminTransactions1.Contains(this))
-        {
-            previousValue.AdminTransactions1.Remove(this);
-        }
-
-
-        if (User1 != null)
-        {
-            if (!User1.AdminTransactions1.Contains(this))
-            {
-                User1.AdminTransactions1.Add(this);
-            }
-
-            if (FK_ToUserID != User1.PK_UserID)
-
-            {
-                FK_ToUserID = User1.PK_UserID;
-            }
-
-        }
-
-        else if (!_settingFK)
-
-        {
-
-            FK_ToUserID = null;
-
-        }
-
-    }
-
-
     private void FixupL_CurrencyValue1(L_CurrencyValue previousValue)
     {
 
@@ -789,6 +776,103 @@ public partial class AdminTransaction
         {
 
             FK_ToCurrencyID = null;
+
+        }
+
+    }
+
+
+    private void FixupUser(User previousValue)
+    {
+
+        if (previousValue != null && previousValue.AdminTransactions.Contains(this))
+        {
+            previousValue.AdminTransactions.Remove(this);
+        }
+
+
+        if (User != null)
+        {
+            if (!User.AdminTransactions.Contains(this))
+            {
+                User.AdminTransactions.Add(this);
+            }
+
+            if (FK_ToUserID != User.PK_UserID)
+
+            {
+                FK_ToUserID = User.PK_UserID;
+            }
+
+        }
+
+        else if (!_settingFK)
+
+        {
+
+            FK_ToUserID = null;
+
+        }
+
+    }
+
+
+    private void FixupUser1(User previousValue)
+    {
+
+        if (previousValue != null && previousValue.AdminTransactions1.Contains(this))
+        {
+            previousValue.AdminTransactions1.Remove(this);
+        }
+
+
+        if (User1 != null)
+        {
+            if (!User1.AdminTransactions1.Contains(this))
+            {
+                User1.AdminTransactions1.Add(this);
+            }
+
+            if (FK_UserID != User1.PK_UserID)
+
+            {
+                FK_UserID = User1.PK_UserID;
+            }
+
+        }
+
+        else if (!_settingFK)
+
+        {
+
+            FK_UserID = null;
+
+        }
+
+    }
+
+
+    private void FixupOrganization(Organization previousValue)
+    {
+
+        if (previousValue != null && previousValue.AdminTransactions.Contains(this))
+        {
+            previousValue.AdminTransactions.Remove(this);
+        }
+
+
+        if (Organization != null)
+        {
+            if (!Organization.AdminTransactions.Contains(this))
+            {
+                Organization.AdminTransactions.Add(this);
+            }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
 
         }
 

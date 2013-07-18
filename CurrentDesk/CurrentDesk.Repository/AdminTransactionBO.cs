@@ -282,6 +282,34 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method returns sum of pending withdrawal request amount for an account
+        /// </summary>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public decimal GetPendingWithdrawalAmount(string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var adminTransactionRepo =
+                        new AdminTransactionRepository(new EFRepository<AdminTransaction>(), unitOfWork);
+
+                    ObjectSet<AdminTransaction> transactionObjSet =
+                        ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
+
+                    return (decimal)transactionObjSet.Where(tran => tran.AccountNumber == accountNumber && tran.FK_OrganizationID == organizationID && tran.FK_AdminTransactionTypeID == (int)AdminTransactionType.OutgoingFunds && tran.IsApproved == false && tran.IsDeleted == false).ToList().Sum(tran => tran.TransactionAmount);
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method returns sum of pending transfer request amount for an account
         /// </summary>
         /// <param name="accountNumber">accountNumber</param>
@@ -299,6 +327,34 @@ namespace CurrentDesk.Repository.CurrentDesk
                         ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
 
                     return (decimal)transactionObjSet.Where(tran => tran.AccountNumber == accountNumber && (tran.FK_AdminTransactionTypeID == (int)AdminTransactionType.InternalTransfers || tran.FK_AdminTransactionTypeID == (int)AdminTransactionType.ConversionsRequests) && tran.IsApproved == false && tran.IsDeleted == false).ToList().Sum(tran => tran.TransactionAmount);
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This method returns sum of pending transfer request amount for an account
+        /// </summary>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public decimal GetPendingTransferAmount(string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var adminTransactionRepo =
+                        new AdminTransactionRepository(new EFRepository<AdminTransaction>(), unitOfWork);
+
+                    ObjectSet<AdminTransaction> transactionObjSet =
+                        ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
+
+                    return (decimal)transactionObjSet.Where(tran => tran.AccountNumber == accountNumber && tran.FK_OrganizationID == organizationID &&  (tran.FK_AdminTransactionTypeID == (int)AdminTransactionType.InternalTransfers || tran.FK_AdminTransactionTypeID == (int)AdminTransactionType.ConversionsRequests) && tran.IsApproved == false && tran.IsDeleted == false).ToList().Sum(tran => tran.TransactionAmount);
                 }
             }
             catch (Exception ex)

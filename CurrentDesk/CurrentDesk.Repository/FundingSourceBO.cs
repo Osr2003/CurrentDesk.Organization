@@ -304,7 +304,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// for display during Fund Account
         /// </summary>
         /// <returns></returns>
-        public List<FundTransferSourceDetail> GetAllClientTransferFundSources(string sourceIds)
+        public List<FundTransferSourceDetail> GetAllClientTransferFundSources(string sourceIds, int organizationID)
         {
             try
             {
@@ -321,7 +321,7 @@ namespace CurrentDesk.Repository.CurrentDesk
 
                     //Get all active sources
                     var activeSources =
-                        fundSourceObjSet.Include("L_Country").Where(src => src.IsDeleted == false && src.IsEnabled == true).ToList();
+                        fundSourceObjSet.Include("L_Country").Where(src => src.FK_OrganizationID == organizationID && src.IsDeleted == false && src.IsEnabled == true).ToList();
 
                     //Filter and return
                     return activeSources.Where(src => arrIds.Contains(src.PK_FundingSourceID.ToString())).Select(x => new FundTransferSourceDetail

@@ -172,6 +172,45 @@ public partial class TransactionSetting
 
     }
 
+
+    public virtual int FK_OrganizationID
+    {
+
+        get { return _fK_OrganizationID; }
+        set
+        {
+
+            try
+            {
+                _settingFK = true;
+
+            if (_fK_OrganizationID != value)
+
+            {
+
+                if (Organization != null && Organization.PK_OrganizationID != value)
+
+                {
+
+                    Organization = null;
+
+                }
+
+                _fK_OrganizationID = value;
+            }
+
+            }
+            finally
+            {
+                _settingFK = false;
+            }
+
+        }
+
+    }
+
+    private int _fK_OrganizationID;
+
         #endregion
 
         #region Navigation Properties
@@ -211,6 +250,24 @@ public partial class TransactionSetting
         }
     }
     private L_CurrencyValue _l_CurrencyValue;
+
+
+
+    public virtual Organization Organization
+    {
+
+        get { return _organization; }
+        set
+        {
+            if (!ReferenceEquals(_organization, value))
+            {
+                var previousValue = _organization;
+                _organization = value;
+                FixupOrganization(previousValue);
+            }
+        }
+    }
+    private Organization _organization;
 
         #endregion
 
@@ -284,6 +341,33 @@ public partial class TransactionSetting
         {
 
             FK_CurrencyID = null;
+
+        }
+
+    }
+
+
+    private void FixupOrganization(Organization previousValue)
+    {
+
+        if (previousValue != null && previousValue.TransactionSettings.Contains(this))
+        {
+            previousValue.TransactionSettings.Remove(this);
+        }
+
+
+        if (Organization != null)
+        {
+            if (!Organization.TransactionSettings.Contains(this))
+            {
+                Organization.TransactionSettings.Add(this);
+            }
+
+            if (FK_OrganizationID != Organization.PK_OrganizationID)
+
+            {
+                FK_OrganizationID = Organization.PK_OrganizationID;
+            }
 
         }
 

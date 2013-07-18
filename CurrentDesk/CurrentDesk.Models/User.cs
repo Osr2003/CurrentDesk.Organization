@@ -569,82 +569,6 @@ public partial class User
 
 
 
-    public virtual ICollection<AdminTransaction> AdminTransactions
-    {
-        get
-        {
-            if (_adminTransactions == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions;
-                _adminTransactions = newCollection;
-
-            }
-            return _adminTransactions;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions, value))
-            {
-                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions;
-                }
-                _adminTransactions = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions;
-
-
-
-    public virtual ICollection<AdminTransaction> AdminTransactions1
-    {
-        get
-        {
-            if (_adminTransactions1 == null)
-            {
-
-                var newCollection = new FixupCollection<AdminTransaction>();
-                newCollection.CollectionChanged += FixupAdminTransactions1;
-                _adminTransactions1 = newCollection;
-
-            }
-            return _adminTransactions1;
-        }
-        set
-        {
-
-            if (!ReferenceEquals(_adminTransactions1, value))
-            {
-                var previousValue = _adminTransactions1 as FixupCollection<AdminTransaction>;
-                if (previousValue != null)
-                {
-                    previousValue.CollectionChanged -= FixupAdminTransactions1;
-                }
-                _adminTransactions1 = value;
-                var newValue = value as FixupCollection<AdminTransaction>;
-                if (newValue != null)
-                {
-                    newValue.CollectionChanged += FixupAdminTransactions1;
-                }
-            }
-
-        }
-    }
-    private ICollection<AdminTransaction> _adminTransactions1;
-
-
-
     public virtual ICollection<TransferActivity> TransferActivities
     {
         get
@@ -812,6 +736,82 @@ public partial class User
         }
     }
     private Organization _organization;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions
+    {
+        get
+        {
+            if (_adminTransactions == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions;
+                _adminTransactions = newCollection;
+
+            }
+            return _adminTransactions;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions, value))
+            {
+                var previousValue = _adminTransactions as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions;
+                }
+                _adminTransactions = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions;
+
+
+
+    public virtual ICollection<AdminTransaction> AdminTransactions1
+    {
+        get
+        {
+            if (_adminTransactions1 == null)
+            {
+
+                var newCollection = new FixupCollection<AdminTransaction>();
+                newCollection.CollectionChanged += FixupAdminTransactions1;
+                _adminTransactions1 = newCollection;
+
+            }
+            return _adminTransactions1;
+        }
+        set
+        {
+
+            if (!ReferenceEquals(_adminTransactions1, value))
+            {
+                var previousValue = _adminTransactions1 as FixupCollection<AdminTransaction>;
+                if (previousValue != null)
+                {
+                    previousValue.CollectionChanged -= FixupAdminTransactions1;
+                }
+                _adminTransactions1 = value;
+                var newValue = value as FixupCollection<AdminTransaction>;
+                if (newValue != null)
+                {
+                    newValue.CollectionChanged += FixupAdminTransactions1;
+                }
+            }
+
+        }
+    }
+    private ICollection<AdminTransaction> _adminTransactions1;
 
         #endregion
 
@@ -1180,60 +1180,6 @@ public partial class User
     }
 
 
-    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.User = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.User, this))
-                {
-                    item.User = null;
-                }
-
-            }
-        }
-    }
-
-
-    private void FixupAdminTransactions1(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-        {
-            foreach (AdminTransaction item in e.NewItems)
-            {
-
-                item.User1 = this;
-
-            }
-        }
-
-        if (e.OldItems != null)
-        {
-            foreach (AdminTransaction item in e.OldItems)
-            {
-
-                if (ReferenceEquals(item.User1, this))
-                {
-                    item.User1 = null;
-                }
-
-            }
-        }
-    }
-
-
     private void FixupTransferActivities(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -1330,6 +1276,60 @@ public partial class User
         if (e.OldItems != null)
         {
             foreach (ConversionActivity item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.User1, this))
+                {
+                    item.User1 = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.User = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
+            {
+
+                if (ReferenceEquals(item.User, this))
+                {
+                    item.User = null;
+                }
+
+            }
+        }
+    }
+
+
+    private void FixupAdminTransactions1(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+        {
+            foreach (AdminTransaction item in e.NewItems)
+            {
+
+                item.User1 = this;
+
+            }
+        }
+
+        if (e.OldItems != null)
+        {
+            foreach (AdminTransaction item in e.OldItems)
             {
 
                 if (ReferenceEquals(item.User1, this))
