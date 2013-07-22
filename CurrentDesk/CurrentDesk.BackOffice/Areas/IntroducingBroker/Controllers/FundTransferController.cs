@@ -18,13 +18,13 @@ using CurrentDesk.Logging;
 using CurrentDesk.Repository.CurrentDesk;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Web.Mvc;
 using CurrentDesk.Models;
 using CurrentDesk.BackOffice.Custom;
 using CurrentDesk.Common;
 using MT4ManLibraryNETv03;
 using MT4Wrapper;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
@@ -68,7 +68,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
@@ -94,10 +94,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }
@@ -128,6 +125,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
                     int currencyID = lCurrValueBO.GetCurrencyIDFromSymbol(withdrawData.Currency);
                     var accountDetails = clientAccBO.GetLandingAccountForCurrencyOfUser(LoginAccountType.PartnerAccount, loginInfo.UserID, currencyID);
                     decimal availableBalance = accountDetails != null ? (decimal)accountDetails.CurrentBalance : 0;
@@ -136,24 +135,25 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     if (availableBalance >= withdrawData.Amount)
                     {
                         //Check if balance greater than pending withdrawal requests
-                        if (availableBalance >= (adminTransactionBO.GetPendingWithdrawalAmount(withdrawData.AccountNumber) + withdrawData.Amount))
+                        if (availableBalance >= (adminTransactionBO.GetPendingWithdrawalAmount(withdrawData.AccountNumber, organizationID) + withdrawData.Amount))
                         {
                             //Assigning property values
-                            AdminTransaction newFundRequest = new AdminTransaction();
-                            newFundRequest.TransactionDate = DateTime.UtcNow;
-                            newFundRequest.FK_UserID = loginInfo.UserID;
-                            newFundRequest.AccountNumber = withdrawData.AccountNumber;
-                            newFundRequest.FK_BankInfoID = withdrawData.BankInfoID;
-                            newFundRequest.FK_CurrencyID = currencyID;
-                            newFundRequest.TransactionAmount = withdrawData.Amount;
-                            newFundRequest.FK_AdminTransactionTypeID = (int)AdminTransactionType.OutgoingFunds;
-                            newFundRequest.Notes = withdrawData.Notes;
-                            newFundRequest.ClientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
-                            newFundRequest.IsApproved = false;
-                            newFundRequest.IsDeleted = false;
+                            AdminTransaction newWithdrawRequest = new AdminTransaction();
+                            newWithdrawRequest.TransactionDate = DateTime.UtcNow;
+                            newWithdrawRequest.FK_UserID = loginInfo.UserID;
+                            newWithdrawRequest.AccountNumber = withdrawData.AccountNumber;
+                            newWithdrawRequest.FK_BankInfoID = withdrawData.BankInfoID;
+                            newWithdrawRequest.FK_CurrencyID = currencyID;
+                            newWithdrawRequest.TransactionAmount = withdrawData.Amount;
+                            newWithdrawRequest.FK_AdminTransactionTypeID = (int)AdminTransactionType.OutgoingFunds;
+                            newWithdrawRequest.Notes = withdrawData.Notes;
+                            newWithdrawRequest.ClientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
+                            newWithdrawRequest.IsApproved = false;
+                            newWithdrawRequest.IsDeleted = false;
+                            newWithdrawRequest.FK_OrganizationID = organizationID;
 
                             //Call BO method to add
-                            if (adminTransactionBO.AddNewAdminTransactionRequest(newFundRequest))
+                            if (adminTransactionBO.AddNewAdminTransactionRequest(newWithdrawRequest))
                             {
                                 //Log activity details
                                 InsertDepositOrWithdrawActivityDetails(Constants.K_WITHDRAW, currencyID, withdrawData.Amount, withdrawData.AccountNumber, withdrawData.BankInfoID, Constants.K_STATUS_PENDING);
@@ -246,141 +246,191 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                int currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
-                string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
-
-                //Get transaction settings from database
-                var transacSett = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.InternalTransfers);
-
-                var fromAccDetails = clientAccBO.GetAnyAccountDetails(fromAcc);
-                var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc);
-
-                //Get from acc balance
-                decimal balance = (decimal)fromAccDetails.CurrentBalance;
-                decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc);
-
-                bool isToSucessful = true;
-                bool isFromSucessful = true;
-
-                if (transacSett != null)
+                if (SessionManagement.UserInfo != null)
                 {
-                    //If approval settings is immediate or approval settings is limited and transfer amount less than limit, do immediate transfer
-                    if (transacSett.InternalTransferApprovalOptions == (int)TransferApprovalOptions.Immediate || (transacSett.InternalTransferApprovalOptions == (int)TransferApprovalOptions.Limited && amount <= (double)transacSett.InternalTransferLimitedAmount))
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
+                    int currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
+                    string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
+
+                    //Get transaction settings from database
+                    var transacSett =
+                        transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.InternalTransfers, organizationID);
+
+                    var fromAccDetails = clientAccBO.GetAnyAccountDetails(fromAcc, organizationID);
+                    var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc, organizationID);
+
+                    //Get from acc balance
+                    decimal balance = (decimal) fromAccDetails.CurrentBalance;
+                    decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
+
+                    bool isToSucessful = true;
+                    bool isFromSucessful = true;
+
+                    if (transacSett != null)
                     {
-                        //Check balance
-                        if (balance >= (decimal)amount)
+                        //If approval settings is immediate or approval settings is limited and transfer amount less than limit, do immediate transfer
+                        if (transacSett.InternalTransferApprovalOptions == (int) TransferApprovalOptions.Immediate ||
+                            (transacSett.InternalTransferApprovalOptions == (int) TransferApprovalOptions.Limited &&
+                             amount <= (double) transacSett.InternalTransferLimitedAmount))
                         {
-                            //Check pending request balance
-                            if (balance >= (pendingAmount + (decimal)amount))
+                            //Check balance
+                            if (balance >= (decimal) amount)
                             {
-                                if (fromAccDetails.PlatformLogin != null)
+                                //Check pending request balance
+                                if (balance >= (pendingAmount + (decimal) amount))
                                 {
-                                    isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -amount, "Debit");
-                                }
-
-                                if (toAccDetails.PlatformLogin != null && isFromSucessful)
-                                {
-                                    isToSucessful = DoPlatformTransaction((int)toAccDetails.PlatformLogin, amount, "Credit");
-                                }
-
-                                //If platform transactions are successfull
-                                if (isToSucessful && isFromSucessful)
-                                {
-                                    //If transaction is successful, then log in Transactions table
-                                    if (clientAccBO.TransferFundInternal(fromAcc, toAcc, amount, exchangeRate))
+                                    if (fromAccDetails.PlatformLogin != null)
                                     {
-                                        var pkTransactionId = transactionBO.InternalFundTransfer(fromAcc, toAcc, currID, currID, amount, exchangeRate, notes);
+                                        isFromSucessful = DoPlatformTransaction((int) fromAccDetails.PlatformLogin,
+                                                                                -amount, "Debit");
+                                    }
 
-                                        //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
-                                        transferLogBO.AddTransferLogForTransaction(pkTransactionId, fromAcc, toAcc, currID, currID, amount, exchangeRate);
+                                    if (toAccDetails.PlatformLogin != null && isFromSucessful)
+                                    {
+                                        isToSucessful = DoPlatformTransaction((int) toAccDetails.PlatformLogin, amount,
+                                                                              "Credit");
+                                    }
 
-                                        //Log activity details
-                                        InsertTransferActivityDetails(currID, amount, fromAcc, toAcc, Constants.K_STATUS_TRANSFERRED);
+                                    //If platform transactions are successful
+                                    if (isToSucessful && isFromSucessful)
+                                    {
+                                        //If transaction is successful, then log in Transactions table
+                                        if (clientAccBO.TransferFundInternal(fromAcc, toAcc, amount, exchangeRate, organizationID))
+                                        {
+                                            var pkTransactionId = transactionBO.InternalFundTransfer(fromAcc, toAcc,
+                                                                                                     currID, currID,
+                                                                                                     amount,
+                                                                                                     exchangeRate, notes, organizationID);
 
-                                        //Insert into admin transaction table for records
-                                        var transferTransac = new AdminTransaction();
-                                        transferTransac.TransactionDate = DateTime.UtcNow;
-                                        transferTransac.FK_UserID = loginInfo.UserID;
-                                        transferTransac.AccountNumber = fromAcc;
-                                        transferTransac.FK_CurrencyID = currID;
-                                        transferTransac.TransactionAmount = (decimal)amount;
-                                        transferTransac.FK_AdminTransactionTypeID = (int)AdminTransactionType.InternalTransfers;
-                                        transferTransac.Notes = notes;
-                                        transferTransac.ClientName = clientName;
-                                        transferTransac.ApprovedDate = DateTime.UtcNow;
-                                        transferTransac.ToAccountNumber = toAcc;
-                                        transferTransac.ToClientName = clientName;
-                                        transferTransac.IsApproved = true;
-                                        transferTransac.IsDeleted = false;
+                                            //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
+                                            transferLogBO.AddTransferLogForTransaction(pkTransactionId, fromAcc, toAcc,
+                                                                                       currID, currID, amount,
+                                                                                       exchangeRate, organizationID);
 
-                                        //Add immediate transaction to Admin Transaction
-                                        adminTransactionBO.AddNewAdminTransactionRequest(transferTransac);
+                                            //Log activity details
+                                            InsertTransferActivityDetails(currID, amount, fromAcc, toAcc,
+                                                                          Constants.K_STATUS_TRANSFERRED);
 
-                                        return Json(new { status = true, message = "Internal transfer has been successfully completed." });
+                                            //Insert into admin transaction table for records
+                                            var transferTransac = new AdminTransaction();
+                                            transferTransac.TransactionDate = DateTime.UtcNow;
+                                            transferTransac.FK_UserID = loginInfo.UserID;
+                                            transferTransac.AccountNumber = fromAcc;
+                                            transferTransac.FK_CurrencyID = currID;
+                                            transferTransac.TransactionAmount = (decimal) amount;
+                                            transferTransac.FK_AdminTransactionTypeID =
+                                                (int) AdminTransactionType.InternalTransfers;
+                                            transferTransac.Notes = notes;
+                                            transferTransac.ClientName = clientName;
+                                            transferTransac.ApprovedDate = DateTime.UtcNow;
+                                            transferTransac.ToAccountNumber = toAcc;
+                                            transferTransac.ToClientName = clientName;
+                                            transferTransac.IsApproved = true;
+                                            transferTransac.IsDeleted = false;
+                                            transferTransac.FK_OrganizationID = organizationID;
+
+                                            //Add immediate transaction to Admin Transaction
+                                            adminTransactionBO.AddNewAdminTransactionRequest(transferTransac);
+
+                                            return
+                                                Json(
+                                                    new
+                                                        {
+                                                            status = true,
+                                                            message = "Internal transfer has been successfully completed."
+                                                        });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Json(new {status = false, message = "Some error occurred in platform!"});
                                     }
                                 }
                                 else
                                 {
-                                    return Json(new { status = false, message = "Some error occurred in platform!" });
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = false,
+                                                    message = "Insufficient balance due to pending transfer requests!"
+                                                });
                                 }
                             }
                             else
                             {
-                                return Json(new { status = false, message = "Insufficient balance due to pending transfer requests!" });
+                                return
+                                    Json(new {status = false, message = "Transfer failed due to insufficient balance."});
                             }
                         }
+                            //Make admin transfer request
                         else
                         {
-                            return Json(new { status = false, message = "Transfer failed due to insufficient balance." });
-                        }
-                    }
-                    //Make admin transfer request
-                    else
-                    {
-                        //Check balance
-                        if (balance >= (decimal)amount)
-                        {
-                            //Check pending request balance
-                            if (balance >= (pendingAmount + (decimal)amount))
+                            //Check balance
+                            if (balance >= (decimal) amount)
                             {
-                                //Register transfer request
-                                AdminTransaction transferTransac = new AdminTransaction();
-                                transferTransac.TransactionDate = DateTime.UtcNow;
-                                transferTransac.FK_UserID = loginInfo.UserID;
-                                transferTransac.AccountNumber = fromAcc;
-                                transferTransac.FK_CurrencyID = currID;
-                                transferTransac.TransactionAmount = (decimal)amount;
-                                transferTransac.FK_AdminTransactionTypeID = (int)AdminTransactionType.InternalTransfers;
-                                transferTransac.Notes = notes;
-                                transferTransac.ClientName = clientName;
-                                transferTransac.FeeAmount = transacSett.TransferFee;
-                                transferTransac.ToAccountNumber = toAcc;
-                                transferTransac.ToClientName = clientName;
-                                transferTransac.IsApproved = false;
-                                transferTransac.IsDeleted = false;
+                                //Check pending request balance
+                                if (balance >= (pendingAmount + (decimal) amount))
+                                {
+                                    //Register transfer request
+                                    AdminTransaction transferTransac = new AdminTransaction();
+                                    transferTransac.TransactionDate = DateTime.UtcNow;
+                                    transferTransac.FK_UserID = loginInfo.UserID;
+                                    transferTransac.AccountNumber = fromAcc;
+                                    transferTransac.FK_CurrencyID = currID;
+                                    transferTransac.TransactionAmount = (decimal) amount;
+                                    transferTransac.FK_AdminTransactionTypeID =
+                                        (int) AdminTransactionType.InternalTransfers;
+                                    transferTransac.Notes = notes;
+                                    transferTransac.ClientName = clientName;
+                                    transferTransac.FeeAmount = transacSett.TransferFee;
+                                    transferTransac.ToAccountNumber = toAcc;
+                                    transferTransac.ToClientName = clientName;
+                                    transferTransac.IsApproved = false;
+                                    transferTransac.IsDeleted = false;
+                                    transferTransac.FK_OrganizationID = organizationID;
 
-                                //Add request to Admin Transaction
-                                adminTransactionBO.AddNewAdminTransactionRequest(transferTransac);
+                                    //Add request to Admin Transaction
+                                    adminTransactionBO.AddNewAdminTransactionRequest(transferTransac);
 
-                                //Log activity details for pending transaction
-                                InsertTransferActivityDetails(currID, amount, fromAcc, toAcc, Constants.K_STATUS_PENDING);
+                                    //Log activity details for pending transaction
+                                    InsertTransferActivityDetails(currID, amount, fromAcc, toAcc,
+                                                                  Constants.K_STATUS_PENDING);
 
-                                return Json(new { status = true, message = "Internal transfer request has been submitted." });
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = true,
+                                                    message = "Internal transfer request has been submitted."
+                                                });
+                                }
+                                else
+                                {
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = false,
+                                                    message = "Insufficient balance due to pending transfer requests!"
+                                                });
+                                }
                             }
                             else
                             {
-                                return Json(new { status = false, message = "Insufficient balance due to pending transfer requests!" });
+                                return
+                                    Json(new {status = false, message = "Transfer failed due to insufficient balance."});
                             }
                         }
-                        else
-                        {
-                            return Json(new { status = false, message = "Transfer failed due to insufficient balance." });
-                        }
                     }
+                    return Json(new {status = false, message = "No transaction settings found!"});
                 }
-                return Json(new { status = false, message = "No transaction settings found!" });
+                else
+                {
+                    return RedirectToAction("Login", "Account", new {Area = ""});
+                }
             }
             catch (Exception ex)
             {
@@ -402,150 +452,201 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                int fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
-                int toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[0]);
-
-                string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
-
-                var fromAccDetails = clientAccBO.GetAnyAccountDetails(fromAcc);
-                var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc);
-
-                //Get from acc balance
-                decimal balance = (decimal)fromAccDetails.CurrentBalance;
-                decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc);
-
-                bool isToSucessful = true;
-                bool isFromSucessful = true;
-
-                //Get transaction settings from database
-                var transacSett = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests);
-
-                if (transacSett != null)
+                if (SessionManagement.UserInfo != null)
                 {
-                    //If approval settings is immediate or approval settings is limited 
-                    //and trsnsfer amount less than limit, do immediate transfer
-                    if (transacSett.InternalTransferApprovalOptions == (int)TransferApprovalOptions.Immediate || (transacSett.InternalTransferApprovalOptions == (int)TransferApprovalOptions.Limited && amount <= (double)transacSett.InternalTransferLimitedAmount))
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
+                    int fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
+                    int toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[0]);
+
+                    string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
+
+                    var fromAccDetails = clientAccBO.GetAnyAccountDetails(fromAcc, organizationID);
+                    var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc, organizationID);
+
+                    //Get from acc balance
+                    decimal balance = (decimal) fromAccDetails.CurrentBalance;
+                    decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
+
+                    bool isToSucessful = true;
+                    bool isFromSucessful = true;
+
+                    //Get transaction settings from database
+                    var transacSett =
+                        transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests, organizationID);
+
+                    if (transacSett != null)
                     {
-                        //Check balance
-                        if (balance >= (decimal)amount)
+                        //If approval settings is immediate or approval settings is limited 
+                        //and transfer amount less than limit, do immediate transfer
+                        if (transacSett.InternalTransferApprovalOptions == (int) TransferApprovalOptions.Immediate ||
+                            (transacSett.InternalTransferApprovalOptions == (int) TransferApprovalOptions.Limited &&
+                             amount <= (double) transacSett.InternalTransferLimitedAmount))
                         {
-                            //Check pending request balance
-                            if (balance >= (pendingAmount + (decimal)amount))
+                            //Check balance
+                            if (balance >= (decimal) amount)
                             {
-                                if (fromAccDetails.PlatformLogin != null)
+                                //Check pending request balance
+                                if (balance >= (pendingAmount + (decimal) amount))
                                 {
-                                    isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -amount, "Debit");
-                                }
-
-                                if (toAccDetails.PlatformLogin != null && isFromSucessful)
-                                {
-                                    isToSucessful = DoPlatformTransaction((int)toAccDetails.PlatformLogin, (amount * exchangeRate), "Credit");
-                                }
-
-                                //If platform transactions are successfull
-                                if (isToSucessful && isFromSucessful)
-                                {
-                                    //If transaction is successful, then log in Transactions table
-                                    if (clientAccBO.TransferFundInternal(fromAcc, toAcc, amount, exchangeRate))
+                                    if (fromAccDetails.PlatformLogin != null)
                                     {
-                                        var pkTransactionId = transactionBO.InternalFundTransfer(fromAcc, toAcc, fromCurrID, toCurrID, amount, exchangeRate, notes);
+                                        isFromSucessful = DoPlatformTransaction((int) fromAccDetails.PlatformLogin,
+                                                                                -amount, "Debit");
+                                    }
 
-                                        //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
-                                        transferLogBO.AddTransferLogForTransaction(pkTransactionId, fromAcc, toAcc, fromCurrID, toCurrID, amount, exchangeRate);
+                                    if (toAccDetails.PlatformLogin != null && isFromSucessful)
+                                    {
+                                        isToSucessful = DoPlatformTransaction((int) toAccDetails.PlatformLogin,
+                                                                              (amount*exchangeRate), "Credit");
+                                    }
 
-                                        //Log activity details
-                                        InsertConversionActivityDetails(fromCurrID, toCurrID, amount, exchangeRate, fromAcc, toAcc, Constants.K_STATUS_TRANSFERRED);
+                                    //If platform transactions are successful
+                                    if (isToSucessful && isFromSucessful)
+                                    {
+                                        //If transaction is successful, then log in Transactions table
+                                        if (clientAccBO.TransferFundInternal(fromAcc, toAcc, amount, exchangeRate, organizationID))
+                                        {
+                                            var pkTransactionId = transactionBO.InternalFundTransfer(fromAcc, toAcc,
+                                                                                                     fromCurrID,
+                                                                                                     toCurrID, amount,
+                                                                                                     exchangeRate, notes, organizationID);
 
-                                        //Insert into admin transaction table for records
-                                        var convTransac = new AdminTransaction();
-                                        convTransac.TransactionDate = DateTime.UtcNow;
-                                        convTransac.FK_UserID = loginInfo.UserID;
-                                        convTransac.AccountNumber = fromAcc;
-                                        convTransac.FK_CurrencyID = fromCurrID;
-                                        convTransac.TransactionAmount = (decimal)amount;
-                                        convTransac.FK_AdminTransactionTypeID = (int)AdminTransactionType.ConversionsRequests;
-                                        convTransac.IsApproved = true;
-                                        convTransac.IsDeleted = false;
-                                        convTransac.Notes = notes;
-                                        convTransac.ClientName = clientName;
-                                        convTransac.ApprovedDate = DateTime.UtcNow;
-                                        convTransac.ToAccountNumber = toAcc;
-                                        convTransac.ToClientName = clientName;
-                                        convTransac.FK_ToUserID = loginInfo.UserID;
-                                        convTransac.ExchangeRate = exchangeRate;
-                                        convTransac.FK_ToCurrencyID = toCurrID;
+                                            //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
+                                            transferLogBO.AddTransferLogForTransaction(pkTransactionId, fromAcc, toAcc,
+                                                                                       fromCurrID, toCurrID, amount,
+                                                                                       exchangeRate, organizationID);
 
-                                        //Add conv transaction to Admin Transaction
-                                        adminTransactionBO.AddNewAdminTransactionRequest(convTransac);
+                                            //Log activity details
+                                            InsertConversionActivityDetails(fromCurrID, toCurrID, amount, exchangeRate,
+                                                                            fromAcc, toAcc,
+                                                                            Constants.K_STATUS_TRANSFERRED);
 
-                                        return Json(new { status = true, message = "Conversion transfer has been successfully completed." });
+                                            //Insert into admin transaction table for records
+                                            var convTransac = new AdminTransaction();
+                                            convTransac.TransactionDate = DateTime.UtcNow;
+                                            convTransac.FK_UserID = loginInfo.UserID;
+                                            convTransac.AccountNumber = fromAcc;
+                                            convTransac.FK_CurrencyID = fromCurrID;
+                                            convTransac.TransactionAmount = (decimal) amount;
+                                            convTransac.FK_AdminTransactionTypeID =
+                                                (int) AdminTransactionType.ConversionsRequests;
+                                            convTransac.IsApproved = true;
+                                            convTransac.IsDeleted = false;
+                                            convTransac.Notes = notes;
+                                            convTransac.ClientName = clientName;
+                                            convTransac.ApprovedDate = DateTime.UtcNow;
+                                            convTransac.ToAccountNumber = toAcc;
+                                            convTransac.ToClientName = clientName;
+                                            convTransac.FK_ToUserID = loginInfo.UserID;
+                                            convTransac.ExchangeRate = exchangeRate;
+                                            convTransac.FK_ToCurrencyID = toCurrID;
+                                            convTransac.FK_OrganizationID = organizationID;
+
+                                            //Add conv transaction to Admin Transaction
+                                            adminTransactionBO.AddNewAdminTransactionRequest(convTransac);
+
+                                            return
+                                                Json(
+                                                    new
+                                                        {
+                                                            status = true,
+                                                            message = "Conversion transfer has been successfully completed."
+                                                        });
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Json(new {status = false, message = "Some error occurred in platform!"});
                                     }
                                 }
                                 else
                                 {
-                                    return Json(new { status = false, message = "Some error occurred in platform!" });
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = false,
+                                                    message = "Insufficient balance due to pending transfer requests!"
+                                                });
                                 }
                             }
                             else
                             {
-                                return Json(new { status = false, message = "Insufficient balance due to pending transfer requests!" });
+                                return
+                                    Json(new {status = false, message = "Transfer failed due to insufficient balance."});
                             }
                         }
+                            //Make admin conversion request
                         else
                         {
-                            return Json(new { status = false, message = "Transfer failed due to insufficient balance." });
-                        }
-                    }
-                    //Make admin conversion request
-                    else
-                    {
-                        //Check balance
-                        if (balance >= (decimal)amount)
-                        {
-                            //Check pending request balance
-                            if (balance >= (pendingAmount + (decimal)amount))
+                            //Check balance
+                            if (balance >= (decimal) amount)
                             {
-                                //Register transfer request
-                                AdminTransaction convTransac = new AdminTransaction();
-                                convTransac.TransactionDate = DateTime.UtcNow;
-                                convTransac.FK_UserID = loginInfo.UserID;
-                                convTransac.AccountNumber = fromAcc;
-                                convTransac.FK_CurrencyID = fromCurrID;
-                                convTransac.TransactionAmount = (decimal)amount;
-                                convTransac.FK_AdminTransactionTypeID = (int)AdminTransactionType.ConversionsRequests;
-                                convTransac.Notes = notes;
-                                convTransac.ClientName = clientName;
-                                convTransac.FeeAmount = transacSett.TransferFee;
-                                convTransac.ToAccountNumber = toAcc;
-                                convTransac.ToClientName = clientName;
-                                convTransac.FK_ToUserID = loginInfo.UserID;
-                                convTransac.ExchangeRate = exchangeRate;
-                                convTransac.FK_ToCurrencyID = toCurrID;
-                                convTransac.IsApproved = false;
-                                convTransac.IsDeleted = false;
+                                //Check pending request balance
+                                if (balance >= (pendingAmount + (decimal) amount))
+                                {
+                                    //Register transfer request
+                                    AdminTransaction convTransac = new AdminTransaction();
+                                    convTransac.TransactionDate = DateTime.UtcNow;
+                                    convTransac.FK_UserID = loginInfo.UserID;
+                                    convTransac.AccountNumber = fromAcc;
+                                    convTransac.FK_CurrencyID = fromCurrID;
+                                    convTransac.TransactionAmount = (decimal) amount;
+                                    convTransac.FK_AdminTransactionTypeID =
+                                        (int) AdminTransactionType.ConversionsRequests;
+                                    convTransac.Notes = notes;
+                                    convTransac.ClientName = clientName;
+                                    convTransac.FeeAmount = transacSett.TransferFee;
+                                    convTransac.ToAccountNumber = toAcc;
+                                    convTransac.ToClientName = clientName;
+                                    convTransac.FK_ToUserID = loginInfo.UserID;
+                                    convTransac.ExchangeRate = exchangeRate;
+                                    convTransac.FK_ToCurrencyID = toCurrID;
+                                    convTransac.IsApproved = false;
+                                    convTransac.IsDeleted = false;
+                                    convTransac.FK_OrganizationID = organizationID;
 
-                                //Add request to Admin Transaction
-                                adminTransactionBO.AddNewAdminTransactionRequest(convTransac);
+                                    //Add request to Admin Transaction
+                                    adminTransactionBO.AddNewAdminTransactionRequest(convTransac);
 
-                                //Log activity details for pending transaction
-                                InsertConversionActivityDetails(fromCurrID, toCurrID, amount, exchangeRate, fromAcc, toAcc, Constants.K_STATUS_PENDING);
+                                    //Log activity details for pending transaction
+                                    InsertConversionActivityDetails(fromCurrID, toCurrID, amount, exchangeRate, fromAcc,
+                                                                    toAcc, Constants.K_STATUS_PENDING);
 
-                                return Json(new { status = true, message = "Internal transfer request has been submitted." });
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = true,
+                                                    message = "Internal transfer request has been submitted."
+                                                });
+                                }
+                                else
+                                {
+                                    return
+                                        Json(
+                                            new
+                                                {
+                                                    status = false,
+                                                    message = "Insufficient balance due to pending transfer requests!"
+                                                });
+                                }
                             }
                             else
                             {
-                                return Json(new { status = false, message = "Insufficient balance due to pending transfer requests!" });
+                                return
+                                    Json(new {status = false, message = "Transfer failed due to insufficient balance."});
                             }
                         }
-                        else
-                        {
-                            return Json(new { status = false, message = "Transfer failed due to insufficient balance." });
-                        }
                     }
+                    return Json(new {status = false, message = "No transaction settings found!"});
                 }
-                return Json(new { status = false, message = "No transaction settings found!" });
+                else
+                {
+                    return RedirectToAction("Login", "Account", new {Area = ""});
+                }
             }
             catch (Exception ex)
             {
@@ -689,63 +790,66 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                bool inverse = false;
-                decimal exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
-
-                var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests);
-
-                //If settings not null
-                if (settings != null)
+                if (SessionManagement.UserInfo != null)
                 {
-                    int markupType = (int)settings.ConversionMarkupType;
-                    decimal markup = (decimal)settings.ConversionMarkupValue;
+                    bool inverse = false;
+                    decimal exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
 
-                    //Markup in percentage
-                    if (markupType == (int)ConversionMarkupType.Percentage)
+                    var settings =
+                        transactionSettingBO.GetTransactionSetting((int) AdminTransactionType.ConversionsRequests, (int)SessionManagement.OrganizationID);
+
+                    //If settings not null
+                    if (settings != null)
                     {
-                        //Inverse calculation
-                        if (inverse)
+                        int markupType = (int) settings.ConversionMarkupType;
+                        decimal markup = (decimal) settings.ConversionMarkupValue;
+
+                        //Markup in percentage
+                        if (markupType == (int) ConversionMarkupType.Percentage)
                         {
-                            exchangeRate = Math.Round((1 / (exchangeRate + (exchangeRate * markup / 100))), 5);
-                        }
-                        else
-                        {
-                            exchangeRate = exchangeRate - (exchangeRate * markup / 100);
-                        }
-                        return exchangeRate;
-                    }
-                    //Markup in points
-                    else if (markupType == (int)ConversionMarkupType.Points)
-                    {
-                        //Inverse calculation
-                        if (inverse)
-                        {
-                            //JPY currency logic
-                            if (fromCurr == "JPY" || toCurr == "JPY")
+                            //Inverse calculation
+                            if (inverse)
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * JPYPointMultiplier))), 5);
+                                exchangeRate = Math.Round((1/(exchangeRate + (exchangeRate*markup/100))), 5);
                             }
                             else
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * pointMultiplier))), 5);
+                                exchangeRate = exchangeRate - (exchangeRate*markup/100);
                             }
+                            return exchangeRate;
                         }
-                        else
+                            //Markup in points
+                        else if (markupType == (int) ConversionMarkupType.Points)
                         {
-                            //JPY currency logic
-                            if (fromCurr == "JPY" || toCurr == "JPY")
+                            //Inverse calculation
+                            if (inverse)
                             {
-                                exchangeRate = exchangeRate - (markup * JPYPointMultiplier);
+                                //JPY currency logic
+                                if (fromCurr == "JPY" || toCurr == "JPY")
+                                {
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*JPYPointMultiplier))), 5);
+                                }
+                                else
+                                {
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*pointMultiplier))), 5);
+                                }
                             }
                             else
                             {
-                                exchangeRate = exchangeRate - (markup * pointMultiplier);
+                                //JPY currency logic
+                                if (fromCurr == "JPY" || toCurr == "JPY")
+                                {
+                                    exchangeRate = exchangeRate - (markup*JPYPointMultiplier);
+                                }
+                                else
+                                {
+                                    exchangeRate = exchangeRate - (markup*pointMultiplier);
+                                }
                             }
+                            return exchangeRate;
                         }
-                        return exchangeRate;
                     }
                 }
-
                 return 0;
             }
             catch (Exception ex)

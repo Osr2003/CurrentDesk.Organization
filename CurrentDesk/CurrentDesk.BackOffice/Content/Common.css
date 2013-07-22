@@ -881,7 +881,7 @@ tr.ui-search-toolbar input[type="text"]:focus {color:#444; -webkit-box-shadow: 0
     padding-bottom: 65px;
 }
 
-.select-barMyClients {float:right; position:relative; top:12px; right:35px;}
+.select-barMyClients {float:right; position:relative; top:12px; right:35px;z-index: 2;}
 
 .newMsg {
     font-weight:bold !important;

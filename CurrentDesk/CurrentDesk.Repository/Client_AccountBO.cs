@@ -287,7 +287,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                         new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -341,7 +341,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                         new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -386,7 +386,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                             new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -424,7 +424,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                             new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -492,7 +492,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                             new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -599,7 +599,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                                 new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -619,6 +619,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         string accNumber = existingUserAccNumber.LandingAccount.Split('-')[2];
                         Client_Account newLandingAcc = new Client_Account();
                         newLandingAcc.FK_IntroducingBrokerID = existingUserAccNumber.FK_IntroducingBrokerID;
+                        newLandingAcc.FK_OrganizationID = existingUserAccNumber.FK_OrganizationID;
                         newLandingAcc.FK_CurrencyID = currID;
                         newLandingAcc.AccountNumber = existingUserAccNumber.AccountNumber;
                         newLandingAcc.LandingAccount = currencyBO.GetCurrencyAccountCode(currID) + "-" + existingUserAccNumber.LandingAccount.Split('-')[1] + "-" + existingUserAccNumber.LandingAccount.Split('-')[2];
@@ -1450,7 +1451,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="accNumber">accNumber</param>
         /// <returns></returns>
-        public int GetIntroducingBrokerIDFromAccNumber(string accNumber)
+        public int GetIntroducingBrokerIDFromAccNumber(string accNumber, int organizationID)
         {
             try
             {
@@ -1464,7 +1465,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
                     //Get all IB accounts
-                    var brokerAccs = clientAccObjSet.Where(acc => acc.FK_IntroducingBrokerID != null).ToList();
+                    var brokerAccs = clientAccObjSet.Where(acc => acc.FK_IntroducingBrokerID != null && acc.FK_OrganizationID == organizationID).ToList();
 
                     //Filter required acc number and return FK_IntroducingBrokerID
                     return (int)brokerAccs.Where(acc => acc.LandingAccount.Split('-')[2] == accNumber).FirstOrDefault().FK_IntroducingBrokerID;

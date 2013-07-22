@@ -299,14 +299,14 @@ namespace CurrentDesk.BackOffice.Controllers
                             {
                                 //Get IntroducingBrokerID from Client_Account table
                                 introducingBrokerID =
-                                    clientAccBO.GetIntroducingBrokerIDFromAccNumber(accNumberOrCustomKeyword);
+                                    clientAccBO.GetIntroducingBrokerIDFromAccNumber(accNumberOrCustomKeyword, (int)organizationID);
                             }
                                 //If custom keyword
                             else
                             {
                                 //Get IntroducingBrokerID from IntroducingBroker table
                                 introducingBrokerID =
-                                    introducingBrokerBO.GetBrokerIDFromReferralKeyword(accNumberOrCustomKeyword);
+                                    introducingBrokerBO.GetBrokerIDFromReferralKeyword(accNumberOrCustomKeyword, (int)organizationID);
                             }
 
                             if (agentCode != null)
@@ -1735,7 +1735,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 var OrganizationBO = new OrganizationBO();
                 var browserUrl = Request.Url.AbsoluteUri;
 
-                browserUrl = "http://fqsecurities.com"; //TODO Need to change with URL
+                browserUrl = "http://lmax.com"; //TODO Need to change with URL
                 var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
 
                 if (organizationID != null)

@@ -68,8 +68,6 @@
         <!-- Sub Navigation Section -->
         <nav class="sub-nav">
             <ul>
-                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_JOINT)
-                {
                 <!-- Add the .active class to the <li> that needs active styling. -->
                 <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
                 <li class="active"><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
@@ -79,7 +77,6 @@
                 <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
                 <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
                 <li class="last"></li>
-                }
             </ul>
         </nav>
     </aside>

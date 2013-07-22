@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Web.Mvc;
 using CurrentDesk.Models;
 using CurrentDesk.BackOffice.Custom;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
@@ -66,20 +67,14 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID).TrimEnd('/').Split('/');
+                    var organizationID = (int)SessionManagement.OrganizationID;
 
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
-                    ViewData["AccountCode"] = new SelectList(lAccountCodeBO.GetSelectedAccount(Constants.K_BROKER_LIVE), "PK_AccountID", "AccountName");
-                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
+                    //Get all currency ids of IB
+                    string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID).TrimEnd('/').Split('/');
 
                     ClientAccountsModel currModel = new ClientAccountsModel();
                     currModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     foreach (var curr in currencyIds)
                     {
@@ -89,7 +84,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
                         model.CurrencyImage = lCurrValueBO.GetCurrencyImageClass(Convert.ToInt32(curr));
                         model.LandingAccount = landingAccDetails.LandingAccount;
-                        model.LAccBalance = String.Format(nfi, "{0:C}", landingAccDetails.CurrentBalance);
+                        model.LAccBalance = Utility.FormatCurrencyValue((decimal)landingAccDetails.CurrentBalance, "");
                         currModel.CurrencyAccountDetails.Add(model);
                     }
 
@@ -135,10 +130,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         accModel.Account = acc.TradingAccount + "<br/>Fee/Rebate Account";
                     }
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-                    accModel.Balance = String.Format(nfi, "{0:C}", acc.CurrentBalance);
+                    accModel.Balance = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
 
                     accModel.Type = "<img src='/Images/account-rebate.png' title='Fee/Rebate Account' alt='Fee/Rebate Account'>";
 
@@ -161,50 +153,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         }
 
         /// <summary>
-        /// This action creates new trading/managed account in database
-        /// </summary>
-        /// <param name="currencyID">currencyID</param>
-        /// <param name="accountTypeID">accountTypeID</param>
-        /// <param name="platformID">platformID</param>
-        /// <returns></returns>
-        public ActionResult CreateNewTradingAccount(int currencyID, int accountTypeID, int platformID)
-        {
-            try
-            {
-                if (SessionManagement.UserInfo != null)
-                {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
-                    //Trading account creation
-                    if (accountTypeID == Constants.K_TRADING_ACCOUNT)
-                    {
-                        int pkClientAccID = clientAccBo.CreateNewTradingAccount(loginInfo.LogAccountType, loginInfo.UserID, accountCurrencyBO.GetCurrencyLookUpID(currencyID));
-
-                        //Create platform trading account
-                        CurrentDesk.Models.User user = new CurrentDesk.Models.User();
-                        user.UserEmailID = loginInfo.UserEmail;
-                        AccountCreationController.CreateMetaTraderAccountForUser(pkClientAccID, platformID, user, loginInfo.LogAccountType);
-
-                        return Json(true);
-                    }
-                    //Managed account creation
-                    else if (accountTypeID == Constants.K_MANAGED_ACCOUNT)
-                    {
-                        clientAccBo.CreateNewManagedAccount(loginInfo.LogAccountType, loginInfo.UserID, accountCurrencyBO.GetCurrencyLookUpID(currencyID));
-                        return Json(true);
-                    }
-                }
-
-                return Json(false);
-            }
-            catch (Exception ex)
-            {
-                CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
-            }
-        }
-
-        /// <summary>
         /// This action returns AccountDetails view with
         /// required data to be displayed passed as model
         /// </summary>
@@ -216,14 +164,14 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int)SessionManagement.OrganizationID;
+
                     AccountDetailsModel model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
-                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber);
-                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber);
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
+                    
+                    //Get account details and latest transactions
+                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
+                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber, organizationID);
 
                     //Iterate through all transactions
                     foreach (var tran in latestTransactions)
@@ -231,13 +179,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         TransferLogDetails log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
-                        log.TransactionAmount = String.Format(nfi, "{0:C}", tran.Amount);
+                        log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
                         model.TransferLogDetails.Add(log);
                     }
 
                     model.AccountNumber = accountNumber;
 
-                    model.Balance = String.Format(nfi, "{0:C}", accountDetails.CurrentBalance);
+                    model.Balance = Utility.FormatCurrencyValue((decimal)accountDetails.CurrentBalance, "");
 
                     model.AccountName = accountDetails.AccountName;
                     model.IsTradingAcc = accountDetails.IsTradingAccount;
@@ -270,7 +218,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    return Json(clientAccBo.SaveAccountName(accountName, accNumber));
+                    return Json(clientAccBo.SaveAccountName(accountName, accNumber, (int)SessionManagement.OrganizationID));
                 }
                 else
                 {
@@ -297,7 +245,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
@@ -323,10 +271,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((int)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }
@@ -404,7 +349,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER, (int)SessionManagement.OrganizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
 
                     return View("CreateNewLanding");
                 }

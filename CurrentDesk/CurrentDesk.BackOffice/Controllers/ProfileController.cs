@@ -82,19 +82,19 @@ namespace CurrentDesk.BackOffice.Controllers
                     //Get account type details
                     var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue(accountType);
 
-                    if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
+                    if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                     {
                         return RedirectToAction("IndividualProfile");
                     }
-                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                     {
                         return RedirectToAction("JointProfile");
                     }
-                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                     {
                         return RedirectToAction("CorporateProfile");
                     }
-                    else if (accountTypeDetails.FK_AccountFormType == Constants.K_BROKER_LIVE && accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                     {
                         return RedirectToAction("TrustProfile");
                     }
