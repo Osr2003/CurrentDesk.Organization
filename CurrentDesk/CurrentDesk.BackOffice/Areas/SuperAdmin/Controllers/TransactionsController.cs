@@ -25,9 +25,9 @@ using MT4ManLibraryNETv03;
 using MT4Wrapper;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Web.Mvc;
 using Microsoft.ApplicationServer.Caching;
+using CurrentDesk.BackOffice.Utilities;
 
 #endregion
 
@@ -40,8 +40,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
     [AuthorizeRoles(AccountCode = Constants.K_ACCTCODE_SUPERADMIN), NoCache]
     public class TransactionsController : Controller
     {
-        private const decimal pointMultiplier = 0.00001M;
-        private const decimal JPYPointMultiplier = 0.001M;
+        private const decimal PointMultiplier = 0.00001M;
+        private const decimal JpyPointMultiplier = 0.001M;
 
         #region Variables
         private AdminTransactionBO adminTransactionBO = new AdminTransactionBO();
@@ -114,12 +114,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     List<TransactionModel> lstIncomingTransactions = new List<TransactionModel>();
 
-                    //Get all incoming transations
+                    //Get all incoming transactions
                     var allIncomingRequests = adminTransactionBO.GetAllIncomingFundRequests();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterate through each incoming transaction
                     foreach (var request in allIncomingRequests)
@@ -131,8 +127,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         incTransaction.ClientName = request.ClientName ?? String.Empty;
                         incTransaction.FundingSourceName = request.FundingSource.SourceName;
                         incTransaction.Currency = lCurrValueBO.GetCurrencySymbolFromID((int)request.FK_CurrencyID);
-                        incTransaction.TransactionAmount = String.Format(nfi, "{0:C}", request.TransactionAmount);
-                        incTransaction.TransactionFee = request.FeeAmount == null ? String.Format(nfi, "{0:C}", request.FundingSource.IncomingWireFeeAmount) : String.Format(nfi, "{0:C}", request.FeeAmount);
+                        incTransaction.TransactionAmount = Utility.FormatCurrencyValue((decimal)request.TransactionAmount, "");
+                        incTransaction.TransactionFee = request.FeeAmount == null ? Utility.FormatCurrencyValue((decimal)request.FundingSource.IncomingWireFeeAmount, "") : Utility.FormatCurrencyValue((decimal)request.FeeAmount, "");
                         incTransaction.Actions = "<button class='btn btn-mini' data-modal='modalApprove' onclick='showModalApprove(" + request.PK_TransactionID + ")'>Approve</button><input class='icon delete tip' title='Delete' type='button' value='Delete' onclick='deleteTransaction(" + request.PK_TransactionID + ")'>";
 
                         lstIncomingTransactions.Add(incTransaction);
@@ -214,7 +210,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         //Entry in transaction table
                         var pkTransactionID = transactionBO.FundDeposit(transaction.AccountNumber, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.Notes);
 
-                        //Entry in transafer log table
+                        //Entry in transfer log table
                         transferlogBO.AddTransferLogForFundDeposit(pkTransactionID, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.AccountNumber);
 
                         //Credit amount to account and set IsApproved true
@@ -374,12 +370,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     List<TransactionModel> lstIncomingTransactions = new List<TransactionModel>();
 
-                    //Get all outgong transations
+                    //Get all outgoing transactions
                     var allOutgoingRequests = adminTransactionBO.GetAllOutgoingFundRequests();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterate through each outgoing transaction
                     foreach (var request in allOutgoingRequests)
@@ -395,7 +387,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         outTransaction.AccountNumber = request.AccountNumber;
                         outTransaction.ClientName = request.ClientName ?? String.Empty;
                         outTransaction.Currency = lCurrValueBO.GetCurrencySymbolFromID((int)request.FK_CurrencyID);
-                        outTransaction.TransactionAmount = String.Format(nfi, "{0:C}", request.TransactionAmount);
+                        outTransaction.TransactionAmount = Utility.FormatCurrencyValue((decimal)request.TransactionAmount, "");
                         outTransaction.WithdrawSource = "<a href='#' data-modal='modalSource' onclick='openWithdrawSource(" + request.FK_BankInfoID + ")'>" + request.BankAccountInformation.BankName + "</a>";
                         outTransaction.Actions = "<button class='btn btn-mini' data-modal='modalApprove' onclick='approveOutgoingTransaction(" + request.PK_TransactionID + ")'>Approve</button><input class='icon delete tip' title='Delete' type='button' value='Delete' onclick='deleteTransaction(" + request.PK_TransactionID + ")'>";
                         outTransaction.FundingSourceName = "<select id='drpSource" + request.PK_TransactionID + "' class='chzn-select width-150' onchange='changeFundingSource(" + request.PK_TransactionID + ")'><option></option>";
@@ -403,7 +395,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         //Add all funding sources in options
                         foreach (var source in allFundingSources)
                         {
-                            outTransaction.FundingSourceName += "<option value='" + source.PK_FundingSourceID + "/" + String.Format(nfi, "{0:C}", source.OutgoingWireFeeAmount) + "/" + lCurrValueBO.GetCurrencySymbolFromID((int)source.FK_OutgoingWireFeeCurrency) + "'>" + source.SourceName + "</option>";
+                            outTransaction.FundingSourceName += "<option value='" + source.PK_FundingSourceID + "/" + Utility.FormatCurrencyValue((decimal)source.OutgoingWireFeeAmount, "") + "/" + lCurrValueBO.GetCurrencySymbolFromID((int)source.FK_OutgoingWireFeeCurrency) + "'>" + source.SourceName + "</option>";
                         }
                         outTransaction.FundingSourceName += "</select>";
 
@@ -481,10 +473,6 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
 
                 OutgoingTransactionApproveModel transacDetail = new OutgoingTransactionApproveModel();
 
-                System.Globalization.NumberFormatInfo nfi;
-                nfi = new NumberFormatInfo();
-                nfi.CurrencySymbol = "";
-
                 if (transaction != null)
                 {
                     transacDetail.PK_TransactionID = transaction.PK_TransactionID;
@@ -499,7 +487,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     transacDetail.BankCity = transaction.BankAccountInformation.City;
                     transacDetail.BankCountry = lCountryBO.GetSelectedCountry((int)transaction.BankAccountInformation.FK_CountryID);
                     transacDetail.BankPostalCode = transaction.BankAccountInformation.PostalCode;
-                    transacDetail.TotalAmount = String.Format(nfi, "{0:C}", (amount - fee));
+                    transacDetail.TotalAmount = Utility.FormatCurrencyValue((amount - fee), "");
                 }
 
                 return Json(transacDetail, JsonRequestBehavior.AllowGet);
@@ -549,7 +537,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 //Entry in transaction table
                                 var pkTransactionID = transactionBO.FundWithdraw(transaction.AccountNumber, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.Notes);
 
-                                //Entry in transafer log table
+                                //Entry in transfer log table
                                 transferlogBO.AddTransferLogForFundWithdraw(pkTransactionID, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.AccountNumber);
 
                                 //Set approve in AdminTransaction table
@@ -782,12 +770,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     List<TransactionModel> lstInternalTransactions = new List<TransactionModel>();
 
-                    //Get all incoming transations
+                    //Get all incoming transactions
                     var allInternalTransferRequests = adminTransactionBO.GetAllInternalTransferRequests();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterate through each internal transaction
                     foreach (var request in allInternalTransferRequests)
@@ -798,8 +782,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         internalTransaction.AccountNumber = request.AccountNumber;
                         internalTransaction.ClientName = request.ClientName ?? String.Empty;
                         internalTransaction.Currency = lCurrValueBO.GetCurrencySymbolFromID((int)request.FK_CurrencyID);
-                        internalTransaction.TransactionAmount = String.Format(nfi, "{0:C}", request.TransactionAmount);
-                        internalTransaction.TransactionFee = request.FeeAmount == null ? String.Format(nfi, "{0:C}", request.FundingSource.IncomingWireFeeAmount) : String.Format(nfi, "{0:C}", request.FeeAmount);
+                        internalTransaction.TransactionAmount = Utility.FormatCurrencyValue((decimal)request.TransactionAmount, "");
+                        internalTransaction.TransactionFee = request.FeeAmount == null ? Utility.FormatCurrencyValue((decimal)request.FundingSource.IncomingWireFeeAmount, "") : Utility.FormatCurrencyValue((decimal)request.FeeAmount, "");
                         internalTransaction.ToAccount = request.ToAccountNumber;
                         internalTransaction.ToClientName = request.ToClientName;
                         internalTransaction.Actions = "<button class='btn btn-mini' data-modal='modalApprove' onclick='showModalApprove(" + request.PK_TransactionID + ")'>Approve</button><input class='icon delete tip' title='Delete' type='button' value='Delete' onclick='deleteTransaction(" + request.PK_TransactionID + ")'>";
@@ -892,7 +876,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             {
                                 isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -(double)approveTransaction.TransactionAmount, "Debit");
 
-                                //Debit fee if above transaction is successfull
+                                //Debit fee if above transaction is successful
                                 if (isFromSucessful && approveTransaction.FeeAmount != 0)
                                 {
                                     isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -(double)approveTransaction.FeeAmount, "Debit Fee");
@@ -904,7 +888,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 isToSucessful = DoPlatformTransaction((int)toAccDetails.PlatformLogin, (double)approveTransaction.TransactionAmount, "Credit");
                             }
 
-                            //If platform transactions are successfull
+                            //If platform transactions are successful
                             if (isToSucessful && isFromSucessful)
                             {
                                 //Do actual transfer of funds and set IsApproved true
@@ -1224,12 +1208,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     List<TransactionModel> lstInternalTransactions = new List<TransactionModel>();
 
-                    //Get all incoming transations
+                    //Get all incoming transactions
                     var allConversionRequests = adminTransactionBO.GetAllConversionRequests();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterate through each internal transaction
                     foreach (var request in allConversionRequests)
@@ -1240,12 +1220,12 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         convTransaction.AccountNumber = request.AccountNumber;
                         convTransaction.ClientName = request.ClientName ?? String.Empty;
                         convTransaction.Currency = lCurrValueBO.GetCurrencySymbolFromID((int)request.FK_CurrencyID);
-                        convTransaction.TransactionAmount = String.Format(nfi, "{0:C}", request.TransactionAmount);
-                        convTransaction.TransactionFee = String.Format(nfi, "{0:C}", request.FeeAmount);
+                        convTransaction.TransactionAmount = Utility.FormatCurrencyValue((decimal)request.TransactionAmount, "");
+                        convTransaction.TransactionFee = Utility.FormatCurrencyValue((decimal)request.FeeAmount, "");
                         convTransaction.ToAccount = request.ToAccountNumber;
                         convTransaction.ToClientName = request.ToClientName;
                         convTransaction.ExchangeRate = (double)request.ExchangeRate;
-                        convTransaction.ExchangedAmount = String.Format(nfi, "{0:C}", Math.Round((decimal)(request.TransactionAmount * (decimal)request.ExchangeRate), 2));
+                        convTransaction.ExchangedAmount = Utility.FormatCurrencyValue(Math.Round((decimal)(request.TransactionAmount * (decimal)request.ExchangeRate), 2), "");
                         convTransaction.ToCurrency = lCurrValueBO.GetCurrencySymbolFromID((int)request.FK_ToCurrencyID);
                         convTransaction.Actions = "<button class='btn btn-mini' data-modal='modalApprove' onclick='showModalApprove(" + request.PK_TransactionID + ")'>Approve</button><input class='icon delete tip' title='Delete' type='button' value='Delete' onclick='deleteTransaction(" + request.PK_TransactionID + ")'>";
 
@@ -1286,10 +1266,6 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 var transaction = adminTransactionBO.GetTransactionDetails(pkTransactionId);
                 TransactionModel transacDetail = new TransactionModel();
 
-                System.Globalization.NumberFormatInfo nfi;
-                nfi = new NumberFormatInfo();
-                nfi.CurrencySymbol = "";
-
                 if (transaction != null)
                 {
                     transacDetail.PK_TransactionID = transaction.PK_TransactionID;
@@ -1300,7 +1276,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     transacDetail.ToAccount = transaction.ToAccountNumber;
                     transacDetail.ExchangeRate = (double)transaction.ExchangeRate;
                     transacDetail.ToCurrency = lCurrValueBO.GetCurrencySymbolFromID((int)transaction.FK_ToCurrencyID);
-                    transacDetail.ExchangedAmount = String.Format(nfi, "{0:C}", (amount * (decimal)transaction.ExchangeRate));
+                    transacDetail.ExchangedAmount = Utility.FormatCurrencyValue((amount * (decimal)transaction.ExchangeRate), "");
 
                     transacDetail.Notes = transaction.Notes;
                 }
@@ -1346,7 +1322,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             {
                                 isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -(double)convTransaction.TransactionAmount, "Debit");
 
-                                //Debit fee if above transaction is successfull
+                                //Debit fee if above transaction is successful
                                 if (isFromSucessful && convTransaction.FeeAmount != 0)
                                 {
                                     isFromSucessful = DoPlatformTransaction((int)fromAccDetails.PlatformLogin, -(double)convTransaction.FeeAmount, "Debit Fee");
@@ -1358,7 +1334,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 isToSucessful = DoPlatformTransaction((int)toAccDetails.PlatformLogin, Math.Round(((double)convTransaction.TransactionAmount * (double)convTransaction.ExchangeRate), 2), "Credit");
                             }
 
-                            //If platform transactions are successfull
+                            //If platform transactions are successful
                             if (isToSucessful && isFromSucessful)
                             {
                                 //Do actual transfer of funds and set IsApproved true
@@ -1497,11 +1473,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             //JPY currency logic
                             if (fromCurr == "JPY" || toCurr == "JPY")
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * JPYPointMultiplier))), 5);
+                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * JpyPointMultiplier))), 5);
                             }
                             else
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * pointMultiplier))), 5);
+                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * PointMultiplier))), 5);
                             }
                         }
                         else
@@ -1509,11 +1485,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             //JPY currency logic
                             if (fromCurr == "JPY" || toCurr == "JPY")
                             {
-                                exchangeRate = exchangeRate - (markup * JPYPointMultiplier);
+                                exchangeRate = exchangeRate - (markup * JpyPointMultiplier);
                             }
                             else
                             {
-                                exchangeRate = exchangeRate - (markup * pointMultiplier);
+                                exchangeRate = exchangeRate - (markup * PointMultiplier);
                             }
                         }
                         return exchangeRate;
@@ -1694,17 +1670,13 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     allLandingAccs = clientAccBO.GetAllLandingAccountForUser(LoginAccountType.PartnerAccount, pkClientUserID);
                 }
 
-                System.Globalization.NumberFormatInfo nfi;
-                nfi = new NumberFormatInfo();
-                nfi.CurrencySymbol = "";
-
                 //Iterate through each account
                 foreach (var acc in allLandingAccs)
                 {
                     LandingAccountDetails landing = new LandingAccountDetails();
                     landing.LandingAccount = acc.LandingAccount;
                     landing.LandingCurrency = currencyBO.GetCurrencySymbolFromID((int)acc.FK_CurrencyID);
-                    landing.LandingBalance = String.Format(nfi, "{0:C}", acc.CurrentBalance);
+                    landing.LandingBalance = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
 
                     lstLandingAcc.Add(landing);
                 }

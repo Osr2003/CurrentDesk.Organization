@@ -36,8 +36,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
     [AuthorizeRoles(AccountCode = Constants.K_ACCTCODE_IB), NoCache]
     public class FundTransferController : Controller
     {
-        private const decimal pointMultiplier = 0.00001M;
-        private const decimal JPYPointMultiplier = 0.001M;
+        private const decimal PointMultiplier = 0.00001M;
+        private const decimal JpyPointMultiplier = 0.001M;
 
         #region Variables
         private L_CountryBO countryBO = new L_CountryBO();
@@ -827,11 +827,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 //JPY currency logic
                                 if (fromCurr == "JPY" || toCurr == "JPY")
                                 {
-                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*JPYPointMultiplier))), 5);
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*JpyPointMultiplier))), 5);
                                 }
                                 else
                                 {
-                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*pointMultiplier))), 5);
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*PointMultiplier))), 5);
                                 }
                             }
                             else
@@ -839,11 +839,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 //JPY currency logic
                                 if (fromCurr == "JPY" || toCurr == "JPY")
                                 {
-                                    exchangeRate = exchangeRate - (markup*JPYPointMultiplier);
+                                    exchangeRate = exchangeRate - (markup*JpyPointMultiplier);
                                 }
                                 else
                                 {
-                                    exchangeRate = exchangeRate - (markup*pointMultiplier);
+                                    exchangeRate = exchangeRate - (markup*PointMultiplier);
                                 }
                             }
                             return exchangeRate;

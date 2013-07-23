@@ -271,18 +271,15 @@
         <!-- Sub Navigation Section -->
         <nav class="sub-nav">
             <ul>
-                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == Constants.K_PARTNER_JOINT)
-                {
-                    <!-- Add the .active class to the <li> that needs active styling. -->
-                    <li class="active"><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
-                    <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
-                    <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
-                    <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
-                    <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
-                    <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
-                    <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
-                    <li class="last"></li>
-                }
+                <!-- Add the .active class to the <li> that needs active styling. -->
+                <li class="active"><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
+                <li><a class="primary" href="@Url.Action("SecondaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Secondary Holder</strong>Information</a></li>
+                <li><a class="banking" href="@Url.Action("Banking", "Profile")"><span class="arrow"></span><strong>Banking</strong>Information</a></li>
+                <li><a class="fees" href="@Url.Action("FeeStructure", "Profile")"><span class="arrow"></span><strong>Fee Group</strong>Management</a></li>
+                <li><a class="programs" href="@Url.Action("ManagedAccountProgram", "Profile")"><span class="arrow"></span><strong>Managed Account</strong>Programs</a></li>
+                <li><a class="tools" href="@Url.Action("Marketing", "Profile")"><span class="arrow"></span><strong>Marketing</strong>Tools</a></li>
+                <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
+                <li class="last"></li>
             </ul>
         </nav>
     </aside>

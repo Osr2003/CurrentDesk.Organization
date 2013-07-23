@@ -454,7 +454,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                             new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -616,7 +616,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var existingUserAccNumber = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID).FirstOrDefault();
                     if (existingUserAccNumber != null)
                     {
-                        string accNumber = existingUserAccNumber.LandingAccount.Split('-')[2];
                         Client_Account newLandingAcc = new Client_Account();
                         newLandingAcc.FK_IntroducingBrokerID = existingUserAccNumber.FK_IntroducingBrokerID;
                         newLandingAcc.FK_OrganizationID = existingUserAccNumber.FK_OrganizationID;

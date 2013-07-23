@@ -1180,8 +1180,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
                     List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
 
                     //Get client UserID

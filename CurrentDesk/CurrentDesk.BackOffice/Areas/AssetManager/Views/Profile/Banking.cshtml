@@ -126,7 +126,7 @@
         <!-- Sub Navigation Section -->
         <nav class="sub-nav">
             <ul>
-                @if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_INDIVIDUAL)
+                @if ((int)Session["AccountTypeValue"] == CurrentDesk.Common.Constants.K_ACCT_INDIVIDUAL)
                 {
                     <!-- Add the .active class to the <li> that needs active styling. -->
                     <li><a class="primary" href="@Url.Action("PersonalInformation", "Profile")"><span class="arrow"></span><strong>Personal/Contact</strong>Information</a></li>
@@ -137,7 +137,7 @@
                     <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
                     <li class="last"></li>
                 }
-                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_JOINT)
+                else if ((int)Session["AccountTypeValue"] == CurrentDesk.Common.Constants.K_ACCT_JOINT)
                 {
                     <!-- Add the .active class to the <li> that needs active styling. -->
                     <li><a class="primary" href="@Url.Action("PrimaryHolderInformation", "Profile")"><span class="arrow"></span><strong>Primary Holder</strong>Information</a></li>
@@ -149,7 +149,7 @@
                     <!-- The last <li> needs the class .last. This is only here for styling purposes. No links should be added inside. -->
                     <li class="last"></li>
                 }
-                else if (CurrentDesk.BackOffice.Security.SessionManagement.UserInfo.AccountType == CurrentDesk.Common.Constants.K_PARTNER_CORPORATE)
+                else if ((int)Session["AccountTypeValue"] == CurrentDesk.Common.Constants.K_ACCT_CORPORATE)
                 {
                     <!-- Add the .active class to the <li> that needs active styling. -->
                     <li><a class="company" href="@Url.Action("CompanyInformation", "Profile")"><span class="arrow"></span><strong>Company</strong>Information</a></li>
