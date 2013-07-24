@@ -58,7 +58,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function will get primary individual Name
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="introducingBrokerID">introducingBrokerID</param>
         /// <returns></returns>
         public string GetPartnerIndividualName(int introducingBrokerID)
         {

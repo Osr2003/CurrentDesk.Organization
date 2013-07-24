@@ -55,7 +55,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="userID">userID</param>
         /// <param name="userType">userType</param>
         /// <param name="accountType">accountType</param>
+        /// <param name="accountCode">accountCode</param>
         /// <param name="userDisplayName">userDisplayName</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public bool ValidateUser(string userName, string password, ref int userID, ref int userType, ref int accountType, ref int accountCode, ref string userDisplayName, ref int organizationID)
         {
@@ -114,35 +116,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns true if passed emailID exists in Users table
         /// </summary>
         /// <param name="emailID">emailID</param>
-        /// <returns>bool</returns>
-        public bool CheckIfEmailExistsInUser(string emailID)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var userRepo =
-                          new UserRepository(new EFRepository<User>(), unitOfWork);
-
-
-                    ObjectSet<User> userObjSet =
-                      ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
-
-                    //Return true if email id exists else false                   
-                    return userObjSet.Where(usr => usr.UserEmailID == emailID).FirstOrDefault() != null ? true : false;
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                return true;
-            }
-        }
-
-        /// <summary>
-        /// This method returns true if passed emailID exists in Users table
-        /// </summary>
-        /// <param name="emailID">emailID</param>
         /// <param name="organizationID">organizationID</param>
         /// <returns>bool</returns>
         public bool CheckIfEmailExistsInUser(string emailID, int organizationID)
@@ -166,48 +139,6 @@ namespace CurrentDesk.Repository.CurrentDesk
             {
                 CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 return true;
-            }
-        }
-
-        /// <summary>
-        /// This method returns all clients of broker with name and account number
-        /// </summary>
-        /// <returns></returns>
-        public List<BrokerClients> GetAllClientsOfBroker()
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    List<BrokerClients> lstAllClients = new List<BrokerClients>();
-                    ClientBO clientBO = new ClientBO();
-                    IntroducingBrokerBO introducingBrokerBO = new IntroducingBrokerBO();
-                    
-                    var userRepo =
-                          new UserRepository(new EFRepository<User>(), unitOfWork);
-
-                    ObjectSet<User> userObjSet =
-                      ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
-
-                    //Get all live and partner clients
-                    var allClients = userObjSet.Where(usr => usr.FK_UserTypeID == Constants.K_BROKER_LIVE || usr.FK_UserTypeID == Constants.K_BROKER_PARTNER).ToList();
-
-                    //Get live and partner clients names with a/c numbers
-                    var liveClients = clientBO.GetClientNames(allClients);
-                    var partnerClients = introducingBrokerBO.GetPartnerNames(allClients);
-                    
-                    //Merger both and add to list
-                    lstAllClients.AddRange(liveClients);
-                    lstAllClients.AddRange(partnerClients);
-
-                    //Return list of clients
-                    return lstAllClients;
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
             }
         }
 

@@ -57,27 +57,17 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method returns liquid asset value from ID
+        /// </summary>
+        /// <param name="liquidAssetID">liquidAssetID</param>
+        /// <returns></returns>
         public string GetSelectedLiquidAsset(int liquidAssetID)
         {
             try
             {
                 return GetLiquidAssetsValues().Where(liqAss => liqAss.PK_LiquidAssetID == liquidAssetID).
                         Select(liqAss => liqAss.LiquidAsset).SingleOrDefault();
-
-                //using (var unitOfWork = new EFUnitOfWork())
-                //{
-                //    var lLiquidAssetsRepo =
-                //        new L_LiquidAssetsValueRepository(new EFRepository<L_LiquidAssetsValue>(), unitOfWork);
-
-                //    //Creating Liquid Asset Objeset to Query
-                //    ObjectSet<L_LiquidAssetsValue> liquidAssetObjSet =
-                //      ((CurrentDeskClientsEntities)lLiquidAssetsRepo.Repository.UnitOfWork.Context).L_LiquidAssetsValue;
-
-                //    //Return the selected string
-                //    return liquidAssetObjSet.Where(liqAss => liqAss.PK_LiquidAssetID == liquidAssetID).
-                //        Select(liqAss => liqAss.LiquidAsset).SingleOrDefault();
-
-                //}
             }
             catch(Exception ex)
             {

@@ -22,7 +22,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will Get The Individual Name
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="clientID">clientID</param>
+        /// <param name="accType">accType</param>
         /// <returns></returns>
         public string GetLiveIndividualName(int clientID, LoginAccountType accType)
         {
@@ -55,8 +56,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
-
-
+        
         /// <summary>
         /// This Function Will Get The Individual Name
         /// </summary>

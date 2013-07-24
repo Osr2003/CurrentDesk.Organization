@@ -47,7 +47,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will Get The Company Name
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="clientID">clientID</param>
+        /// <param name="accType">accType</param>
         /// <returns></returns>
         public string GetLiveIndividualName(int clientID, LoginAccountType accType)
         {
@@ -84,7 +85,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will Get The Company Name
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="introducingBrokerID">introducingBrokerID</param>
         /// <returns></returns>
         public string GetPartnerIndividualName(int introducingBrokerID)
         {

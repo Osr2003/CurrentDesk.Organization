@@ -228,8 +228,6 @@ namespace CurrentDesk.Repository.CurrentDesk
 
         }
 
-
-
         /// <summary>
         /// Get Commission value for user id
         /// </summary>

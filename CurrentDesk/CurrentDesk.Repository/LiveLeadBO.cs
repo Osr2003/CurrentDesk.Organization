@@ -15,24 +15,20 @@ using CurrentDesk.DAL;
 //------------------------------------------------------------------------------ 
 	
 namespace CurrentDesk.Repository.CurrentDesk
-{   
-	public class LiveLeadBO
-	{
-        #region Variable
-       
-        #endregion
-
+{
+    public class LiveLeadBO
+    {
         #region Methods
 
         /// <summary>
-        /// This Function Will add new demolead to database
+        /// This Function Will add new livelead to database
         /// </summary>
-        /// <param name="demoLead">demoLead</param>
+        /// <param name="liveLead">liveLead</param>
         /// <returns>bool depending upon result</returns>
         public bool AddNewLiveLead(LiveLead liveLead)
         {
             try
-            {                
+            {
                 using (var unitOfWork = new EFUnitOfWork())
                 {
                     var liveLeadRepo =
@@ -44,132 +40,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     return true;
                 }
             }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This function will edit Demo Lead 
-        /// </summary>
-        /// <param name="demoLead">demoLead</param>
-        /// <returns>bool depending upon result</returns>
-        public bool EditLiveLead(LiveLead liveLead)
-        {
-            try
-            {                
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var liveLeadRepo =
-                        new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
-
-                    ObjectSet<LiveLead> liveLeadObjSet =
-                        ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
-
-                    //Get The Selected tunning and assign its Properties.
-                    var selectedLiveLead =
-                        liveLeadObjSet.Where(demol => demol.PK_LeadID.Equals(liveLead.PK_LeadID)).FirstOrDefault();
-
-                    //Will Add All The Attributes
-                    selectedLiveLead.Password = liveLead.Password;
-                    selectedLiveLead.PhoneNo = liveLead.PhoneNo;
-
-                    liveLeadRepo.Save();
-
-                    return true;
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function Will return all the demo Leads
-        /// </summary>
-        /// <returns></returns>
-        public List<LiveLead> GetLiveLeads()
-        {
-            try
-            {
-
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var liveLeadRepo =
-                        new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
-
-                    //Returning List Of Demo Lead
-                    return liveLeadRepo.All().ToList();
-
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function will get the selected demolead
-        /// </summary>
-        /// <param name="demoLeadID"></param>
-        /// <returns></returns>
-        public LiveLead GetSelectedLiveLead(int liveLeadID)
-        {
-            try
-            {                
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var liveLeadRepo =
-                        new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
-
-                    ObjectSet<LiveLead> liveLeadObjSet =
-                        ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
-
-                    return liveLeadObjSet.Where(dl => dl.PK_LeadID.Equals(liveLeadID)).FirstOrDefault();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function Will delete DemoLead
-        /// </summary>
-        /// <param name="demoLeadID">demoLeadID</param>
-        /// <returns>return boolean</returns>
-        public bool DeleteLiveLead(int liveLeadID)
-        {
-            try
-            {
-                
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var liveLeadRepo =
-                         new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
-
-                    ObjectSet<LiveLead> liveLeadObjSet =
-                        ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
-
-                    //Get The Selected tunning and assign its Properties.
-                    var selectedLiveLead =
-                        liveLeadObjSet.Where(livel => livel.PK_LeadID.Equals(liveLeadID)).FirstOrDefault();
-
-                    liveLeadRepo.Delete(selectedLiveLead);
-                    liveLeadRepo.Save();
-
-                    return true;
-                }
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 throw;
@@ -190,16 +61,18 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var liveLeadRepo =
                         new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
 
-                    ObjectSet<LiveLead> liveLeadObjSet = ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
+                    ObjectSet<LiveLead> liveLeadObjSet =
+                        ((CurrentDeskClientsEntities) liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
 
                     //Get required live lead row
-                    var selectedLiveLead = liveLeadObjSet.Where(liveLead => liveLead.EmailAddress == emailId).FirstOrDefault();
+                    var selectedLiveLead =
+                        liveLeadObjSet.Where(liveLead => liveLead.EmailAddress == emailId).FirstOrDefault();
 
                     //Return selected live lead row
                     return selectedLiveLead;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 throw;
@@ -209,7 +82,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This function deleted live lead record from table
         /// </summary>
-        /// <param name="client"></param>
+        /// <param name="emailId">emailId</param>
         public void DeleteLiveLead(string emailId)
         {
             try
@@ -219,16 +92,18 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var liveLeadRepo =
                         new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
 
-                    ObjectSet<LiveLead> liveLeadObjSet = ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
+                    ObjectSet<LiveLead> liveLeadObjSet =
+                        ((CurrentDeskClientsEntities) liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
 
                     //Get required live lead row
-                    var selectedLiveLead = liveLeadObjSet.Where(liveLead => liveLead.EmailAddress == emailId).FirstOrDefault();
+                    var selectedLiveLead =
+                        liveLeadObjSet.Where(liveLead => liveLead.EmailAddress == emailId).FirstOrDefault();
 
                     liveLeadRepo.Delete(selectedLiveLead);
                     liveLeadRepo.Save();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 throw;
@@ -248,17 +123,22 @@ namespace CurrentDesk.Repository.CurrentDesk
                 using (var unitOfWork = new EFUnitOfWork())
                 {
                     var liveLeadRepo =
-                          new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
+                        new LiveLeadRepository(new EFRepository<LiveLead>(), unitOfWork);
 
 
                     ObjectSet<LiveLead> liveLeadObjSet =
-                      ((CurrentDeskClientsEntities)liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
+                        ((CurrentDeskClientsEntities) liveLeadRepo.Repository.UnitOfWork.Context).LiveLeads;
 
                     //Return true if email id exists else false                   
-                    return liveLeadObjSet.Where(lead => lead.EmailAddress == emailID && lead.FK_OrganizationID == organizationID).FirstOrDefault() != null ? true : false;
+                    return
+                        liveLeadObjSet.Where(
+                            lead => lead.EmailAddress == emailID && lead.FK_OrganizationID == organizationID)
+                                      .FirstOrDefault() != null
+                            ? true
+                            : false;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
                 return true;
@@ -268,6 +148,5 @@ namespace CurrentDesk.Repository.CurrentDesk
 
         #endregion
 
-		
-	}
+    }
 }

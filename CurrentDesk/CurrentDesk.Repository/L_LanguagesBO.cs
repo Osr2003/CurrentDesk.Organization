@@ -27,7 +27,7 @@ using System.Data.Objects;
 namespace CurrentDesk.Repository.CurrentDesk
 {   
     /// <summary>
-    /// Buisness Object for L_Languages
+    /// Business Object for L_Languages
     /// </summary>
 	public class L_LanguagesBO
 	{

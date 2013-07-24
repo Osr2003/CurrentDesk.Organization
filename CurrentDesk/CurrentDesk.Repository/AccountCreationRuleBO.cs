@@ -43,6 +43,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method gets all account number creation rules rows
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<AccountCreationRule> GetRule(int organizationID)
         {

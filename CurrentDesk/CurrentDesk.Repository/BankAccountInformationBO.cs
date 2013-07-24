@@ -19,6 +19,11 @@ namespace CurrentDesk.Repository.CurrentDesk
 {
     public class BankAccountInformationBO
     {
+        /// <summary>
+        /// This method updates bank account information of particular bank
+        /// </summary>
+        /// <param name="bankAccountInformation">bankAccountInformation</param>
+        /// <returns></returns>
         public bool UpdateBankAccountInformation(BankAccountInformation bankAccountInformation)
         {
             try
@@ -60,6 +65,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method adds new bank account for Live user
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="bankAccountInformation">bankAccountInformation</param>
+        /// <returns></returns>
         public bool AddNewLiveBankAccountInformation(int userID, BankAccountInformation bankAccountInformation)
         {
             try
@@ -86,6 +97,12 @@ namespace CurrentDesk.Repository.CurrentDesk
 
         }
 
+        /// <summary>
+        /// This method adds new bank account information for Partner user
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="bankAccountInformation">bankAccountInformation</param>
+        /// <returns></returns>
         public bool AddNewPartnerBankAccountInformation(int userID, BankAccountInformation bankAccountInformation)
         {
             try
@@ -116,7 +133,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns all bank accounts for a particular user
         /// </summary>
         /// <param name="accType">accType</param>
-        /// <param name="userEmail">userEmail</param>
+        /// <param name="userID">userID</param>
         /// <returns></returns>
         public List<BankAccountInformation> GetAllBankInfosForUser(LoginAccountType accType, int userID)
         {

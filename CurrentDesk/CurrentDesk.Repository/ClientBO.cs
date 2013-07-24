@@ -44,71 +44,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// This Function will Validate User in Client table
-        /// </summary>
-        /// <param name="userName">UserName</param>
-        /// <param name="password">Password</param>
-        /// <returns>bool(true or false depending upon result)</returns>
-        public bool ValidateUser(string userName, string password, ref int accountType, ref string userDisplayName)
-        {
-            var currentDeskSecurity = new CurrentDeskSecurity();
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var clientRepo =
-                          new ClientRepository(new EFRepository<Client>(), unitOfWork);
-
-                    ObjectSet<Client> clientObjSet =
-                      ((CurrentDeskClientsEntities)clientRepo.Repository.UnitOfWork.Context).Clients;
-
-                    //Get The Selected client and assign its Properties.
-                    var selectedClient =
-                        clientObjSet.Where(clnt => clnt.UserEmail == userName).FirstOrDefault();
-
-                    //Check for Nullability
-                    if (selectedClient != null)
-                    {
-                        if (currentDeskSecurity.GetPassDecrypted(selectedClient.Password) == password)
-                        {
-                            accountType = (int)selectedClient.FK_AccountTypeID;
-
-                            if (accountType == Constants.K_LIVE_INDIVIDUAL)
-                            {
-                                var individualAccountBO = new IndividualAccountInformationBO();
-                                userDisplayName = individualAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
-                            }
-                            else if (accountType == Constants.K_LIVE_JOINT)
-                            {
-                                var jointAccountBO = new JointAccountInformationBO();
-                                userDisplayName = jointAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
-                            }
-                            else if (accountType == Constants.K_LIVE_CORPORATE)
-                            {
-                                var corporateAccountBO = new CorporateAccountInformationBO();
-                                userDisplayName = corporateAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
-                            }
-                            else if (accountType == Constants.K_LIVE_TRUST)
-                            {
-                                var trustAccountBO = new TrustAccountInformationBO();
-                                userDisplayName = trustAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
-                            }
-
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// This function will Provide client information
         /// depending Upon FK_UserID
         /// </summary>
@@ -140,7 +75,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 	
-	    public Client GetIndividualAccountDetails(int userID)
+	    /// <summary>
+	    /// This method returns individual account details of client
+	    /// </summary>
+        /// <param name="userID">userID</param>
+	    /// <returns></returns>
+        public Client GetIndividualAccountDetails(int userID)
         {
             try
             {
@@ -243,7 +183,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
-        
+        /// <summary>
+        /// This method updates individual personal information of user
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="phoneID">phoneID</param>
+        /// <returns></returns>
         public bool UpdateIndividualPersonalInformation(int userID, string phoneID)
         {
             try
@@ -274,6 +219,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method updates individual contact information of user
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="individualAccountInformation">individualAccountInformation</param>
+        /// <returns></returns>
         public bool UpdateIndividualContactInforamation(int userID, IndividualAccountInformation individualAccountInformation)
         {
             try
@@ -598,7 +549,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="userID">userID</param>
         /// <param name="accountType">accountType</param>
+        /// <param name="accountCode">accountCode</param>
         /// <param name="userDisplayName">userDisplayName</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName, ref int organizationID)
         {
@@ -1217,7 +1170,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                 return String.Empty;
             }
         }
-
 
         /// <summary>
         /// This method returns list of client names and userID

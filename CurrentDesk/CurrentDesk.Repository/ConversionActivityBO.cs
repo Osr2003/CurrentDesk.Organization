@@ -25,7 +25,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method inserts conversion activity details in db
         /// </summary>
         /// <param name="pkUsrActivityID">pkUsrActivityID</param>
-        /// <param name="currID">currID</param>
+        /// <param name="fromCurrID">fromCurrID</param>
+        /// <param name="toCurrID">toCurrID</param>
         /// <param name="amount">amount</param>
         /// <param name="exchangeRate">exchangeRate</param>
         /// <param name="fromAcc">fromAcc</param>

@@ -125,47 +125,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="fromCurrID">fromCurrID</param>
         /// <param name="toCurrID">toCurrID</param>
         /// <param name="fee">fee</param>
-        /// <returns>int</returns>
-        public int InternalFeeTransaction(string fromAcc, int fromCurrID, int toCurrID, double fee)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var transactionRepo =
-                     new TransactionRepository(new EFRepository<Transaction>(), unitOfWork);
-
-                    ObjectSet<Transaction> transactionObjSet =
-                    ((CurrentDeskClientsEntities)transactionRepo.Repository.UnitOfWork.Context).Transactions;
-
-                    Transaction newTransaction = new Transaction();
-                    newTransaction.FK_FromCurrencyID = fromCurrID;
-                    newTransaction.FK_ToCurrencyID = toCurrID;
-                    newTransaction.Amount = Convert.ToDecimal(fee);
-                    newTransaction.FromAccount = fromAcc;
-                    newTransaction.TransactionType = "Fee";
-                    newTransaction.TransactionDateTime = DateTime.UtcNow;
-
-                    transactionRepo.Add(newTransaction);
-                    transactionRepo.Save();
-
-                    return newTransaction.PK_TransactionID;
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This method logs fee transaction details in Transactions table
-        /// </summary>
-        /// <param name="fromAcc">fromAcc</param>
-        /// <param name="fromCurrID">fromCurrID</param>
-        /// <param name="toCurrID">toCurrID</param>
-        /// <param name="fee">fee</param>
         /// <param name="organizationID">organizationID</param>
         /// <returns>int</returns>
         public int InternalFeeTransaction(string fromAcc, int fromCurrID, int toCurrID, double fee, int organizationID)
@@ -209,47 +168,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="currID">currID</param>
         /// <param name="amount">amount</param>
         /// <param name="notes">notes</param>
-        /// <returns></returns>
-        public int FundDeposit(string accountNumber, int currID, decimal amount, string notes)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var transactionRepo =
-                     new TransactionRepository(new EFRepository<Transaction>(), unitOfWork);
-
-                    Transaction newTransaction = new Transaction();
-                    newTransaction.FK_FromCurrencyID = currID;
-                    newTransaction.FK_ToCurrencyID = currID;
-                    newTransaction.Amount = Convert.ToDecimal(amount);
-                    newTransaction.FromAccount = accountNumber;
-                    newTransaction.ToAccount = accountNumber;
-                    newTransaction.ExchangeRate = "1";
-                    newTransaction.Notes = notes;
-                    newTransaction.TransactionType = "Deposit";
-                    newTransaction.TransactionDateTime = DateTime.UtcNow;
-
-                    transactionRepo.Add(newTransaction);
-                    transactionRepo.Save();
-
-                    return newTransaction.PK_TransactionID;
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This method inserts deposit transaction in table
-        /// </summary>
-        /// <param name="accountNumber">accountNumber</param>
-        /// <param name="currID">currID</param>
-        /// <param name="amount">amount</param>
-        /// <param name="notes">notes</param>
         /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public int FundDeposit(string accountNumber, int currID, decimal amount, string notes, int organizationID)
@@ -272,47 +190,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                     newTransaction.TransactionType = "Deposit";
                     newTransaction.TransactionDateTime = DateTime.UtcNow;
                     newTransaction.FK_OrganizationID = organizationID;
-
-                    transactionRepo.Add(newTransaction);
-                    transactionRepo.Save();
-
-                    return newTransaction.PK_TransactionID;
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This method inserts withdraw record transaction in table
-        /// </summary>
-        /// <param name="accountNumber">accountNumber</param>
-        /// <param name="currID">currID</param>
-        /// <param name="amount">amount</param>
-        /// <param name="notes">notes</param>
-        /// <returns></returns>
-        public int FundWithdraw(string accountNumber, int currID, decimal amount, string notes)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var transactionRepo =
-                     new TransactionRepository(new EFRepository<Transaction>(), unitOfWork);
-
-                    Transaction newTransaction = new Transaction();
-                    newTransaction.FK_FromCurrencyID = currID;
-                    newTransaction.FK_ToCurrencyID = currID;
-                    newTransaction.Amount = Convert.ToDecimal(amount);
-                    newTransaction.FromAccount = accountNumber;
-                    newTransaction.ToAccount = accountNumber;
-                    newTransaction.ExchangeRate = "1";
-                    newTransaction.Notes = notes;
-                    newTransaction.TransactionType = "Withdraw";
-                    newTransaction.TransactionDateTime = DateTime.UtcNow;
 
                     transactionRepo.Add(newTransaction);
                     transactionRepo.Save();

@@ -36,32 +36,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will return all the selected Currency
         /// </summary>
+        /// <param name="formID">formID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
-        public List<AccountCurrency> GetSelectedCurrency(int formID)
-        {
-            try
-            {
-
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var accountCurrencyRepo =
-                        new AccountCurrencyRepository(new EFRepository<AccountCurrency>(), unitOfWork);
-
-                    ObjectSet<AccountCurrency> currencyObjSet =
-                       ((CurrentDeskClientsEntities)accountCurrencyRepo.Repository.UnitOfWork.Context).AccountCurrencies;
-
-
-                    return currencyObjSet.Where(accur => accur.FK_AccountFormTypeID == formID).Include("L_CurrencyValue").ToList();
-
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
         public List<AccountCurrency> GetSelectedCurrency(int formID, int organizationID)
         {
             try

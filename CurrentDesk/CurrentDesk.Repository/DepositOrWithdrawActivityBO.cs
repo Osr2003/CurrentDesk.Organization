@@ -26,6 +26,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="currId">currId</param>
         /// <param name="amount">amount</param>
         /// <param name="accNumber">accNumber</param>
+        /// <param name="bankID">bankID</param>
         /// <param name="status">status</param>
         public void InsertDepositOrWithdrawActivityDetails(int pkUsrActId, string type, int currId, decimal amount, string accNumber, int? bankID, string status)
         {

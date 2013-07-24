@@ -60,6 +60,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will return all the ID Info types
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<L_IDInformationType> GetIdInfoType(int organizationID)
         {
@@ -85,28 +86,18 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method returns id type value from ID
+        /// </summary>
+        /// <param name="selectedID">selectedID</param>
+        /// <returns></returns>
         public string GetSelectedIDInformation(int selectedID)
         {
             try
             {
                 return GetIdInfoType().Where(idInfo => idInfo.PK_IDTypeID == selectedID)
                     .Select(idInfo => idInfo.IDValue).FirstOrDefault();
-
-
-                //using (var unitOfWork = new EFUnitOfWork())
-                //{
-                //    var lIdInfoTypeRepo =
-                //        new L_IDInformationTypeRepository(new EFRepository<L_IDInformationType>(), unitOfWork);
-
-                //    //Creating annualIncome Objeset to Query
-                //    ObjectSet<L_IDInformationType> idInformationObjSet =
-                //      ((CurrentDeskClientsEntities)lIdInfoTypeRepo.Repository.UnitOfWork.Context).L_IDInformationType;
-
-                //    //Return the selected string
-                //    return idInformationObjSet.Where(idinf => idinf.PK_IDTypeID == selectedID).
-                //        Select(idinf => idinf.IDValue).SingleOrDefault();                 
-
-                //}
+                
             }
             catch (Exception ex)
             {
