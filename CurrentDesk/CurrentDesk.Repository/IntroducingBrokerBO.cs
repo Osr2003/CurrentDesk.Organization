@@ -777,6 +777,42 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method returns false if referral link already exists
+        /// </summary>
+        /// <param name="referralLink">referralLink</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool CheckDuplicateReferralLink(string referralLink, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var ibRepo =
+                              new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
+
+                    ObjectSet<IntroducingBroker> ibObjSet =
+                      ((CurrentDeskClientsEntities)ibRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
+
+                    var linkExists = ibObjSet.Where(link => link.CustomizedLink == referralLink && link.FK_OrganizationID == organizationID).ToList();
+                    if (linkExists.Count() > 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method saves referral link in IB table
         /// </summary>
         /// <param name="userID">userID</param>
@@ -843,7 +879,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="referralKeyword">referralKeyword</param>
         /// <returns></returns>
-        public int GetBrokerIDFromReferralKeyword(string referralKeyword)
+        public int GetBrokerIDFromReferralKeyword(string referralKeyword, int organizationID)
         {
             try
             {
@@ -855,7 +891,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<IntroducingBroker> ibObjSet =
                       ((CurrentDeskClientsEntities)ibRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
 
-                    return ibObjSet.Where(ib => ib.CustomizedLink == referralKeyword).FirstOrDefault().PK_IntroducingBrokerID;
+                    return ibObjSet.Where(ib => ib.CustomizedLink == referralKeyword && ib.FK_OrganizationID == organizationID).FirstOrDefault().PK_IntroducingBrokerID;
                 }
             }
             catch (Exception ex)

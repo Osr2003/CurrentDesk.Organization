@@ -54,7 +54,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of funding sources that have not been deleted
         /// </summary>
         /// <returns></returns>
-        public List<FundingSource> GetAllFundSources()
+        public List<FundingSource> GetAllFundSources(int organizationID)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<FundingSource> fundSourceObjSet =
                         ((CurrentDeskClientsEntities)fundSourceRepo.Repository.UnitOfWork.Context).FundingSources;
 
-                    return fundSourceObjSet.Where(fnd => fnd.IsDeleted == false).ToList();
+                    return fundSourceObjSet.Where(fnd => fnd.IsDeleted == false && fnd.FK_OrganizationID == organizationID).ToList();
                 }
             }
             catch (Exception ex)
@@ -194,7 +194,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of funding sources that have not been deleted
         /// </summary>
         /// <returns></returns>
-        public List<FundingSource> GetAllTransferFundSources()
+        public List<FundingSource> GetAllTransferFundSources(int organizationID)
         {
             try
             {
@@ -206,7 +206,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<FundingSource> fundSourceObjSet =
                         ((CurrentDeskClientsEntities)fundSourceRepo.Repository.UnitOfWork.Context).FundingSources;
 
-                    return fundSourceObjSet.Include("L_Country").Where(fnd => fnd.IsDeleted == false && fnd.IsEnabled == true).ToList();
+                    return fundSourceObjSet.Include("L_Country").Where(fnd => fnd.FK_OrganizationID == organizationID && fnd.IsDeleted == false && fnd.IsEnabled == true).ToList();
 
                 }
             }
@@ -344,7 +344,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="sourceIds">sourceIds</param>
         /// <returns></returns>
-        public List<FundingSource> GetFundingSourcesFromIDs(string sourceIds)
+        public List<FundingSource> GetFundingSourcesFromIDs(string sourceIds, int organizationID)
         {
             try
             {
@@ -361,7 +361,7 @@ namespace CurrentDesk.Repository.CurrentDesk
 
                     //Get all active sources
                     var activeSources =
-                        fundSourceObjSet.Where(src => src.IsDeleted == false && src.IsEnabled == true).ToList();
+                        fundSourceObjSet.Where(src => src.IsDeleted == false && src.IsEnabled == true && src.FK_OrganizationID == organizationID).ToList();
 
                     //Filter and return
                     return activeSources.Where(src => arrIds.Contains(src.PK_FundingSourceID.ToString())).ToList();

@@ -87,15 +87,20 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var loginInfo = SessionManagement.UserInfo;
                     var accountType = loginInfo.AccountType;
 
-                    if (accountType == Constants.K_PARTNER_INDIVIDUAL)
+                    //Get account type details
+                    var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue(accountType);
+
+                    Session["AccountTypeValue"] = accountTypeDetails.FK_AccountTypeValue;
+
+                    if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                     {
                         return RedirectToAction("PersonalInformation");
                     }
-                    else if (accountType == Constants.K_PARTNER_JOINT)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                     {
                         return RedirectToAction("PrimaryHolderInformation");
                     }
-                    else if (accountType == Constants.K_PARTNER_CORPORATE)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                     {
                         return RedirectToAction("CompanyInformation");
                     }
@@ -193,16 +198,24 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                ViewData["WideSpreads"] = new SelectList(widenSpreadValuesBO.GetWidenSpreadValues(), "PK_WidenSpreadsID", "WidenSpreadsValue");
-                ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
-
                 if (SessionManagement.UserInfo != null)
                 {
-                    return View("FeeStructure");
+                    ViewData["WideSpreads"] = new SelectList(widenSpreadValuesBO.GetWidenSpreadValues(), "PK_WidenSpreadsID", "WidenSpreadsValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER, (int) SessionManagement.OrganizationID),
+                            "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+
+                    if (SessionManagement.UserInfo != null)
+                    {
+                        return View("FeeStructure");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Account", new {Area = ""});
+                    }
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = ""});
+                    return RedirectToAction("Login", "Account", new {Area = ""});
                 }
             }
             catch (Exception ex)
@@ -252,11 +265,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-
                 if (SessionManagement.UserInfo != null)
                 {
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
+
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
                     //Get Individual Account details for the partner user
@@ -540,8 +553,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -586,8 +597,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     EmailAddress = model.EmailID
                 };
 
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -631,8 +640,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -677,8 +684,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     EmailAddress = model.EmailID
                 };
 
-                //var currentUserInfo = ((LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"]);
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var currentUserInfo = SessionManagement.UserInfo;
@@ -722,8 +727,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -733,7 +736,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     {
                         clientBO.UpdateCompanyInformation(loginInfo.UserID, model.PhoneID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateCompanyInformation(loginInfo.UserID, model.PhoneID);
@@ -762,8 +765,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -773,7 +774,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     {
                         clientBO.UpdateCompanyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
                     }
-                    //If Partnet account
+                    //If Partner account
                     else
                     {
                         introducingBrokerBO.UpdateCompanyAuthOfficerContactInfo(loginInfo.UserID, model.TelephoneCountryCode, model.TelephoneNumber, model.MobileCountryCode, model.MobileNumber, model.EmailID);
@@ -954,8 +955,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -965,8 +964,9 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     {
                         return Json(false);
                     }
-                    //Check if email present in Clients or IB
-                    return Json(userBO.CheckIfEmailExistsInUser(emailID));
+                    
+                    //Check if email present in Users table
+                    return Json(userBO.CheckIfEmailExistsInUser(emailID, (int)SessionManagement.OrganizationID));
                 }
 
                 return Json(true);
@@ -986,9 +986,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-
-                //var loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1296,7 +1293,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    return Json(introducingBrokerBO.CheckDuplicateReferralLink(referralLink));
+                    return Json(introducingBrokerBO.CheckDuplicateReferralLink(referralLink, (int)SessionManagement.OrganizationID));
                 }
                 else
                 {

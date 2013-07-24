@@ -14,7 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using CurrentDesk.BackOffice.Areas.SuperAdmin.Models;
 using CurrentDesk.BackOffice.Custom;
 using CurrentDesk.Common;
@@ -22,6 +21,7 @@ using System.Web.Mvc;
 using CurrentDesk.Logging;
 using CurrentDesk.Repository.CurrentDesk;
 using CurrentDesk.BackOffice.Security;
+using CurrentDesk.BackOffice.Utilities;
 
 #endregion
 
@@ -74,13 +74,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     //Get all withdrawal transactions
                     var outTransactions =
-                        adminTransactionBO.GetAllTransactionsOfParticularType((int) AdminTransactionType.OutgoingFunds);
+                        adminTransactionBO.GetAllTransactionsOfParticularType((int) AdminTransactionType.OutgoingFunds, (int)SessionManagement.OrganizationID);
 
                     var lstWithdrawals = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each withdrawal transaction
                     foreach (var transaction in outTransactions)
@@ -90,7 +86,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         withdrawal.AccountNumber = transaction.AccountNumber;
                         withdrawal.ClientName = transaction.ClientName;
-                        withdrawal.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
+                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
                         withdrawal.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(withdrawal);
@@ -128,13 +124,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     //Get all deposit transactions
                     var incTransactions =
-                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.IncomingFunds);
+                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.IncomingFunds, (int)SessionManagement.OrganizationID);
 
                     var lstDeposits = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each deposit transaction
                     foreach (var transaction in incTransactions)
@@ -144,7 +136,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         deposit.AccountNumber = transaction.AccountNumber;
                         deposit.ClientName = transaction.ClientName;
-                        deposit.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
+                        deposit.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
                         deposit.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstDeposits.Add(deposit);
@@ -182,13 +174,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     //Get all internal transfer transactions
                     var internalTransactions =
-                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.InternalTransfers);
+                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.InternalTransfers, (int)SessionManagement.OrganizationID);
 
                     var lstInternalTransfers = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each internal transfer transaction
                     foreach (var transaction in internalTransactions)
@@ -200,7 +188,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         internalTran.ClientName = transaction.ClientName;
                         internalTran.ToAccount = transaction.ToAccountNumber;
                         internalTran.ToClientName = transaction.ToClientName;
-                        internalTran.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
+                        internalTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
                         internalTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstInternalTransfers.Add(internalTran);
@@ -238,13 +226,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 {
                     //Get all conversion transactions
                     var conversionTransactions =
-                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.ConversionsRequests);
+                        adminTransactionBO.GetAllTransactionsOfParticularType((int)AdminTransactionType.ConversionsRequests, (int)SessionManagement.OrganizationID);
 
                     var lstConversionTransfers = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each conversion transaction
                     foreach (var transaction in conversionTransactions)
@@ -256,9 +240,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         convTran.ClientName = transaction.ClientName;
                         convTran.ToAccount = transaction.ToAccountNumber;
                         convTran.ToClientName = transaction.ToClientName;
-                        convTran.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
+                        convTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
                         convTran.ExchangeRate = (double)transaction.ExchangeRate;
-                        convTran.ExchangedAmount = String.Format(nfi, "{0:C}", Math.Round((decimal)(transaction.TransactionAmount * (decimal)transaction.ExchangeRate), 2));
+                        convTran.ExchangedAmount = Utility.FormatCurrencyValue(Math.Round((decimal)(transaction.TransactionAmount * (decimal)transaction.ExchangeRate), 2), "");
                         convTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstConversionTransfers.Add(convTran);

@@ -22,7 +22,7 @@ namespace CurrentDesk.Repository.CurrentDesk
 		// the attribute [NCPublish], and another T4 template will generate your service contract
 
         /// <summary>
-        /// This method adds or updates new trsnsaction settings
+        /// This method adds or updates new transaction settings
         /// </summary>
         /// <param name="setting">setting</param>
         /// <returns></returns>
@@ -39,7 +39,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         ((CurrentDeskClientsEntities)transactionSettingRepo.Repository.UnitOfWork.Context).TransactionSettings;
 
                     //Get present setting from db
-                    var dbSetting = transactionSettingObjSet.Where(sett => sett.FK_AdminTransactionTypeID == setting.FK_AdminTransactionTypeID).FirstOrDefault();
+                    var dbSetting = transactionSettingObjSet.Where(sett => sett.FK_AdminTransactionTypeID == setting.FK_AdminTransactionTypeID && sett.FK_OrganizationID == setting.FK_OrganizationID).FirstOrDefault();
 
                     //If settings present in db
                     if (dbSetting != null)

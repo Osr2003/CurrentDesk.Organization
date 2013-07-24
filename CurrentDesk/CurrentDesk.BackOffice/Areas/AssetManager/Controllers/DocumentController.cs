@@ -134,8 +134,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 }
                 else
                 {
-                    RedirectToAction("Login", "Account");
-                    return View();
+                    return RedirectToAction("Login", "Account");
                 }
             }
             catch (Exception ex)
@@ -203,7 +202,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             try
             {
                 //Get extension of the file
-                string ext = System.IO.Path.GetExtension(fileName).ToLower();
+                string ext = Path.GetExtension(fileName).ToLower();
 
                 FileInfo file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
 
@@ -233,7 +232,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
 
             string contentType = "application/octetstream";
 
-            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+            string ext = Path.GetExtension(fileName).ToLower();
 
             Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
 

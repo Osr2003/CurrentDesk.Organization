@@ -395,6 +395,82 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method logs fee transfer details in TransferLogs table
+        /// </summary>
+        /// <param name="fromAcc">fromAcc</param>
+        /// <param name="fromCurrID">fromCurrID</param>
+        /// <param name="toCurrID">toCurrID</param>
+        /// <param name="fee">fee</param>
+        /// <param name="organizationID">organizationID</param>
+        public void AddTransferLogForFee(int pkTransactionID, string fromAcc, int fromCurrID, int toCurrID, double fee, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var transferLogRepo =
+                     new TransferLogRepository(new EFRepository<TransferLog>(), unitOfWork);
+
+                    //If from account is landing account
+                    if (fromAcc.Split('-')[1] == "000")
+                    {
+                        TransferLog log1 = new TransferLog();
+                        log1.CurrencyID = fromCurrID;
+                        log1.Amount = Convert.ToDecimal(fee);
+                        log1.TransactionType = "Withdrawal";
+                        log1.AccountNumber = fromAcc;
+                        log1.TransactionDateTime = DateTime.Now;
+                        log1.FK_TransactionID = pkTransactionID;
+                        log1.FK_OrganizationID = organizationID;
+                        transferLogRepo.Add(log1);
+                    }
+                    //If from account is trading account
+                    else
+                    {
+                        //Withdrawal from trading acc
+                        TransferLog log1 = new TransferLog();
+                        log1.CurrencyID = fromCurrID;
+                        log1.Amount = Convert.ToDecimal(fee);
+                        log1.TransactionType = "Withdrawal";
+                        log1.AccountNumber = fromAcc;
+                        log1.TransactionDateTime = DateTime.Now;
+                        log1.FK_TransactionID = pkTransactionID;
+                        log1.FK_OrganizationID = organizationID;
+                        transferLogRepo.Add(log1);
+
+                        //Deposit in landing account
+                        TransferLog log6 = new TransferLog();
+                        log6.CurrencyID = fromCurrID;
+                        log6.Amount = Convert.ToDecimal(fee);
+                        log6.TransactionType = "Deposit";
+                        log6.AccountNumber = fromAcc.Split('-')[0] + "-" + "000" + "-" + fromAcc.Split('-')[2];
+                        log6.TransactionDateTime = DateTime.Now;
+                        log6.FK_TransactionID = pkTransactionID;
+                        log6.FK_OrganizationID = organizationID;
+                        transferLogRepo.Add(log6);
+
+                        //Withdrawal from landing account
+                        TransferLog log7 = new TransferLog();
+                        log7.CurrencyID = fromCurrID;
+                        log7.Amount = Convert.ToDecimal(fee);
+                        log7.TransactionType = "Withdrawal";
+                        log7.AccountNumber = fromAcc.Split('-')[0] + "-" + "000" + "-" + fromAcc.Split('-')[2];
+                        log7.TransactionDateTime = DateTime.Now;
+                        log7.FK_TransactionID = pkTransactionID;
+                        log7.FK_OrganizationID = organizationID;
+                        transferLogRepo.Add(log7);
+                    }
+                    transferLogRepo.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method gets latest 3 transactions of the account number
         /// </summary>
         /// <param name="accountNumber">accountNumber</param>
@@ -489,6 +565,43 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This methods inserts transfer log for fund deposit transaction
+        /// </summary>
+        /// <param name="pkTransactionID">pkTransactionID</param>
+        /// <param name="currID">currID</param>
+        /// <param name="amount">amount</param>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        public void AddTransferLogForFundDeposit(int pkTransactionID, int currID, decimal amount, string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var transferLogRepo =
+                     new TransferLogRepository(new EFRepository<TransferLog>(), unitOfWork);
+
+                    TransferLog newDeposit = new TransferLog();
+                    newDeposit.CurrencyID = currID;
+                    newDeposit.Amount = amount;
+                    newDeposit.TransactionType = "Deposit";
+                    newDeposit.AccountNumber = accountNumber;
+                    newDeposit.TransactionDateTime = DateTime.UtcNow;
+                    newDeposit.FK_TransactionID = pkTransactionID;
+                    newDeposit.FK_OrganizationID = organizationID;
+
+                    transferLogRepo.Add(newDeposit);
+                    transferLogRepo.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This methods inserts transfer log for fund withdraw transaction
         /// </summary>
         /// <param name="pkTransactionID">pkTransactionID</param>
@@ -522,6 +635,42 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
-		
+
+        /// <summary>
+        /// This methods inserts transfer log for fund withdraw transaction
+        /// </summary>
+        /// <param name="pkTransactionID">pkTransactionID</param>
+        /// <param name="currID">currID</param>
+        /// <param name="amount">amount</param>
+        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        public void AddTransferLogForFundWithdraw(int pkTransactionID, int currID, decimal amount, string accountNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var transferLogRepo =
+                     new TransferLogRepository(new EFRepository<TransferLog>(), unitOfWork);
+
+                    TransferLog newWithdraw = new TransferLog();
+                    newWithdraw.CurrencyID = currID;
+                    newWithdraw.Amount = amount;
+                    newWithdraw.TransactionType = "Withdraw";
+                    newWithdraw.AccountNumber = accountNumber;
+                    newWithdraw.TransactionDateTime = DateTime.UtcNow;
+                    newWithdraw.FK_TransactionID = pkTransactionID;
+                    newWithdraw.FK_OrganizationID = organizationID;
+
+                    transferLogRepo.Add(newWithdraw);
+                    transferLogRepo.Save();
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
 	}
 }

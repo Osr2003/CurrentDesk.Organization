@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using CurrentDesk.BackOffice.Models;
 using CurrentDesk.BackOffice.Models.MyAccount;
-using System.Globalization;
 using System.Web;
 using System.IO;
 using CurrentDesk.BackOffice.Models.Transfers;
 using CurrentDesk.Models;
 using CurrentDesk.BackOffice.Custom;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
@@ -61,6 +61,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         private AgentBO agentBO = new AgentBO();
         private PartnerCommissionBO partCommBO = new PartnerCommissionBO();
         private UserActivityBO usrActivityBO = new UserActivityBO();
+        private AccountTypeBO accountTypeBO = new AccountTypeBO();
         #endregion
 
         /// <summary>
@@ -104,8 +105,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
 
                     foreach (var client in clientsOfIB)
                     {
+                        //Get account type details
+                        var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue((int)client.FK_AccountTypeID);
+
                         //Get Individual Acc Info
-                        if (client.FK_AccountTypeID == Constants.K_LIVE_INDIVIDUAL)
+                        if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                         {
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
@@ -122,7 +126,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             }
                         }
                         //Get Joint Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_JOINT)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                         {
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
@@ -139,7 +143,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             }
                         }
                         //Get Corporate Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_CORPORATE)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                         {
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
@@ -156,7 +160,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             }
                         }
                         //Get Trust Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_TRUST)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                         {
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
@@ -223,23 +227,26 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         var clientAccounts = clientAccBo.GetAllAccountsOfClientOnClientPK(client.PK_ClientID);
                         dynamic clientDetails = null;
 
+                        //Get account type details
+                        var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue((int)client.FK_AccountTypeID);
+
                         //Get Individual Acc Info
-                        if (client.FK_AccountTypeID == Constants.K_LIVE_INDIVIDUAL)
+                        if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                         {
                             clientDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                         }
                         //Get Joint Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_JOINT)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                         {
                             clientDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                         }
                         //Get Corporate Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_CORPORATE)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                         {
                             clientDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                         }
                         //Get Trust Acc Info
-                        else if (client.FK_AccountTypeID == Constants.K_LIVE_TRUST)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                         {
                             clientDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                         }
@@ -266,7 +273,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             }
 
                             //Individual
-                            if (client.FK_AccountTypeID == Constants.K_LIVE_INDIVIDUAL)
+                            if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                             {
                                 if (clientDetails != null)
                                 {
@@ -279,7 +286,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 }
                             }
                             //Joint
-                            else if (client.FK_AccountTypeID == Constants.K_LIVE_JOINT)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                             {
                                 if (clientDetails != null)
                                 {
@@ -292,7 +299,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 }
                             }
                             //Corporate
-                            else if (client.FK_AccountTypeID == Constants.K_LIVE_CORPORATE)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                             {
                                 if (clientDetails != null)
                                 {
@@ -305,7 +312,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 }
                             }
                             //Trust
-                            else if (client.FK_AccountTypeID == Constants.K_LIVE_TRUST)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                             {
                                 if (clientDetails != null)
                                 {
@@ -375,7 +382,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         model.AccountID = accountID;
                         model.Status = selectedClient.Status;
                         model.AgentID = selectedClient.FK_AgentID;
-                        if (selectedClient.FK_AccountTypeID == Constants.K_LIVE_INDIVIDUAL)
+
+                        //Get account type details
+                        var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue((int)selectedClient.FK_AccountTypeID);
+
+                        if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                         {
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(selectedClient.PK_ClientID);
                             if (individualDetails != null)
@@ -439,7 +450,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             }
 
                         }
-                        else if (selectedClient.FK_AccountTypeID == Constants.K_LIVE_JOINT)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                         {
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(selectedClient.PK_ClientID);
                             if (jointDetails != null)
@@ -502,7 +513,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 #endregion
                             }
                         }
-                        else if (selectedClient.FK_AccountTypeID == Constants.K_LIVE_CORPORATE)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                         {
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(selectedClient.PK_ClientID);
                             if (corpDetails != null)
@@ -559,7 +570,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 #endregion
                             }
                         }
-                        else if (selectedClient.FK_AccountTypeID == Constants.K_LIVE_TRUST)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                         {
                             #region Trust Information
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(selectedClient.PK_ClientID);
@@ -675,9 +686,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, organizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
                     ViewData["AccountCode"] = new SelectList(accountCodeBO.GetSelectedAccount(Constants.K_BROKER_LIVE), "PK_AccountID", "AccountName");
-                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
+                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE, organizationID), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
 
                     string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfClientOnClientPK(clientID).TrimEnd('/').Split('/');
 
@@ -688,10 +701,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     clientModel.AccountID = accountID;
                     clientModel.ClientName = clientName;
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
                     foreach (var curr in currencyIds)
                     {
                         MyAccountCurrencyModel model = new MyAccountCurrencyModel();
@@ -700,7 +709,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
                         model.CurrencyImage = lCurrValueBO.GetCurrencyImageClass(Convert.ToInt32(curr));
                         model.LandingAccount = landingAccDetails.LandingAccount;
-                        model.LAccBalance = String.Format(nfi, "{0:C}", landingAccDetails.CurrentBalance);
+                        model.LAccBalance = Utility.FormatCurrencyValue((decimal)landingAccDetails.CurrentBalance, "");
                         clientModel.CurrencyAccountDetails.Add(model);
                     }
 
@@ -768,12 +777,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         accModel.Type = "<img src='/Images/account-managed.png' title='Managed Account' alt='Managed Account'>";
                     }
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
-                    accModel.Balance = String.Format(nfi, "{0:C}", acc.CurrentBalance);
-                    accModel.Equity = acc.Equity != null ? String.Format(nfi, "{0:C}", acc.Equity) : "NA";
+                    accModel.Balance = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
+                    accModel.Equity = acc.Equity != null ? Utility.FormatCurrencyValue((decimal)acc.Equity, "") : "NA";
 
                     accModel.Floating = "10,000.00";
                     accModel.Change = "1.42";
@@ -854,8 +859,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
-
                     List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
 
                     //Get client UserID
@@ -894,8 +897,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 }
                 else
                 {
-                    RedirectToAction("Login", "Account");
-                    return View();
+                    return RedirectToAction("Login", "Account");
                 }
             }
             catch (Exception ex)
@@ -1010,7 +1012,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
 
             string contentType = "application/octetstream";
 
-            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+            string ext = Path.GetExtension(fileName).ToLower();
 
             Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
 
@@ -1110,8 +1112,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         /// view as model
         /// </summary>
         /// <param name="clientID">clientID</param>
-        /// <param name="accountID">accountID</param>
         /// <param name="accountNumber">accountNumber</param>
+        /// <param name="clientName">clientName</param>
         /// <returns></returns>
         public ActionResult ClientAccountDetails(int clientID, string accountNumber, string clientName)
         {
@@ -1119,31 +1121,29 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
                     ClientAccountDetailsModel model = new ClientAccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
                     model.ClientID = clientID;
                     model.ClientName = clientName;
 
-                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber);
-                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber);
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
+                    var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
+                    var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber, organizationID);
 
                     foreach (var tran in latestTransactions)
                     {
                         TransferLogDetails log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
-                        log.TransactionAmount = String.Format(nfi, "{0:C}", tran.Amount);
+                        log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
                         model.TransferLogDetails.Add(log);
                     }
 
                     model.AccountNumber = accountNumber;
 
-                    model.Balance = String.Format(nfi, "{0:C}", accountDetails.CurrentBalance);
-                    model.Equity = accountDetails.Equity != null ? String.Format(nfi, "{0:C}", accountDetails.Equity) : "NA";
+                    model.Balance = Utility.FormatCurrencyValue((decimal)accountDetails.CurrentBalance, "");
+                    model.Equity = accountDetails.Equity != null ? Utility.FormatCurrencyValue((decimal)accountDetails.Equity, "") : "NA";
 
                     model.AccountName = accountDetails.AccountName;
                     model.IsTradingAcc = accountDetails.IsTradingAccount;
@@ -1175,7 +1175,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, (int)SessionManagement.OrganizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
                     ClientAccountsModel model = new ClientAccountsModel();
                     model.AccountID = accountID;
                     model.ClientID = clientID;
@@ -1200,7 +1200,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         /// required data passed as model
         /// </summary>
         /// <param name="clientID">clientID</param>
-        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="accountID">accountID</param>
         /// <param name="clientName">clientName</param>
         /// <returns></returns>
         public ActionResult DepositClientFund(int clientID, string accountID, string clientName)
@@ -1210,7 +1210,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
@@ -1237,10 +1237,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }
@@ -1268,7 +1265,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         /// with required data passed as model
         /// </summary>
         /// <param name="clientID">clientID</param>
-        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="accountID">accountID</param>
         /// <param name="clientName">clientName</param>
         /// <returns></returns>
         public ActionResult WithdrawClientFund(int clientID, string accountID, string clientName)
@@ -1278,7 +1275,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     TransfersModel model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
@@ -1306,10 +1303,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 
-                        System.Globalization.NumberFormatInfo nfi;
-                        nfi = new NumberFormatInfo();
-                        nfi.CurrencySymbol = "";
-                        lAccInfo.LAccBalance = String.Format(nfi, "{0:C}", lAcc.CurrentBalance);
+                        lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
 
                         model.LandingAccInformation.Add(lAccInfo);
                     }
@@ -1337,7 +1331,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         /// with required data passed as model
         /// </summary>
         /// <param name="clientID">clientID</param>
-        /// <param name="accountNumber">accountNumber</param>
+        /// <param name="accountID">accountID</param>
         /// <param name="clientName">clientName</param>
         /// <returns></returns>
         public ActionResult TransferClientFund(int clientID, string accountID, string clientName)
@@ -1641,10 +1635,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     List<ClientActivity> lstClientActivity = new List<ClientActivity>();
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
                     //Get client userID
                     int clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
 
@@ -1679,12 +1669,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         //Transfer activities
                         else if (act.FK_ActivityTypeID == (int)ActivityType.TransferActivity)
                         {
-                            clntAct.ActivityDetails = "<b>" + String.Format(nfi, "{0:C}", act.TransferActivities.FirstOrDefault().TransferAmount) + " " + act.TransferActivities.FirstOrDefault().L_CurrencyValue.CurrencyValue + "</b> has been transferred from account <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.TransferActivities.FirstOrDefault().FromAccount + "'>" + act.TransferActivities.FirstOrDefault().FromAccount + "</a> to <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.TransferActivities.FirstOrDefault().ToAccount + "'>" + act.TransferActivities.FirstOrDefault().ToAccount + "</a>.";
+                            clntAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault().TransferAmount, "") + " " + act.TransferActivities.FirstOrDefault().L_CurrencyValue.CurrencyValue + "</b> has been transferred from account <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.TransferActivities.FirstOrDefault().FromAccount + "'>" + act.TransferActivities.FirstOrDefault().FromAccount + "</a> to <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.TransferActivities.FirstOrDefault().ToAccount + "'>" + act.TransferActivities.FirstOrDefault().ToAccount + "</a>.";
                         }
                         //Conversion activities
                         else if (act.FK_ActivityTypeID == (int)ActivityType.ConversionActivity)
                         {
-                            clntAct.ActivityDetails = "<b>" + String.Format(nfi, "{0:C}", act.ConversionActivities.FirstOrDefault().ConversionAmount) + " " + act.ConversionActivities.FirstOrDefault().L_CurrencyValue.CurrencyValue + "</b>  has been converted from <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.ConversionActivities.FirstOrDefault().FromAccount + "'>" + act.ConversionActivities.FirstOrDefault().FromAccount + "</a> at an exchange rate of " + act.ConversionActivities.FirstOrDefault().ExchangeRate + " totaling <b>" + Math.Round(Convert.ToDecimal(act.ConversionActivities.FirstOrDefault().ConversionAmount) * Convert.ToDecimal(act.ConversionActivities.FirstOrDefault().ExchangeRate), 2) + " " + act.ConversionActivities.FirstOrDefault().L_CurrencyValue1.CurrencyValue + "</b> and transferred to <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.ConversionActivities.FirstOrDefault().ToAccount + "'>" + act.ConversionActivities.FirstOrDefault().ToAccount + "</a>.";
+                            clntAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault().ConversionAmount, "") + " " + act.ConversionActivities.FirstOrDefault().L_CurrencyValue.CurrencyValue + "</b>  has been converted from <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.ConversionActivities.FirstOrDefault().FromAccount + "'>" + act.ConversionActivities.FirstOrDefault().FromAccount + "</a> at an exchange rate of " + act.ConversionActivities.FirstOrDefault().ExchangeRate + " totaling <b>" + Math.Round(Convert.ToDecimal(act.ConversionActivities.FirstOrDefault().ConversionAmount) * Convert.ToDecimal(act.ConversionActivities.FirstOrDefault().ExchangeRate), 2) + " " + act.ConversionActivities.FirstOrDefault().L_CurrencyValue1.CurrencyValue + "</b> and transferred to <a href='MyAccount/ShowAccountDetails?accountNumber=" + act.ConversionActivities.FirstOrDefault().ToAccount + "'>" + act.ConversionActivities.FirstOrDefault().ToAccount + "</a>.";
                         }
 
                         lstClientActivity.Add(clntAct);

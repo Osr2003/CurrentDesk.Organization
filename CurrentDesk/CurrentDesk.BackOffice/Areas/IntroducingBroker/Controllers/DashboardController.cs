@@ -24,9 +24,9 @@ using System.Web.Mvc;
 using System.Xml;
 using CurrentDesk.Repository.CurrentDesk;
 using CurrentDesk.BackOffice.Areas.IntroducingBroker.Models.IBClients;
-using System.Globalization;
 using CurrentDesk.BackOffice.Models.Dashboard;
 using CurrentDesk.BackOffice.Custom;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
@@ -68,10 +68,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     model.RebateAccDetails = new List<RebateAccount>();
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = ""; 
-
                     //Get all rebate accounts of IB
                     var rebateAccInfo = clientAccBO.GetDashboardAccounts(loginInfo.LogAccountType, loginInfo.UserID);
 
@@ -81,7 +77,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         RebateAccount rebateAcc = new RebateAccount();
                         rebateAcc.RebateAccNumber = acc.TradingAccount;
                         rebateAcc.RebateAccCurrency = lCurrValueBO.GetCurrencySymbolFromID((int)acc.FK_CurrencyID);
-                        rebateAcc.Equity = String.Format(nfi, "{0:C}", acc.CurrentBalance);
+                        rebateAcc.Equity = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
                         model.RebateAccDetails.Add(rebateAcc);
                     }
 
@@ -447,10 +443,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
 
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
-
                     //Get latest activities
                     var activities = usrActivityBO.GetUserRecentActivityDetails(loginInfo.UserID);
 
@@ -498,10 +490,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 if (act.TransferActivities.FirstOrDefault().FK_FromUserID == null &&
                                     act.TransferActivities.FirstOrDefault().FK_ToUserID == null)
                                 {
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been transferred from account <a href='MyAccount'>" +
@@ -522,10 +512,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                         fromClientName = introducingBrokerBO.GetPartnerName((int)act.TransferActivities.FirstOrDefault().FK_FromUserID);
                                     }
 
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been deposited from " + fromClientName + " to <a href='MyAccount'>" +
@@ -544,10 +532,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                         toClientName = introducingBrokerBO.GetPartnerName((int)act.TransferActivities.FirstOrDefault().FK_ToUserID);
                                     }
 
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> has been transferred from account <a href='MyAccount'>" +
@@ -557,10 +543,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             }
                             else
                             {
-                                usrAct.ActivityDetails = "<b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.TransferActivities.FirstOrDefault()
-                                                                          .TransferAmount) + " " +
+                                usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                          .TransferAmount, "") + " " +
                                                          act.TransferActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
                                                          "</b> is pending transfer from account <a href='MyAccount'>" +
@@ -578,10 +562,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 if (act.ConversionActivities.FirstOrDefault().FK_FromUserID == null &&
                                     act.ConversionActivities.FirstOrDefault().FK_ToUserID == null)
                                 {
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from <a href='MyAccount'>" +
@@ -623,10 +605,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                 (int)act.ConversionActivities.FirstOrDefault().FK_FromUserID);
                                     }
 
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from " +
@@ -667,10 +647,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                 (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
 
-                                    usrAct.ActivityDetails = "<b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                    usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b>  has been converted from <a href='MyAccount'>" +
@@ -696,10 +674,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             }
                             else
                             {
-                                usrAct.ActivityDetails = "<b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.ConversionActivities.FirstOrDefault()
-                                                                          .ConversionAmount) + " " +
+                                usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                          .ConversionAmount, "") + " " +
                                                          act.ConversionActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
                                                          "</b>  has been converted from <a href='MyAccount'>" +
@@ -727,10 +703,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             if (act.DepositOrWithdrawActivities.FirstOrDefault().TransferStatus ==
                                 Constants.K_STATUS_PENDING)
                             {
-                                usrAct.ActivityDetails = "<b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.DepositOrWithdrawActivities.FirstOrDefault()
-                                                                          .Amount) +
+                                usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.DepositOrWithdrawActivities.FirstOrDefault()
+                                                                          .Amount, "") +
                                                          " " +
                                                          act.DepositOrWithdrawActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
@@ -742,9 +716,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             }
                             else
                             {
-                                usrAct.ActivityDetails = "<b>" + String.Format(nfi, "{0:C}",
-                                                                               act.DepositOrWithdrawActivities
-                                                                                  .FirstOrDefault().Amount) +
+                                usrAct.ActivityDetails = "<b>" + Utility.FormatCurrencyValue((decimal)act.DepositOrWithdrawActivities
+                                                                                  .FirstOrDefault().Amount, "") +
                                                          " " +
                                                          act.DepositOrWithdrawActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
@@ -793,10 +766,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
                     string clientIds = String.Empty;
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     var ibClients = clientBO.GetAllClientsOfIB(loginInfo.UserID);
                     foreach (var client in ibClients)
@@ -874,9 +843,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has transferred <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from account <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -908,9 +876,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has transferred <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from account <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -940,9 +907,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has received <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.TransferActivities.FirstOrDefault()
-                                                                              .TransferAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.TransferActivities.FirstOrDefault()
+                                                                              .TransferAmount, "") + " " +
                                                              act.TransferActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from account " +
@@ -961,11 +927,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                             .FirstName + " " +
                                                          act.User.Clients.FirstOrDefault()
                                                             .IndividualAccountInformations.FirstOrDefault()
-                                                            .LastName + " has <b>" + String.Format(nfi, "{0:C}",
-                                                                                                   act
+                                                            .LastName + " has <b>" + Utility.FormatCurrencyValue((decimal)act
                                                                                                        .TransferActivities
                                                                                                        .FirstOrDefault()
-                                                                                                       .TransferAmount) +
+                                                                                                       .TransferAmount, "") +
                                                          " " +
                                                          act.TransferActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
@@ -1005,9 +970,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has converted <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -1060,9 +1024,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has converted <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -1113,9 +1076,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              act.User.Clients.FirstOrDefault()
                                                                 .IndividualAccountInformations.FirstOrDefault()
                                                                 .LastName + " has received <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.ConversionActivities.FirstOrDefault()
-                                                                              .ConversionAmount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                              .ConversionAmount, "") + " " +
                                                              act.ConversionActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from " +
@@ -1150,9 +1112,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          act.User.Clients.FirstOrDefault()
                                                             .IndividualAccountInformations.FirstOrDefault()
                                                             .LastName + " has converted <b>" +
-                                                         String.Format(nfi, "{0:C}",
-                                                                       act.ConversionActivities.FirstOrDefault()
-                                                                          .ConversionAmount) + " " +
+                                                         Utility.FormatCurrencyValue((decimal)act.ConversionActivities.FirstOrDefault()
+                                                                          .ConversionAmount, "") + " " +
                                                          act.ConversionActivities.FirstOrDefault()
                                                             .L_CurrencyValue.CurrencyValue +
                                                          "</b> from <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -1200,9 +1161,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 {
                                     usrAct.ActivityDetails = "Client " + clientName.Replace('@', ' ') +
                                                              " has submitted a deposit of <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.DepositOrWithdrawActivities
-                                                                              .FirstOrDefault().Amount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") + " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue + "</b>.";
                                 }
@@ -1210,9 +1170,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 {
                                     usrAct.ActivityDetails = "Client " + clientName.Replace('@', ' ') +
                                                              " has received <b>" +
-                                                             String.Format(nfi, "{0:C}",
-                                                                           act.DepositOrWithdrawActivities
-                                                                              .FirstOrDefault().Amount) + " " +
+                                                             Utility.FormatCurrencyValue((decimal)act.DepositOrWithdrawActivities
+                                                                              .FirstOrDefault().Amount, "") + " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> and been deposited into <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -1229,11 +1188,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                     Constants.K_STATUS_PENDING)
                                 {
                                     usrAct.ActivityDetails = "Client " + clientName.Replace('@', ' ') +
-                                                             " has withdrawn <b>" + String.Format(nfi, "{0:C}",
-                                                                                                  act
+                                                             " has withdrawn <b>" + Utility.FormatCurrencyValue((decimal)act
                                                                                                       .DepositOrWithdrawActivities
                                                                                                       .FirstOrDefault()
-                                                                                                      .Amount) + " " +
+                                                                                                      .Amount, "") + " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
                                                              "</b> from <a href='IntroducingBrokerClients/ClientAccounts?clientID=" +
@@ -1247,12 +1205,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 else
                                 {
                                     usrAct.ActivityDetails = "Client " + clientName.Replace('@', ' ') +
-                                                             " withdrawal request of <b>" + String.Format(nfi, "{0:C}",
-                                                                                                          act
+                                                             " withdrawal request of <b>" + Utility.FormatCurrencyValue((decimal)act
                                                                                                               .DepositOrWithdrawActivities
                                                                                                               .FirstOrDefault
                                                                                                               ()
-                                                                                                              .Amount) +
+                                                                                                              .Amount, "") +
                                                              " " +
                                                              act.DepositOrWithdrawActivities.FirstOrDefault()
                                                                 .L_CurrencyValue.CurrencyValue +
@@ -1437,10 +1394,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     string clientIds = String.Empty;
-                    
+
                     //Get all clients of IB
                     var ibClients = clientBO.GetAllClientsOfIB(loginInfo.UserID);
-                    
+
                     foreach (var client in ibClients)
                     {
                         clientIds += client.FK_UserID + ",";
@@ -1449,13 +1406,12 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all withdraw transactions of IB clients
                     var withdrawTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.OutgoingFunds);
+                                                                                   (int)
+                                                                                   AdminTransactionType.OutgoingFunds,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstWithdrawals = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each withdrawal transaction
                     foreach (var transaction in withdrawTransactions)
@@ -1465,23 +1421,23 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         withdrawal.AccountNumber = transaction.AccountNumber;
                         withdrawal.ClientName = transaction.ClientName;
-                        withdrawal.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
-                        withdrawal.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        withdrawal.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(withdrawal);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstWithdrawals.Count,
-                        rows = lstWithdrawals
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstWithdrawals.Count,
+                            rows = lstWithdrawals
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = ""});
+                    return RedirectToAction("Login", "Account", new {Area = ""});
                 }
             }
             catch (Exception ex)
@@ -1516,13 +1472,12 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all deposit transactions of IB clients
                     var depositTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.IncomingFunds);
+                                                                                   (int)
+                                                                                   AdminTransactionType.IncomingFunds,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstWithdrawals = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each deposit transaction
                     foreach (var transaction in depositTransactions)
@@ -1532,23 +1487,23 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         deposit.AccountNumber = transaction.AccountNumber;
                         deposit.ClientName = transaction.ClientName;
-                        deposit.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
-                        deposit.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        deposit.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        deposit.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(deposit);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstWithdrawals.Count,
-                        rows = lstWithdrawals
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstWithdrawals.Count,
+                            rows = lstWithdrawals
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = "" });
+                    return RedirectToAction("Login", "Account", new {Area = ""});
                 }
             }
             catch (Exception ex)
@@ -1583,13 +1538,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all internal transactions of IB clients
                     var internalTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.InternalTransfers);
+                                                                                   (int)
+                                                                                   AdminTransactionType
+                                                                                       .InternalTransfers,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstInternalTransfers = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each internal transfer transaction
                     foreach (var transaction in internalTransactions)
@@ -1601,19 +1556,19 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         internalTran.ClientName = transaction.ClientName;
                         internalTran.ToAccount = transaction.ToAccountNumber;
                         internalTran.ToClientName = transaction.ToClientName;
-                        internalTran.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
-                        internalTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        internalTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        internalTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstInternalTransfers.Add(internalTran);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstInternalTransfers.Count,
-                        rows = lstInternalTransfers
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstInternalTransfers.Count,
+                            rows = lstInternalTransfers
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -1652,13 +1607,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all conversion transactions of IB clients
                     var conversionTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.ConversionsRequests);
+                                                                                   (int)
+                                                                                   AdminTransactionType
+                                                                                       .ConversionsRequests,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstConversionTransfers = new List<DashboardTransactionModel>();
-
-                    System.Globalization.NumberFormatInfo nfi;
-                    nfi = new NumberFormatInfo();
-                    nfi.CurrencySymbol = "";
 
                     //Iterating through each conversion transaction
                     foreach (var transaction in conversionTransactions)
@@ -1670,21 +1625,24 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         convTran.ClientName = transaction.ClientName;
                         convTran.ToAccount = transaction.ToAccountNumber;
                         convTran.ToClientName = transaction.ToClientName;
-                        convTran.Amount = String.Format(nfi, "{0:C}", transaction.TransactionAmount);
-                        convTran.ExchangeRate = (double)transaction.ExchangeRate;
-                        convTran.ExchangedAmount = String.Format(nfi, "{0:C}", Math.Round((decimal)(transaction.TransactionAmount * (decimal)transaction.ExchangeRate), 2));
-                        convTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        convTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        convTran.ExchangeRate = (double) transaction.ExchangeRate;
+                        convTran.ExchangedAmount =
+                            Utility.FormatCurrencyValue(
+                                Math.Round(
+                                    (decimal) (transaction.TransactionAmount*(decimal) transaction.ExchangeRate), 2), "");
+                        convTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstConversionTransfers.Add(convTran);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstConversionTransfers.Count,
-                        rows = lstConversionTransfers
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstConversionTransfers.Count,
+                            rows = lstConversionTransfers
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

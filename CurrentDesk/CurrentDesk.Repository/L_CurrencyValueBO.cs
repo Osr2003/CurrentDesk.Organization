@@ -174,7 +174,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var lCurrencyRepo =
                         new L_CurrencyValueRepository(new EFRepository<L_CurrencyValue>(), unitOfWork);
 
-                    //Creating Currency Objeset to Query
+                    //Creating Currency Objset to Query
                     ObjectSet<L_CurrencyValue> currencyObjSet =
                       ((CurrentDeskClientsEntities)lCurrencyRepo.Repository.UnitOfWork.Context).L_CurrencyValue;
 

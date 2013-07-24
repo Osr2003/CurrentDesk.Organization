@@ -52,7 +52,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
                     return View();
                 }

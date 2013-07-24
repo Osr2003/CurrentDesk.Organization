@@ -53,7 +53,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of all incoming fund transfer request
         /// </summary>
         /// <returns></returns>
-        public List<AdminTransaction> GetAllIncomingFundRequests()
+        public List<AdminTransaction> GetAllIncomingFundRequests(int organizationID)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<AdminTransaction> transactionObjSet =
                         ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
 
-                    return transactionObjSet.Include("FundingSource").Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.IncomingFunds && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
+                    return transactionObjSet.Include("FundingSource").Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.IncomingFunds && transaction.FK_OrganizationID == organizationID && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -161,7 +161,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Get particular transaction
                     var transaction = transactionObjSet.Where(tran => tran.PK_TransactionID == approveTransaction.PK_TransactionID).FirstOrDefault();
 
-                    //Update its fileds
+                    //Update its fields
                     if (transaction != null)
                     {
                         transaction.TransactionAmount = approveTransaction.TransactionAmount;
@@ -188,7 +188,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of all outgoing fund transfer request
         /// </summary>
         /// <returns></returns>
-        public List<AdminTransaction> GetAllOutgoingFundRequests()
+        public List<AdminTransaction> GetAllOutgoingFundRequests(int organizationID)
         {
             try
             {
@@ -200,7 +200,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<AdminTransaction> transactionObjSet =
                         ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
 
-                    return transactionObjSet.Include("BankAccountInformation").Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.OutgoingFunds && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
+                    return transactionObjSet.Include("BankAccountInformation").Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.OutgoingFunds && transaction.FK_OrganizationID == organizationID && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -230,7 +230,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Get particular transaction
                     var transaction = transactionObjSet.Where(tran => tran.PK_TransactionID == approveTransaction.PK_TransactionID).FirstOrDefault();
 
-                    //Update its fileds
+                    //Update its fields
                     if (transaction != null)
                     {
                         transaction.TransactionAmount = approveTransaction.TransactionAmount;
@@ -368,7 +368,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of all internal transfer fund transfer request
         /// </summary>
         /// <returns></returns>
-        public List<AdminTransaction> GetAllInternalTransferRequests()
+        public List<AdminTransaction> GetAllInternalTransferRequests(int organizationID)
         {
             try
             {
@@ -380,7 +380,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<AdminTransaction> transactionObjSet =
                         ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
 
-                    return transactionObjSet.Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.InternalTransfers && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
+                    return transactionObjSet.Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.InternalTransfers && transaction.FK_OrganizationID == organizationID && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -391,10 +391,11 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// This method returns list of all conversion fund trasfer request
+        /// This method returns list of all conversion fund transfer request
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
-        public List<AdminTransaction> GetAllConversionRequests()
+        public List<AdminTransaction> GetAllConversionRequests(int organizationID)
         {
             try
             {
@@ -406,7 +407,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<AdminTransaction> transactionObjSet =
                         ((CurrentDeskClientsEntities)adminTransactionRepo.Repository.UnitOfWork.Context).AdminTransactions;
 
-                    return transactionObjSet.Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.ConversionsRequests && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
+                    return transactionObjSet.Where(transaction => transaction.FK_AdminTransactionTypeID == (int)AdminTransactionType.ConversionsRequests && transaction.FK_OrganizationID == organizationID && transaction.IsApproved == false && transaction.IsDeleted == false).ToList();
                 }
             }
             catch (Exception ex)
@@ -421,7 +422,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// passed as parameter
         /// </summary>
         /// <returns></returns>
-        public List<AdminTransaction> GetAllTransactionsOfParticularType(int transactionType)
+        public List<AdminTransaction> GetAllTransactionsOfParticularType(int transactionType, int organizationID)
         {
             try
             {
@@ -438,7 +439,8 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var allPendingTransactions =
                         transactionObjSet.Where(
                             transaction =>
-                            transaction.FK_AdminTransactionTypeID == transactionType && transaction.IsDeleted == false &&
+                            transaction.FK_AdminTransactionTypeID == transactionType &&
+                            transaction.FK_OrganizationID == organizationID && transaction.IsDeleted == false &&
                             transaction.IsApproved == false)
                                          .OrderByDescending(tran => tran.TransactionDate)
                                          .ToList();
@@ -447,7 +449,8 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var latestApprovedTransactions =
                         transactionObjSet.Where(
                             tran =>
-                            tran.FK_AdminTransactionTypeID == transactionType && tran.IsDeleted == false &&
+                            tran.FK_AdminTransactionTypeID == transactionType &&
+                            tran.FK_OrganizationID == organizationID && tran.IsDeleted == false &&
                             tran.IsApproved == true).OrderByDescending(odr => odr.ApprovedDate).Take(5).ToList();
 
                     allPendingTransactions.AddRange(latestApprovedTransactions);
@@ -468,7 +471,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="clientIds">clientIds</param>
         /// <param name="transactionType">transactionType</param>
 	    /// <returns></returns>
-        public List<AdminTransaction> GetAllClientsTransactionOfParticulaType(string clientIds, int transactionType)
+        public List<AdminTransaction> GetAllClientsTransactionOfParticulaType(string clientIds, int transactionType, int organizationID)
 	    {
 	        try
 	        {
@@ -481,7 +484,7 @@ namespace CurrentDesk.Repository.CurrentDesk
 	                    ((CurrentDeskClientsEntities) adminTransactionRepo.Repository.UnitOfWork.Context)
 	                        .AdminTransactions;
 
-	                var allTransactions = transactionObjSet.Where(tran => tran.IsDeleted == false).ToList();
+	                var allTransactions = transactionObjSet.Where(tran => tran.IsDeleted == false && tran.FK_OrganizationID == organizationID).ToList();
 
 	                //All pending transactions
 	                var allPendingTransactions =

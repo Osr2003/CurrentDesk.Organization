@@ -53,13 +53,13 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         private AccountCurrencyBO accCurrBO = new AccountCurrencyBO();
         private UserActivityBO userActivityBO = new UserActivityBO();
         private ProfileActivityBO profileActivityBO = new ProfileActivityBO();
+        private AccountTypeBO accountTypeBO = new AccountTypeBO();
         #endregion
 
         /// <summary>
         /// This class represents controller for Profile page of AM and contains
         /// actions to handle required functionality
         /// </summary>
-        [Authorize]
         public ActionResult Index()
         {
             try
@@ -69,15 +69,20 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var loginInfo = SessionManagement.UserInfo;
                     var accountType = loginInfo.AccountType;
 
-                    if (accountType == Constants.K_PARTNER_INDIVIDUAL)
+                    //Get account type details
+                    var accountTypeDetails = accountTypeBO.GetAccountTypeAndFormTypeValue(accountType);
+
+                    Session["AccountTypeValue"] = accountTypeDetails.FK_AccountTypeValue;
+
+                    if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                     {
                         return RedirectToAction("PersonalInformation");
                     }
-                    else if (accountType == Constants.K_PARTNER_JOINT)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                     {
                         return RedirectToAction("PrimaryHolderInformation");
                     }
-                    else if (accountType == Constants.K_PARTNER_CORPORATE)
+                    else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                     {
                         return RedirectToAction("CompanyInformation");
                     }
@@ -400,11 +405,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
-
                 if (SessionManagement.UserInfo != null)
                 {
+                    ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
+
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
                     //Get Individual Account details for the partner user
@@ -554,12 +559,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                ViewData["WideSpreads"] = new SelectList(widenSpreadValuesBO.GetWidenSpreadValues(), "PK_WidenSpreadsID", "WidenSpreadsValue");
-                ViewData["CommSpreads"] = new SelectList(commIncValueBO.GetCommissionIncrementValues(), "PK_CommissionIncrementID", "CommissionIncrementValue");
-                ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
-
                 if (SessionManagement.UserInfo != null)
                 {
+                    ViewData["WideSpreads"] = new SelectList(widenSpreadValuesBO.GetWidenSpreadValues(), "PK_WidenSpreadsID", "WidenSpreadsValue");
+                    ViewData["CommSpreads"] = new SelectList(commIncValueBO.GetCommissionIncrementValues(), "PK_CommissionIncrementID", "CommissionIncrementValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER, (int)SessionManagement.OrganizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+
                     return View("FeeStructure");
                 }
                 else
@@ -849,8 +854,9 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     {
                         return Json(false);
                     }
-                    //Check if email present in Clients or IB table
-                    return Json(userBO.CheckIfEmailExistsInUser(emailID));
+
+                    //Check if email present in Users table
+                    return Json(userBO.CheckIfEmailExistsInUser(emailID, (int)SessionManagement.OrganizationID));
                 }
 
                 return Json(true);
@@ -1019,7 +1025,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    return Json(introducingBrokerBO.CheckDuplicateReferralLink(referralLink));
+                    return Json(introducingBrokerBO.CheckDuplicateReferralLink(referralLink, (int)SessionManagement.OrganizationID));
                 }
                 else
                 {
@@ -1066,7 +1072,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize]
         public ActionResult UpdateIndividualPersonalInformation(PersonalInfoEditModel model)
         {
             try
@@ -1172,7 +1177,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                var clientBO = new ClientBO();
                 var jointAccountInformation = new JointAccountInformation()
                 {
                     TelephoneNumber = model.TelephoneCountryCode + '-' + model.TelephoneNumber,
@@ -1216,8 +1220,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1247,8 +1249,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
-
                 if (SessionManagement.UserInfo != null)
                 {
                     var loginInfo = SessionManagement.UserInfo;
@@ -1314,12 +1314,13 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     ManagedAccountProgramModel model = new ManagedAccountProgramModel();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_PARTNER, organizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
                     ViewData["Periods"] = new SelectList(ExtensionUtility.GetPeriod(), "ID", "Value");
                     ViewData["DepositAcceptance"] = new SelectList(ExtensionUtility.GetAllDepositAcceptance(), "ID", "Value");
                     ViewData["FeeGroup"] = new SelectList(partCommBO.GetAllFeeStructureForUser(loginInfo.UserID), "PK_PartnerCommID", "FeeStructureName");
-                    ViewData["Platform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_PARTNER), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
+                    ViewData["Platform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_PARTNER, organizationID), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
 
                     return View();
                 }
