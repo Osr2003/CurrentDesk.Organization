@@ -5,7 +5,34 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
 <!-- BEGIN WRAPPER -->
+<div class="wrapper">
+
+    <!-- Header Styles -->
+    <div class="header">
+
+        <!-- Main Content Section -->
+        <div class="main-content">
+            <div class="wrapper">
+
+                <!-- Begin Error Page Content -->
+                <h1 class="error">@Html.DisplayFor(model => model.ErrorMessage)</h1>
+                <h1 class="error">@Html.DisplayFor(model => model.DisplayMessage)</h1>
+                <div class="content-section">
+                </div>
+                <!-- End Demo Account Signup Form -->
+
+            </div>
+        </div>
+        <!-- End Main Content Section -->
+
+        <div class="push"></div>
+    </div>
+</div>
+<!-- END WRAPPER -->
+
+@*<!-- BEGIN WRAPPER -->
 <div class="wrapper">
 
     <!-- Header Styles -->
@@ -40,7 +67,7 @@
 
     <div class="push"></div>
 </div>
-<!-- END WRAPPER -->
+<!-- END WRAPPER -->*@
 
 
 <!-- Footer Section -->

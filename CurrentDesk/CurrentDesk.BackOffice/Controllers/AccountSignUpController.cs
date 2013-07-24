@@ -83,7 +83,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 var organizationBO = new OrganizationBO();
                 var browserUrl = Request.Url.AbsoluteUri;
 
-                browserUrl = "http://lmax.com"; //TODO Need to change with URL
+                //browserUrl = "http://lmax.com"; //TODO Need to change with URL
                 var organizationID = organizationBO.GetOrganizationIDFromURL(browserUrl);
 
                 if (organizationID != null)
@@ -112,7 +112,9 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
                 else
                 {
-                    return View("ErrorMessage");
+                    //Return to Page Not Found Error
+                    return RedirectToAction("PageNotFound", "Error");
+                    //return View("ErrorMessage");
                 }
             }
             catch (Exception ex)
@@ -222,7 +224,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 var OrganizationBO = new OrganizationBO();
                 var browserUrl = Request.Url.AbsoluteUri;
 
-                browserUrl = "http://lmax.com"; //TODO Need to change with URL
+                //browserUrl = "http://lmax.com"; //TODO Need to change with URL
                 var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
 
                 if (organizationID != null)
@@ -248,7 +250,8 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
                 else
                 {
-                    return View("ErrorMessage");
+                    return RedirectToAction("PageNotFound", "Error");
+                    //return View("ErrorMessage");
                 }
             }
             catch(Exception ex)
@@ -292,7 +295,8 @@ namespace CurrentDesk.BackOffice.Controllers
                             if (referralID.Contains("-"))
                             {
                                 agentCode = referralID.Split('-')[1];
-                            }
+                            }                            
+                                                  
 
                             //If accountNumber
                             if (long.TryParse(accNumberOrCustomKeyword, out accNumber))
@@ -1735,7 +1739,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 var OrganizationBO = new OrganizationBO();
                 var browserUrl = Request.Url.AbsoluteUri;
 
-                browserUrl = "http://fqsecurities.com"; //TODO Need to change with URL
+                //browserUrl = "http://fqsecurities.com"; //TODO Need to change with URL
                 var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
 
                 if (organizationID != null)
