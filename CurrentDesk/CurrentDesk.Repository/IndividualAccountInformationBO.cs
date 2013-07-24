@@ -21,8 +21,8 @@ namespace CurrentDesk.Repository.CurrentDesk
 	{
 		/// <summary>
         /// This function will insert individual account details for new client
-        /// </summary>
-        /// <returns></returns>
+		/// </summary>
+        /// <param name="newClient">newClient</param>
         public void AddIndividualAccDetailsForNewClient(IndividualAccountInformation newClient)
         {
 
@@ -48,7 +48,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This Function will get the individual Username depending upon the 
         /// ClientID
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="clientID">clientID</param>
+        /// <param name="accType">accType</param>
         /// <returns></returns>
         public string GetLiveIndividualName(int clientID, LoginAccountType accType)
         {
@@ -86,7 +87,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This Function will get the individual Username depending upon the 
         /// ClientID
         /// </summary>
-        /// <param name="clientID"></param>
+        /// <param name="introducingBrokerID">introducingBrokerID</param>
         /// <returns></returns>
         public string GetPartnerIndividualName(int introducingBrokerID)
         {

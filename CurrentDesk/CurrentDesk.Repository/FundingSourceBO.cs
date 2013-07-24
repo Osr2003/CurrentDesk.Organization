@@ -53,6 +53,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method returns list of funding sources that have not been deleted
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<FundingSource> GetAllFundSources(int organizationID)
         {
@@ -193,6 +194,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method returns list of funding sources that have not been deleted
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<FundingSource> GetAllTransferFundSources(int organizationID)
         {
@@ -303,6 +305,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of funding sources that have not been deleted
         /// for display during Fund Account
         /// </summary>
+        /// <param name="sourceIds">sourceIds</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<FundTransferSourceDetail> GetAllClientTransferFundSources(string sourceIds, int organizationID)
         {
@@ -343,6 +347,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns list of funding sources based on sourceids passed
         /// </summary>
         /// <param name="sourceIds">sourceIds</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<FundingSource> GetFundingSourcesFromIDs(string sourceIds, int organizationID)
         {

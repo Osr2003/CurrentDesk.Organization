@@ -20,33 +20,9 @@ namespace CurrentDesk.Repository.CurrentDesk
     public class IntroducingBrokerBO
     {
         /// <summary>
-        /// This function will insert corporate account details for new client
-        /// </summary>
-        /// <returns></returns>
-        public void AddCorporateAccDetailsForNewClient(CorporateAccountInformation newClient)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var corporateDetailsRepo =
-                        new CorporateAccountInformationRepository(new EFRepository<CorporateAccountInformation>(), unitOfWork);
-
-                    corporateDetailsRepo.Add(newClient);
-                    corporateDetailsRepo.Save();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// This function will insert introducing broker details
         /// </summary>
-        /// <returns></returns>
+        /// <param name="newIB">newIB</param>
         public void AddIntroducingBrokerDetails(IntroducingBroker newIB)
         {
 
@@ -59,71 +35,6 @@ namespace CurrentDesk.Repository.CurrentDesk
 
                     IBDetailsRepo.Add(newIB);
                     IBDetailsRepo.Save();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function will Validate User in IB table
-        /// </summary>
-        /// <param name="userName">UserName</param>
-        /// <param name="password">Password</param>
-        /// <returns>bool(true or false depending upon result)</returns>
-        public bool ValidateUser(string userName, string password, ref int accountType, ref string userDisplayName)
-        {
-            var currentDeskSecurity = new CurrentDeskSecurity();
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var introducingBrokerRepo =
-                         new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
-
-
-                    ObjectSet<IntroducingBroker> introducingBrokerObjSet =
-                      ((CurrentDeskClientsEntities)introducingBrokerRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
-
-                    //Get The Selected tunning and assign its Properties.
-                    var selectedIB =
-                        introducingBrokerObjSet.Where(ib => ib.UserEmail == userName).FirstOrDefault();
-
-                    //Check for Nullability
-                    if (selectedIB != null)
-                    {                        
-                        if (currentDeskSecurity.GetPassDecrypted(selectedIB.Password) == password)
-                        {
-                            accountType = (int)selectedIB.FK_AccountTypeID;
-
-                            if (accountType == Constants.K_PARTNER_INDIVIDUAL)
-                            {
-                                var individualAccountBO = new IndividualAccountInformationBO();
-                                userDisplayName = individualAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
-                            }
-                            else if (accountType == Constants.K_PARTNER_JOINT)
-                            {
-                                var jointAccountBO = new JointAccountInformationBO();
-                                userDisplayName = jointAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
-                            }
-                            else if (accountType == Constants.K_PARTNER_CORPORATE)
-                            {
-                                var corporateAccountBO = new CorporateAccountInformationBO();
-                                userDisplayName = corporateAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
-                            }
-                            else if (accountType == Constants.K_PARTNER_TRUST)
-                            {
-                                var trustAccountBO = new TrustAccountInformationBO();
-                                userDisplayName = trustAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
-                            }
-                            return true;
-                        }
-                    }
-
-                    return false;
                 }
             }
             catch(Exception ex)
@@ -164,6 +75,11 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method returns individual account details of IB
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <returns></returns>
         public IntroducingBroker GetIndividualAccountDetails(int userID)
         {
             try
@@ -216,34 +132,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// This Function Will return Joint Account Deatil
-        /// </summary>
-        /// <param name="emailID"></param>
-        /// <returns></returns>
-        public IntroducingBroker GetTrustAccountDetails(string emailID)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var introducingBrokerRepo =
-                           new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
-
-                    ObjectSet<IntroducingBroker> introducingBrokerObjSet =
-                      ((CurrentDeskClientsEntities)introducingBrokerRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
-
-                    return introducingBrokerObjSet.Where(x => x.UserEmail == emailID).
-                        Include("TrustAccountInformations").Include("BankAccountInformations").FirstOrDefault();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// This function gets joint account details for a particular user
         /// </summary>
         /// <param name="userID">userID</param>
@@ -273,7 +161,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
-       
+        /// <summary>
+        /// This method updates ind personal info of IB
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="phoneID">phoneID</param>
+        /// <returns></returns>
         public bool UpdateIndividualPersonalInformation(int userID, string phoneID)
         {
             try
@@ -304,6 +197,12 @@ namespace CurrentDesk.Repository.CurrentDesk
             }
         }
 
+        /// <summary>
+        /// This method updates ind contact info of IB
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="individualAccountInformation">individualAccountInformation</param>
+        /// <returns></returns>
         public bool UpdateIndividualContactInformation(int userID, IndividualAccountInformation individualAccountInformation)
         {
             try
@@ -655,7 +554,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="userID">userID</param>
         /// <param name="accountType">accountType</param>
+        /// <param name="accountCode">accountCode</param>
         /// <param name="userDisplayName">userDisplayName</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName, ref int organizationID)
         {
@@ -803,41 +704,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns false if referral link already exists
         /// </summary>
         /// <param name="referralLink">referralLink</param>
-        /// <returns></returns>
-        public bool CheckDuplicateReferralLink(string referralLink)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var ibRepo =
-                              new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
-
-                    ObjectSet<IntroducingBroker> ibObjSet =
-                      ((CurrentDeskClientsEntities)ibRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
-
-                    var linkExists = ibObjSet.Where(link => link.CustomizedLink == referralLink).ToList();
-                    if (linkExists.Count() > 0)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This method returns false if referral link already exists
-        /// </summary>
-        /// <param name="referralLink">referralLink</param>
         /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public bool CheckDuplicateReferralLink(string referralLink, int organizationID)
@@ -936,6 +802,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method brokerID based on referral keyword
         /// </summary>
         /// <param name="referralKeyword">referralKeyword</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public int GetBrokerIDFromReferralKeyword(string referralKeyword, int organizationID)
         {

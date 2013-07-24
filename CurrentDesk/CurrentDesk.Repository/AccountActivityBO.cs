@@ -28,6 +28,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="pkActivityID">pkActivityID</param>
         /// <param name="currID">currID</param>
         /// <param name="newAccType">newAccType</param>
+        /// <param name="pkClientAccID">pkClientAccID</param>
         public void InsertAccountActivityDetails(int pkActivityID, int currID, string newAccType, int? pkClientAccID)
         {
             try

@@ -22,39 +22,6 @@ namespace CurrentDesk.Repository.CurrentDesk
 		// expose your public method to a WCF service, marked them with
 		// the attribute [NCPublish], and another T4 template will generate your service contract
 
-        /// <summary>
-        /// This method returns exchange rate and broker spread
-        /// for a pair of currency
-        /// </summary>
-        /// <param name="fromCurrID">fromCurrID</param>
-        /// <param name="toCurrID">toCurrID</param>
-        /// <returns></returns>
-        public double? GetExchangeRates(int fromCurrID, int toCurrID)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var lExchangRateRepo =
-                            new L_BrokerExchangeRateRepository(new EFRepository<L_BrokerExchangeRate>(), unitOfWork);
-                    ObjectSet<L_BrokerExchangeRate> lExchangeRateObjSet =
-                       ((CurrentDeskClientsEntities)lExchangRateRepo.Repository.UnitOfWork.Context).L_BrokerExchangeRate;
-
-                    var exchangeRate = lExchangeRateObjSet.Where(rate => rate.FromCurrencyID == fromCurrID && rate.ToCurrencyID == toCurrID).FirstOrDefault();
-
-                    if (exchangeRate != null)
-                    {
-                        return exchangeRate.ClientExchangeRate;
-                    }
-                    return 0.0;
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-		
+        
 	}
 }

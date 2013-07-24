@@ -27,6 +27,8 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="userID">userID</param>
         /// <param name="status">status</param>
+        /// <param name="sortColName">sortColName</param>
+        /// <param name="sortOrder">sortOrder</param>
         /// <returns></returns>
         public List<InternalUserMessage> GetUserMessages(int userID, string status, string sortColName, string sortOrder)
         {
@@ -67,7 +69,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method sets method status to archive
         /// </summary>
-        /// <param name="pkMsgID">pkMsgID</param>
+        /// <param name="pkMsgIDs">pkMsgIDs</param>
         /// <returns></returns>
         public bool ArchiveSelectedMessage(string pkMsgIDs)
         {
@@ -112,7 +114,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method deletes selected messages
         /// </summary>
-        /// <param name="pkMsgID">pkMsgID</param>
+        /// <param name="pkMsgIDs">pkMsgIDs</param>
         /// <returns></returns>
         public bool DeleteSelectedMessage(string pkMsgIDs)
         {

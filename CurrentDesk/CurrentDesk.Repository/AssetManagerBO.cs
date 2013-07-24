@@ -16,30 +16,6 @@ namespace CurrentDesk.Repository.CurrentDesk
 {   
 	public class AssetManagerBO
 	{
-        /// <summary>
-        /// This function will insert Asset Manager details
-        /// </summary>
-        /// <returns></returns>
-        public void AddAssetManagerDetails(AssetManager newAM)
-        {
-
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var AMDetailsRepo =
-                        new AssetManagerRepository(new EFRepository<AssetManager>(), unitOfWork);
-
-                    AMDetailsRepo.Add(newAM);
-                    AMDetailsRepo.Save();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-		
+        
 	}
 }

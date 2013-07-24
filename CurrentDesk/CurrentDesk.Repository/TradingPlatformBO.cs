@@ -33,34 +33,10 @@ namespace CurrentDesk.Repository.CurrentDesk
 	public class TradingPlatformBO
 	{
         /// <summary>
-        /// This Function Will return all the selected Currency
+        /// This Function Will return all the selected platforms
         /// </summary>
-        /// <returns></returns>
-        public List<TradingPlatform> GetSelectedPlatform(int formID)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var tradingPlatformRepo =
-                        new TradingPlatformRepository(new EFRepository<TradingPlatform>(), unitOfWork);
-
-                    ObjectSet<TradingPlatform> tradingPlatformObjSet =
-                       ((CurrentDeskClientsEntities)tradingPlatformRepo.Repository.UnitOfWork.Context).TradingPlatforms;
-
-                    return  tradingPlatformObjSet.Where(tradPf => tradPf.FK_AccountFormTypeID == formID).Include("L_TradingPlatformValues").ToList();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function Will return all the selected Currency
-        /// </summary>
+        /// <param name="formID">formID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<TradingPlatform> GetSelectedPlatform(int formID, int organizationID)
         {

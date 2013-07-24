@@ -28,6 +28,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method inserts new profile activity record in db
         /// </summary>
         /// <param name="userID">userID</param>
+        /// <param name="activityType">activityType</param>
         /// <returns></returns>
         public int InsertUserActivityDetails(int userID, int activityType)
         {

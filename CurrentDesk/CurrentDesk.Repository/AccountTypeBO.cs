@@ -35,35 +35,10 @@ namespace CurrentDesk.Repository.CurrentDesk
 	{       
 
         /// <summary>
-        /// This Function Will return all the selected Currency
+        /// This Function Will return all account types
         /// </summary>
-        /// <returns></returns>
-        public List<AccountType> GetSelectedAccountType(int formType)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var accountCurrencyRepo =
-                        new AccountTypeRepository(new EFRepository<AccountType>(), unitOfWork);
-
-                    ObjectSet<AccountType> currencyObjSet =
-                       ((CurrentDeskClientsEntities)accountCurrencyRepo.Repository.UnitOfWork.Context).AccountTypes;
-
-
-                    return currencyObjSet.Where(accur => accur.FK_AccountFormType == formType).Include("L_AccountTypeValue").ToList();
-                }
-            }
-            catch(Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// This Function Will return all the selected Currency
-        /// </summary>
+        /// <param name="formType">formType</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<AccountType> GetSelectedAccountType(int formType, int organizationID)
         {

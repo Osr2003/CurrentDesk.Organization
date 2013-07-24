@@ -62,6 +62,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will return all the receiving banks
         /// </summary>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public List<L_RecievingBank> GetReceivingBankInfo(int organizationID)
         {
@@ -89,8 +90,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// 
+        /// This method returns receiving bank info value from ID
         /// </summary>
+        /// <param name="recievingBankInfoID">recievingBankInfoID</param>
         /// <returns></returns>
         public string GetSelectedRecievingBankInfo(int recievingBankInfoID)
         {
@@ -100,21 +102,8 @@ namespace CurrentDesk.Repository.CurrentDesk
                 var selectedBank = GetReceivingBankInfo().
                     Where(recBnk => recBnk.PK_RecievingBankID == recievingBankInfoID)
                     .Select(recBnk => recBnk.RecievingBankName).FirstOrDefault();
+                
                 return selectedBank;
-                //using (var unitOfWork = new EFUnitOfWork())
-                //{
-                //    var lReceivingBankRepo =
-                //        new L_RecievingBankRepository(new EFRepository<L_RecievingBank>(), unitOfWork);
-
-                //    //Creating annualIncome Objeset to Query
-                //    ObjectSet<L_RecievingBank> recievingBankObjSet =
-                //      ((CurrentDeskClientsEntities)lReceivingBankRepo.Repository.UnitOfWork.Context).L_RecievingBank;
-
-                //    //Returning list of receiving bank values
-                //    return recievingBankObjSet.Where(reBnk => reBnk.PK_RecievingBankID == recievingBankInfoID).
-                //        Select(reBnk => reBnk.RecievingBankName).SingleOrDefault();  
-
-                //}
             }
             catch (Exception ex)
             {

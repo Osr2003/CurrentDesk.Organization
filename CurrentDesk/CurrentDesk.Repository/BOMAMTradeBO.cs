@@ -111,7 +111,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// Update BOMAMOpen trades to closed trades
         /// </summary>
-        /// <param name="boMAMTradeList"></param>
+        /// <param name="boMAMTradeList">boMAMTradeList</param>
         public void UpdateBOMAMTrade(List<BOMAMTrade> boMAMTradeList)
         {
             try
@@ -256,7 +256,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// This Function Will rteturn the missing trades 
+        /// This Function Will return the missing trades 
         /// </summary>
         /// <param name="trade">trade</param>
         /// <param name="slavelist">slavelist</param>

@@ -70,20 +70,6 @@ namespace CurrentDesk.Repository.CurrentDesk
             {
                 return GetNetWorthEurosValues().Where(netWrt => netWrt.PK_WorthID == netWorthEurosID).
                         Select(netWrt => netWrt.Worth).SingleOrDefault();
-
-                //using (var unitOfWork = new EFUnitOfWork())
-                //{
-                //    var netWorthRepo =
-                //           new L_NetWorthEurosRepository(new EFRepository<L_NetWorthEuros>(), unitOfWork);
-
-                //    //Creating annualIncome Objeset to Query
-                //    ObjectSet<L_NetWorthEuros> netWorthObjSet =
-                //      ((CurrentDeskClientsEntities)netWorthRepo.Repository.UnitOfWork.Context).L_NetWorthEuros;
-
-                //    //Return the selected string
-                //    return netWorthObjSet.Where(netWrt => netWrt.PK_WorthID == netWorthEurosID).
-                //        Select(netWrt => netWrt.Worth).SingleOrDefault();
-                //}
             }
             catch(Exception ex)
             {

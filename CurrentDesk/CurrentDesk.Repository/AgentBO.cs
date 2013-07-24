@@ -26,6 +26,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method adds new agent information
         /// </summary>
         /// <param name="newAgent">newAgent</param>
+        /// <param name="introducingBrokerUserID">introducingBrokerUserID</param>
         /// <returns></returns>
         public bool AddNewAgent(Agent newAgent, int introducingBrokerUserID)
         {
