@@ -56,6 +56,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             return View();
         }
 
+        /// <summary>
+        /// This actions returns FundSourceManagement view
+        /// with required data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult FundingSourceManagement()
         {
             try
@@ -63,7 +68,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     FundingSourceModel model = new FundingSourceModel();
-                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo(), "PK_RecievingBankID", "RecievingBankName");
+                    ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
                     ViewData["SourceType"] = new SelectList(ExtensionUtility.GetAllSourceTypes(), "ID", "Value");
@@ -95,7 +100,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     List<FundingSourceDetail> lstFundingSources = new List<FundingSourceDetail>();
                     
                     //Get all funding sources
-                    var allFundSources = fundSourceBO.GetAllFundSources();
+                    var allFundSources = fundSourceBO.GetAllFundSources((int)SessionManagement.OrganizationID);
 
                     //Iterate through each source
                     foreach (var source in allFundSources)
@@ -189,6 +194,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     source.OutgoingWireFeeAmount = newFundSource.OutgoingWireFeeAmount;
                     source.FK_IncomingWireFeeCurrency = newFundSource.FK_IncomingWireFeeCurr;
                     source.FK_OutgoingWireFeeCurrency = newFundSource.FK_OutgoingWireFeeCurr;
+                    source.FK_OrganizationID = (int) SessionManagement.OrganizationID;
                     source.IsEnabled = false;
                     source.IsDeleted = false;
 

@@ -1394,10 +1394,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     string clientIds = String.Empty;
-                    
+
                     //Get all clients of IB
                     var ibClients = clientBO.GetAllClientsOfIB(loginInfo.UserID);
-                    
+
                     foreach (var client in ibClients)
                     {
                         clientIds += client.FK_UserID + ",";
@@ -1406,7 +1406,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all withdraw transactions of IB clients
                     var withdrawTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.OutgoingFunds);
+                                                                                   (int)
+                                                                                   AdminTransactionType.OutgoingFunds,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstWithdrawals = new List<DashboardTransactionModel>();
 
@@ -1418,23 +1421,23 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         withdrawal.AccountNumber = transaction.AccountNumber;
                         withdrawal.ClientName = transaction.ClientName;
-                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
-                        withdrawal.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        withdrawal.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(withdrawal);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstWithdrawals.Count,
-                        rows = lstWithdrawals
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstWithdrawals.Count,
+                            rows = lstWithdrawals
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = ""});
+                    return RedirectToAction("Login", "Account", new {Area = ""});
                 }
             }
             catch (Exception ex)
@@ -1469,7 +1472,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all deposit transactions of IB clients
                     var depositTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.IncomingFunds);
+                                                                                   (int)
+                                                                                   AdminTransactionType.IncomingFunds,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstWithdrawals = new List<DashboardTransactionModel>();
 
@@ -1481,23 +1487,23 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         deposit.AccountNumber = transaction.AccountNumber;
                         deposit.ClientName = transaction.ClientName;
-                        deposit.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
-                        deposit.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        deposit.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        deposit.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(deposit);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstWithdrawals.Count,
-                        rows = lstWithdrawals
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstWithdrawals.Count,
+                            rows = lstWithdrawals
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = "" });
+                    return RedirectToAction("Login", "Account", new {Area = ""});
                 }
             }
             catch (Exception ex)
@@ -1532,7 +1538,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all internal transactions of IB clients
                     var internalTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.InternalTransfers);
+                                                                                   (int)
+                                                                                   AdminTransactionType
+                                                                                       .InternalTransfers,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstInternalTransfers = new List<DashboardTransactionModel>();
 
@@ -1546,19 +1556,19 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         internalTran.ClientName = transaction.ClientName;
                         internalTran.ToAccount = transaction.ToAccountNumber;
                         internalTran.ToClientName = transaction.ToClientName;
-                        internalTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
-                        internalTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        internalTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        internalTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstInternalTransfers.Add(internalTran);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstInternalTransfers.Count,
-                        rows = lstInternalTransfers
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstInternalTransfers.Count,
+                            rows = lstInternalTransfers
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -1597,7 +1607,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get all conversion transactions of IB clients
                     var conversionTransactions =
                         adminTransactionBO.GetAllClientsTransactionOfParticulaType(clientIds.TrimEnd(','),
-                                                                                   (int)AdminTransactionType.ConversionsRequests);
+                                                                                   (int)
+                                                                                   AdminTransactionType
+                                                                                       .ConversionsRequests,
+                                                                                   (int)
+                                                                                   SessionManagement.OrganizationID);
 
                     var lstConversionTransfers = new List<DashboardTransactionModel>();
 
@@ -1611,24 +1625,24 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         convTran.ClientName = transaction.ClientName;
                         convTran.ToAccount = transaction.ToAccountNumber;
                         convTran.ToClientName = transaction.ToClientName;
-                        convTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
-                        convTran.ExchangeRate = (double)transaction.ExchangeRate;
+                        convTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
+                        convTran.ExchangeRate = (double) transaction.ExchangeRate;
                         convTran.ExchangedAmount =
                             Utility.FormatCurrencyValue(
                                 Math.Round(
                                     (decimal) (transaction.TransactionAmount*(decimal) transaction.ExchangeRate), 2), "");
-                        convTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
+                        convTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
 
                         lstConversionTransfers.Add(convTran);
                     }
 
                     return Json(new
-                    {
-                        total = 1,
-                        page = 1,
-                        records = lstConversionTransfers.Count,
-                        rows = lstConversionTransfers
-                    }, JsonRequestBehavior.AllowGet);
+                        {
+                            total = 1,
+                            page = 1,
+                            records = lstConversionTransfers.Count,
+                            rows = lstConversionTransfers
+                        }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {

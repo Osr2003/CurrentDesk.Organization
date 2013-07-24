@@ -1054,6 +1054,73 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method transfers funds between two trading accounts
+        /// </summary>
+        /// <param name="fromAcc">fromAcc</param>
+        /// <param name="toAcc">toAcc</param>
+        /// <param name="amount">amount</param>
+        /// <param name="fee">fee</param>
+        /// <param name="exchangeRate">exchangeRate</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool TransferUserFund(string fromAcc, string toAcc, double amount, double fee, double exchangeRate, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    var fromAccount = clientAccObjSet.Where(acc => acc.TradingAccount == fromAcc && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    if (fromAccount == null)
+                    {
+                        fromAccount = clientAccObjSet.Where(acc => acc.LandingAccount == fromAcc && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                    }
+
+                    //If balance is greater than transaction amount
+                    if (fromAccount.CurrentBalance >= Convert.ToDecimal(amount))
+                    {
+                        //Not a platform account
+                        if (fromAccount.PlatformLogin == null)
+                        {
+                            fromAccount.CurrentBalance = Math.Round((Convert.ToDecimal(fromAccount.CurrentBalance) - Convert.ToDecimal(amount + fee)), 2);
+                        }
+
+                        var toAccount = clientAccObjSet.Where(acc => acc.TradingAccount == toAcc && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                        if (toAccount == null)
+                        {
+                            toAccount = clientAccObjSet.Where(acc => acc.LandingAccount == toAcc && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+                        }
+
+                        //Not a platform account
+                        if (toAccount.PlatformLogin == null)
+                        {
+                            toAccount.CurrentBalance = Math.Round((Convert.ToDecimal(toAccount.CurrentBalance) + (Convert.ToDecimal(amount * exchangeRate))), 2);
+                        }
+
+                        clientAccRepo.Save();
+
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method inserts trading platform id and login value for corresponding
         /// trading account row in Client_Account table
         /// </summary>
@@ -1653,6 +1720,47 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This methods credits balance in client landing account
+        /// </summary>
+        /// <param name="lAccountNumber">lAccountNumber</param>
+        /// <param name="amount">amount</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool CreditLandingAccount(string lAccountNumber, decimal amount, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objeset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    //Get landing acc
+                    var account = clientAccObjSet.Where(acc => acc.LandingAccount == lAccountNumber && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
+
+                    //Update balance
+                    if (account != null)
+                    {
+                        account.CurrentBalance += amount;
+                        clientAccRepo.Save();
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// This methods debits balance of landing account
         /// </summary>
         /// <param name="lAccountNumber">lAccountNumber</param>
@@ -1673,6 +1781,50 @@ namespace CurrentDesk.Repository.CurrentDesk
 
                     //Get landing acc
                     var account = clientAccObjSet.Where(acc => acc.LandingAccount == lAccountNumber && acc.IsLandingAccount == true).FirstOrDefault();
+
+                    //Update balance
+                    if (account != null)
+                    {
+                        if (account.CurrentBalance >= amount)
+                        {
+                            account.CurrentBalance -= amount;
+                            clientAccRepo.Save();
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// This methods debits balance of landing account
+        /// </summary>
+        /// <param name="lAccountNumber">lAccountNumber</param>
+        /// <param name="amount">amount</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool DebitLandingAccount(string lAccountNumber, decimal amount, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objeset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    //Get landing acc
+                    var account = clientAccObjSet.Where(acc => acc.LandingAccount == lAccountNumber && acc.IsLandingAccount == true && acc.FK_OrganizationID == organizationID).FirstOrDefault();
 
                     //Update balance
                     if (account != null)
@@ -1723,6 +1875,47 @@ namespace CurrentDesk.Repository.CurrentDesk
                     else
                     {
                         acc = clientAccObjSet.Where(ac => ac.TradingAccount == accNumber).FirstOrDefault();
+                    }
+
+                    return acc != null ? (decimal)acc.CurrentBalance : 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This methods returns current balance of an account
+        /// </summary>
+        /// <param name="accNumber">accNumber</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public decimal GetAccountBalance(string accNumber, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientAccRepo =
+                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
+
+                    //Creating ClientAccount Objset to Query
+                    ObjectSet<Client_Account> clientAccObjSet =
+                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
+
+                    Client_Account acc;
+
+                    //If landing account
+                    if (accNumber.Split('-')[1] == "000")
+                    {
+                        acc = clientAccObjSet.Where(ac => ac.LandingAccount == accNumber && ac.IsLandingAccount == true && ac.FK_OrganizationID == organizationID).FirstOrDefault();
+                    }
+                    else
+                    {
+                        acc = clientAccObjSet.Where(ac => ac.TradingAccount == accNumber && ac.FK_OrganizationID == organizationID).FirstOrDefault();
                     }
 
                     return acc != null ? (decimal)acc.CurrentBalance : 0;

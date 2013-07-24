@@ -76,17 +76,19 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
                     //Get setting from database
-                    var incTransactionSett = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.IncomingFunds);
+                    var incTransactionSett = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.IncomingFunds, organizationID);
 
                     if (incTransactionSett != null)
                     {
                         ViewData["SettingCurrency"] = incTransactionSett.FK_CurrencyID;
                         ViewData["MinAmount"] = incTransactionSett.MinimumDepositAmount;
                     }
-                    ViewData["FundingSource"] = new SelectList(fundSourceBO.GetAllTransferFundSources(), "PK_FundingSourceID", "SourceName");
+                    ViewData["FundingSource"] = new SelectList(fundSourceBO.GetAllTransferFundSources(organizationID), "PK_FundingSourceID", "SourceName");
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
 
                     return View();
                 }
@@ -115,7 +117,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     List<TransactionModel> lstIncomingTransactions = new List<TransactionModel>();
 
                     //Get all incoming transactions
-                    var allIncomingRequests = adminTransactionBO.GetAllIncomingFundRequests();
+                    var allIncomingRequests = adminTransactionBO.GetAllIncomingFundRequests((int)SessionManagement.OrganizationID);
 
                     //Iterate through each incoming transaction
                     foreach (var request in allIncomingRequests)
@@ -197,6 +199,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, approveTransaction.ClientName))
@@ -208,13 +211,13 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         var transaction = adminTransactionBO.GetTransactionDetails(approveTransaction.PK_TransactionID);
 
                         //Entry in transaction table
-                        var pkTransactionID = transactionBO.FundDeposit(transaction.AccountNumber, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.Notes);
+                        var pkTransactionID = transactionBO.FundDeposit(transaction.AccountNumber, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.Notes, organizationID);
 
                         //Entry in transfer log table
-                        transferlogBO.AddTransferLogForFundDeposit(pkTransactionID, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.AccountNumber);
+                        transferlogBO.AddTransferLogForFundDeposit(pkTransactionID, (int)transaction.FK_CurrencyID, amountAfterDeduction, transaction.AccountNumber, organizationID);
 
                         //Credit amount to account and set IsApproved true
-                        if (clientAccBO.CreditLandingAccount(transaction.AccountNumber, amountAfterDeduction))
+                        if (clientAccBO.CreditLandingAccount(transaction.AccountNumber, amountAfterDeduction, organizationID))
                         {
                             //Set Approve in AdminTransaction table 
                             if (adminTransactionBO.ApproveIncomingTransaction(approveTransaction))
@@ -268,6 +271,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         transaction.Notes = newTransaction.Notes;
                         transaction.ClientName = newTransaction.ClientName;
                         transaction.FeeAmount = newTransaction.Fee;
+                        transaction.FK_OrganizationID = (int) SessionManagement.OrganizationID;
                         transaction.IsApproved = false;
                         transaction.IsDeleted = false;
 
@@ -310,6 +314,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         setting.FK_CurrencyID = currencyID;
                         setting.MinimumDepositAmount = minDepositAmt;
                         setting.FK_AdminTransactionTypeID = (int)AdminTransactionType.IncomingFunds;
+                        setting.FK_OrganizationID = (int) SessionManagement.OrganizationID;
 
                         //Add or update settings
                         return Json(new { status = transactionSettingBO.AddOrUpdateTransactionSetting(setting)});
@@ -343,7 +348,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker((int)SessionManagement.OrganizationID), "UserID", "DisplayName");
                     return View();
                 }
                 else
@@ -368,10 +373,12 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
+
                     List<TransactionModel> lstIncomingTransactions = new List<TransactionModel>();
 
                     //Get all outgoing transactions
-                    var allOutgoingRequests = adminTransactionBO.GetAllOutgoingFundRequests();
+                    var allOutgoingRequests = adminTransactionBO.GetAllOutgoingFundRequests(organizationID);
 
                     //Iterate through each outgoing transaction
                     foreach (var request in allOutgoingRequests)
@@ -379,7 +386,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         var sourceIds = fundSrcAccpCurrBO.GetAllTransferFundingSourceOfParticularCurrency((int)request.FK_CurrencyID);
                         
                         //Get all funding sources
-                        var allFundingSources = fundSourceBO.GetFundingSourcesFromIDs(sourceIds);
+                        var allFundingSources = fundSourceBO.GetFundingSourcesFromIDs(sourceIds, organizationID);
                         
                         var outTransaction = new TransactionModel();
                         outTransaction.TransactionDate = Convert.ToDateTime(request.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
@@ -511,6 +518,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, apprvOutTransaction.AdminPassword))
@@ -519,13 +527,13 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         var transaction = adminTransactionBO.GetTransactionDetails(apprvOutTransaction.PK_TransactionID);
 
                         //Get acc details
-                        var accDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber);
+                        var accDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber, organizationID);
 
                         //Check balance
                         if (accDetails != null && accDetails.CurrentBalance >= (apprvOutTransaction.TransactionAmount + apprvOutTransaction.FeeAmount))
                         {
                             //Debit amount from account, add logs and set IsApproved true
-                            if (clientAccBO.DebitLandingAccount(transaction.AccountNumber, apprvOutTransaction.TransactionAmount))
+                            if (clientAccBO.DebitLandingAccount(transaction.AccountNumber, apprvOutTransaction.TransactionAmount, organizationID))
                             {
                                 AdminTransaction outTransaction = new AdminTransaction();
                                 outTransaction.PK_TransactionID = apprvOutTransaction.PK_TransactionID;
@@ -535,10 +543,10 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 outTransaction.FK_FundingSourceID = apprvOutTransaction.FundSourceID;
 
                                 //Entry in transaction table
-                                var pkTransactionID = transactionBO.FundWithdraw(transaction.AccountNumber, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.Notes);
+                                var pkTransactionID = transactionBO.FundWithdraw(transaction.AccountNumber, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.Notes, organizationID);
 
                                 //Entry in transfer log table
-                                transferlogBO.AddTransferLogForFundWithdraw(pkTransactionID, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.AccountNumber);
+                                transferlogBO.AddTransferLogForFundWithdraw(pkTransactionID, (int)transaction.FK_CurrencyID, apprvOutTransaction.TransactionAmount, transaction.AccountNumber, organizationID);
 
                                 //Set approve in AdminTransaction table
                                 if (adminTransactionBO.ApproveOutgoingTransaction(outTransaction))
@@ -644,6 +652,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         transaction.FK_AdminTransactionTypeID = (int)AdminTransactionType.OutgoingFunds;
                         transaction.Notes = newOutTransaction.Notes;
                         transaction.ClientName = newOutTransaction.ClientName;
+                        transaction.FK_OrganizationID = (int) SessionManagement.OrganizationID;
                         transaction.IsApproved = false;
                         transaction.IsDeleted = false;
 
@@ -676,10 +685,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
                     InternalTransferModel model = new InternalTransferModel();
 
                     //Get settings from database
-                    var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.InternalTransfers);
+                    var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.InternalTransfers, organizationID);
 
                     if (settings != null)
                     {
@@ -693,7 +703,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
 
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
                     ViewData["Approval"] = new SelectList(ExtensionUtility.GetAllApprovalOptions(), "ID", "Value");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
 
                     return View(model);
                 }
@@ -737,6 +747,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         setting.InternalTransferLimitedAmount = limitedAmt;
                         setting.MarginRestriction = marginRestriction;
                         setting.FK_AdminTransactionTypeID = (int)AdminTransactionType.InternalTransfers;
+                        setting.FK_OrganizationID = (int) SessionManagement.OrganizationID;
 
                         //Add or update settings
                         return Json(new { status = transactionSettingBO.AddOrUpdateTransactionSetting(setting) });
@@ -771,7 +782,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     List<TransactionModel> lstInternalTransactions = new List<TransactionModel>();
 
                     //Get all incoming transactions
-                    var allInternalTransferRequests = adminTransactionBO.GetAllInternalTransferRequests();
+                    var allInternalTransferRequests = adminTransactionBO.GetAllInternalTransferRequests((int)SessionManagement.OrganizationID);
 
                     //Iterate through each internal transaction
                     foreach (var request in allInternalTransferRequests)
@@ -856,6 +867,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, approveTransaction.ClientName))
@@ -867,8 +879,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         var transaction = adminTransactionBO.GetTransactionDetails(approveTransaction.PK_TransactionID);
 
                         //From and to account details
-                        var fromAccDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber);
-                        var toAccDetails = clientAccBO.GetAnyAccountDetails(transaction.ToAccountNumber);
+                        var fromAccDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber, organizationID);
+                        var toAccDetails = clientAccBO.GetAnyAccountDetails(transaction.ToAccountNumber, organizationID);
 
                         if (transaction != null && fromAccDetails.CurrentBalance >= (approveTransaction.TransactionAmount + approveTransaction.FeeAmount))
                         {
@@ -892,22 +904,22 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             if (isToSucessful && isFromSucessful)
                             {
                                 //Do actual transfer of funds and set IsApproved true
-                                if (clientAccBO.TransferUserFund(transaction.AccountNumber, transaction.ToAccountNumber, (double)approveTransaction.TransactionAmount, (double)approveTransaction.FeeAmount, 1))
+                                if (clientAccBO.TransferUserFund(transaction.AccountNumber, transaction.ToAccountNumber, (double)approveTransaction.TransactionAmount, (double)approveTransaction.FeeAmount, 1, organizationID))
                                 {
                                     //Log in transaction table
-                                    var pkTransactionID = transactionBO.InternalFundTransfer(transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.TransactionAmount, 1, approveTransaction.Notes);
+                                    var pkTransactionID = transactionBO.InternalFundTransfer(transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.TransactionAmount, 1, approveTransaction.Notes, organizationID);
 
                                     //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
-                                    transferLogBO.AddTransferLogForTransaction(pkTransactionID, transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.TransactionAmount, 1);
+                                    transferLogBO.AddTransferLogForTransaction(pkTransactionID, transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.TransactionAmount, 1, organizationID);
 
                                     //Log fee transfer if fee > 0
                                     if (approveTransaction.FeeAmount != 0)
                                     {
                                         //Log fee deduction in transaction table
-                                        var pkFeeTransactionID = transactionBO.InternalFeeTransaction(transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.FeeAmount);
+                                        var pkFeeTransactionID = transactionBO.InternalFeeTransaction(transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.FeeAmount, organizationID);
 
                                         //Logs fee transfers details in TransferLogs table
-                                        transferLogBO.AddTransferLogForFee(pkFeeTransactionID, transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.FeeAmount);
+                                        transferLogBO.AddTransferLogForFee(pkFeeTransactionID, transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)approveTransaction.FeeAmount, organizationID);
                                     }
 
                                     //Set status to Approve
@@ -976,13 +988,14 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, newTransfer.AdminPassword))
                     {
                         //Get balance for accounts
-                        decimal accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount);
-                        decimal pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount);
+                        decimal accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount, organizationID);
+                        decimal pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount, organizationID);
                         
                         //Check balance
                         if (accBalance >= newTransfer.TransactionAmount)
@@ -1004,6 +1017,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 newIntTransac.ToAccountNumber = newTransfer.ToClientAccount;
                                 newIntTransac.ToClientName = newTransfer.ToClientName;
                                 newIntTransac.FK_ToUserID = newTransfer.ToClientUserID;
+                                newIntTransac.FK_OrganizationID = organizationID;
                                 newIntTransac.IsApproved = false;
                                 newIntTransac.IsDeleted = false;
 
@@ -1108,10 +1122,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    var organizationID = (int) SessionManagement.OrganizationID;
                     InternalTransferModel model = new InternalTransferModel();
 
                     //Get settings from database
-                    var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests);
+                    var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests, organizationID);
 
                     if (settings != null)
                     {
@@ -1127,7 +1142,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
 
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
                     ViewData["Approval"] = new SelectList(ExtensionUtility.GetAllApprovalOptions(), "ID", "Value");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
 
                     return View(model);
                 }
@@ -1175,6 +1190,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         setting.ConversionMarkupValue = convMarkupValue;
                         setting.MarginRestriction = marginRestriction;
                         setting.FK_AdminTransactionTypeID = (int)AdminTransactionType.ConversionsRequests;
+                        setting.FK_OrganizationID = (int) SessionManagement.OrganizationID;
 
                         //Add or update settings
                         return Json(new { status = transactionSettingBO.AddOrUpdateTransactionSetting(setting) });
@@ -1209,7 +1225,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     List<TransactionModel> lstInternalTransactions = new List<TransactionModel>();
 
                     //Get all incoming transactions
-                    var allConversionRequests = adminTransactionBO.GetAllConversionRequests();
+                    var allConversionRequests = adminTransactionBO.GetAllConversionRequests((int)SessionManagement.OrganizationID);
 
                     //Iterate through each internal transaction
                     foreach (var request in allConversionRequests)
@@ -1302,6 +1318,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, convTransaction.ClientName))
@@ -1313,8 +1330,8 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                         var transaction = adminTransactionBO.GetTransactionDetails(convTransaction.PK_TransactionID);
 
                         //From and to account details
-                        var fromAccDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber);
-                        var toAccDetails = clientAccBO.GetAnyAccountDetails(transaction.ToAccountNumber);
+                        var fromAccDetails = clientAccBO.GetAnyAccountDetails(transaction.AccountNumber, organizationID);
+                        var toAccDetails = clientAccBO.GetAnyAccountDetails(transaction.ToAccountNumber, organizationID);
 
                         if (transaction != null && fromAccDetails.CurrentBalance >= (convTransaction.TransactionAmount + convTransaction.FeeAmount))
                         {
@@ -1338,22 +1355,22 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                             if (isToSucessful && isFromSucessful)
                             {
                                 //Do actual transfer of funds and set IsApproved true
-                                if (clientAccBO.TransferUserFund(transaction.AccountNumber, transaction.ToAccountNumber, (double)convTransaction.TransactionAmount, (double)convTransaction.FeeAmount, (double)transaction.ExchangeRate))
+                                if (clientAccBO.TransferUserFund(transaction.AccountNumber, transaction.ToAccountNumber, (double)convTransaction.TransactionAmount, (double)convTransaction.FeeAmount, (double)transaction.ExchangeRate, organizationID))
                                 {
                                     //Log in transaction table
-                                    var pkTransactionId = transactionBO.InternalFundTransfer(transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.TransactionAmount, (double)transaction.ExchangeRate, convTransaction.Notes);
+                                    var pkTransactionId = transactionBO.InternalFundTransfer(transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.TransactionAmount, (double)transaction.ExchangeRate, convTransaction.Notes, organizationID);
 
                                     //Logs fund transfers details(Withdrawal/Deposit) in TransferLogs table
-                                    transferLogBO.AddTransferLogForTransaction(pkTransactionId, transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.TransactionAmount, (double)transaction.ExchangeRate);
+                                    transferLogBO.AddTransferLogForTransaction(pkTransactionId, transaction.AccountNumber, transaction.ToAccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.TransactionAmount, (double)transaction.ExchangeRate, organizationID);
 
                                     //Log fee transfer if fee > 0
                                     if (convTransaction.FeeAmount != 0)
                                     {
                                         //Log fee deduction in transaction table
-                                        var pkFeeTransactionId = transactionBO.InternalFeeTransaction(transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.FeeAmount);
+                                        var pkFeeTransactionId = transactionBO.InternalFeeTransaction(transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.FeeAmount, organizationID);
 
                                         //Logs fee transfers details in TransferLogs table
-                                        transferLogBO.AddTransferLogForFee(pkFeeTransactionId, transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.FeeAmount);
+                                        transferLogBO.AddTransferLogForFee(pkFeeTransactionId, transaction.AccountNumber, (int)transaction.FK_CurrencyID, (int)transaction.FK_CurrencyID, (double)convTransaction.FeeAmount, organizationID);
                                     }
 
                                     //Set status Approve
@@ -1439,63 +1456,66 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
         {
             try
             {
-                bool inverse = false;
-                decimal exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
-
-                var settings = transactionSettingBO.GetTransactionSetting((int)AdminTransactionType.ConversionsRequests);
-
-                //If settings not null
-                if (settings != null)
+                if (SessionManagement.UserInfo != null)
                 {
-                    int markupType = (int)settings.ConversionMarkupType;
-                    decimal markup = (decimal)settings.ConversionMarkupValue;
+                    bool inverse = false;
+                    decimal exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
 
-                    //Markup in percentage
-                    if (markupType == (int)ConversionMarkupType.Percentage)
+                    var settings =
+                        transactionSettingBO.GetTransactionSetting((int) AdminTransactionType.ConversionsRequests, (int)SessionManagement.OrganizationID);
+
+                    //If settings not null
+                    if (settings != null)
                     {
-                        //Inverse calculation
-                        if (inverse)
+                        int markupType = (int) settings.ConversionMarkupType;
+                        decimal markup = (decimal) settings.ConversionMarkupValue;
+
+                        //Markup in percentage
+                        if (markupType == (int) ConversionMarkupType.Percentage)
                         {
-                            exchangeRate = Math.Round((1 / (exchangeRate + (exchangeRate * markup / 100))), 5);
-                        }
-                        else
-                        {
-                            exchangeRate = exchangeRate - (exchangeRate * markup / 100);
-                        }
-                        return exchangeRate;
-                    }
-                    //Markup in points
-                    else if (markupType == (int)ConversionMarkupType.Points)
-                    {
-                        //Inverse calculation
-                        if (inverse)
-                        {
-                            //JPY currency logic
-                            if (fromCurr == "JPY" || toCurr == "JPY")
+                            //Inverse calculation
+                            if (inverse)
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * JpyPointMultiplier))), 5);
+                                exchangeRate = Math.Round((1/(exchangeRate + (exchangeRate*markup/100))), 5);
                             }
                             else
                             {
-                                exchangeRate = Math.Round((1 / (exchangeRate + (markup * PointMultiplier))), 5);
+                                exchangeRate = exchangeRate - (exchangeRate*markup/100);
                             }
+                            return exchangeRate;
                         }
-                        else
+                            //Markup in points
+                        else if (markupType == (int) ConversionMarkupType.Points)
                         {
-                            //JPY currency logic
-                            if (fromCurr == "JPY" || toCurr == "JPY")
+                            //Inverse calculation
+                            if (inverse)
                             {
-                                exchangeRate = exchangeRate - (markup * JpyPointMultiplier);
+                                //JPY currency logic
+                                if (fromCurr == "JPY" || toCurr == "JPY")
+                                {
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*JpyPointMultiplier))), 5);
+                                }
+                                else
+                                {
+                                    exchangeRate = Math.Round((1/(exchangeRate + (markup*PointMultiplier))), 5);
+                                }
                             }
                             else
                             {
-                                exchangeRate = exchangeRate - (markup * PointMultiplier);
+                                //JPY currency logic
+                                if (fromCurr == "JPY" || toCurr == "JPY")
+                                {
+                                    exchangeRate = exchangeRate - (markup*JpyPointMultiplier);
+                                }
+                                else
+                                {
+                                    exchangeRate = exchangeRate - (markup*PointMultiplier);
+                                }
                             }
+                            return exchangeRate;
                         }
-                        return exchangeRate;
                     }
                 }
-
                 return 0;
             }
             catch (Exception ex)
@@ -1517,13 +1537,14 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Validate admin password
                     if (LoginVerification.ValidateUser(loginInfo.UserEmail, newTransfer.AdminPassword))
                     {
                         //Get balance for accounts
-                        decimal accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount);
-                        decimal pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount);
+                        decimal accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount, organizationID);
+                        decimal pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount, organizationID);
 
                         //Check balance
                         if (accBalance >= newTransfer.TransactionAmount)
@@ -1547,6 +1568,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                                 newConvTransac.ToClientName = newTransfer.ToClientName;
                                 newConvTransac.FK_ToUserID = newTransfer.ToClientUserID;
                                 newConvTransac.ExchangeRate = newTransfer.ExchangeRate;
+                                newConvTransac.FK_OrganizationID = organizationID;
                                 newConvTransac.IsApproved = false;
                                 newConvTransac.IsDeleted = false;
 

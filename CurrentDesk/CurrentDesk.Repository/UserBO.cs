@@ -94,6 +94,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                              else if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_ADMIN)
                              {
                                  accountCode = Constants.K_ACCTCODE_SUPERADMIN;
+                                 organizationID = selectedUsers.FK_OrganizationID;
                                  return true;
                              }
                          }
@@ -195,6 +196,49 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var liveClients = clientBO.GetClientNames(allClients);
                     var partnerClients = introducingBrokerBO.GetPartnerNames(allClients);
                     
+                    //Merger both and add to list
+                    lstAllClients.AddRange(liveClients);
+                    lstAllClients.AddRange(partnerClients);
+
+                    //Return list of clients
+                    return lstAllClients;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This method returns all clients of broker with name and account number
+        /// </summary>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public List<BrokerClients> GetAllClientsOfBroker(int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    List<BrokerClients> lstAllClients = new List<BrokerClients>();
+                    ClientBO clientBO = new ClientBO();
+                    IntroducingBrokerBO introducingBrokerBO = new IntroducingBrokerBO();
+
+                    var userRepo =
+                          new UserRepository(new EFRepository<User>(), unitOfWork);
+
+                    ObjectSet<User> userObjSet =
+                      ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
+
+                    //Get all live and partner clients
+                    var allClients = userObjSet.Where(usr => usr.FK_OrganizationID == organizationID && (usr.FK_UserTypeID == Constants.K_BROKER_LIVE || usr.FK_UserTypeID == Constants.K_BROKER_PARTNER)).ToList();
+
+                    //Get live and partner clients names with a/c numbers
+                    var liveClients = clientBO.GetClientNames(allClients);
+                    var partnerClients = introducingBrokerBO.GetPartnerNames(allClients);
+
                     //Merger both and add to list
                     lstAllClients.AddRange(liveClients);
                     lstAllClients.AddRange(partnerClients);
