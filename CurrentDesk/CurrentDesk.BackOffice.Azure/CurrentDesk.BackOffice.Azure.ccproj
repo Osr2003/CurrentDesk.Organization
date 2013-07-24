@@ -47,16 +47,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CurrentDesk.CacheRoleContent\" />
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\CurrentDeskBackOfficeProduction.azurePubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CurrentDesk.CacheRoleContent\diagnostics.wadcfg">
-      <SubType>Content</SubType>
-    </Content>
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

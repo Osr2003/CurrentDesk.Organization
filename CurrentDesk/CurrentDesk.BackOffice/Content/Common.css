@@ -287,6 +287,8 @@ mark {background-color: #fcd700; color: #000; font-style: italic; font-weight: b
 
 /*input:disabled {opacity:.3 !important; cursor:default !important;}*/
 
+.success {color:green !important;}
+
 .required,
 .error {color:#8e0000 !important;}
 span.error {display:inline-block;}
