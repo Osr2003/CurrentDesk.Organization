@@ -305,6 +305,7 @@
     <Compile Include="Security\LoginInformation.cs" />
     <Compile Include="Security\LoginVerification.cs" />
     <Compile Include="Security\SessionManagement.cs" />
+    <Compile Include="Utilities\OrganizationUtility.cs" />
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>

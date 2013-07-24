@@ -21,6 +21,7 @@ using CurrentDesk.Repository.CurrentDesk;
 using CurrentDesk.BackOffice.Security;
 using CurrentDesk.BackOffice.Models.Error;
 using CurrentDesk.Logging;
+using CurrentDesk.BackOffice.Utilities;
 #endregion
 
 namespace CurrentDesk.BackOffice.Controllers
@@ -80,11 +81,13 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                var organizationBO = new OrganizationBO();
-                var browserUrl = Request.Url.AbsoluteUri;
+                //var organizationBO = new OrganizationBO();
+                //var browserUrl = Request.Url.AbsoluteUri;
 
-                //browserUrl = "http://lmax.com"; //TODO Need to change with URL
-                var organizationID = organizationBO.GetOrganizationIDFromURL(browserUrl);
+                ////browserUrl = "http://lmax.com"; //TODO Need to change with URL
+                //var organizationID = organizationBO.GetOrganizationIDFromURL(browserUrl);
+
+                var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
 
                 if (organizationID != null)
                 {
@@ -92,13 +95,13 @@ namespace CurrentDesk.BackOffice.Controllers
                     SessionManagement.OrganizationID = organizationID;
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
-                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(1, (int)organizationID),
+                    ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_DEMO, (int)organizationID),
                                                                  "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
-                    ViewData["AccountType"] = new SelectList(accountTypeBO.GetSelectedAccountType(1, (int)organizationID), "PK_AccountType",
+                    ViewData["AccountType"] = new SelectList(accountTypeBO.GetSelectedAccountType(Constants.K_BROKER_DEMO, (int)organizationID), "PK_AccountType",
                                                              "L_AccountTypeValue.AccountTypeValues");
                     ViewData["Initialinvestment"] = new SelectList(initialInvestmentBO.GetInitialInvestment(),
                                                                    "PK_InitialInvestmentID", "InvestmentValue");
-                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(1, (int)organizationID),
+                    ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_DEMO, (int)organizationID),
                                                                  "PK_TradingPlatformID",
                                                                  "L_TradingPlatformValues.TradingValue");
                     ViewData["TicketSize"] = new SelectList(ticketSizeBO.GetTickets(), "PK_TicketSizeID",
@@ -221,11 +224,13 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                var OrganizationBO = new OrganizationBO();
-                var browserUrl = Request.Url.AbsoluteUri;
+                //var OrganizationBO = new OrganizationBO();
+                //var browserUrl = Request.Url.AbsoluteUri;
 
-                //browserUrl = "http://lmax.com"; //TODO Need to change with URL
-                var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
+                ////browserUrl = "http://lmax.com"; //TODO Need to change with URL
+                //var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
+
+                var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
 
                 if (organizationID != null)
                 {
@@ -399,7 +404,8 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
                 else
                 {
-                    return View("ErrorMessage");
+                    //return View("ErrorMessage");
+                    return RedirectToAction("PageNotFound", "Error");
                 }
             }
             catch (Exception ex)
@@ -1736,11 +1742,13 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                var OrganizationBO = new OrganizationBO();
-                var browserUrl = Request.Url.AbsoluteUri;
+                //var OrganizationBO = new OrganizationBO();
+                //var browserUrl = Request.Url.AbsoluteUri;
 
-                //browserUrl = "http://fqsecurities.com"; //TODO Need to change with URL
-                var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
+                ////browserUrl = "http://fqsecurities.com"; //TODO Need to change with URL
+                //var organizationID = OrganizationBO.GetOrganizationIDFromURL(browserUrl);
+
+                var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
 
                 if (organizationID != null)
                 {
@@ -1770,7 +1778,8 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
                 else
                 {
-                    return View("ErrorMessage");
+                    //return View("ErrorMessage");
+                    return RedirectToAction("PageNotFound", "Error");
                 }
             }
             catch(Exception ex)

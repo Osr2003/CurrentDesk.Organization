@@ -710,6 +710,64 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method returns Introducing Broker details
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="accountType">accountType</param>
+        /// <param name="userDisplayName">userDisplayName</param>
+        /// <returns></returns>
+        public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var ibRepo =
+                              new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
+
+                    ObjectSet<IntroducingBroker> ibObjSet =
+                      ((CurrentDeskClientsEntities)ibRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
+
+                    var selectedClient = ibObjSet.Where(usr => usr.FK_UserID == userID).FirstOrDefault();
+
+                    if (selectedClient != null)
+                    {
+                        accountType = (int)selectedClient.FK_AccountTypeID;
+                        accountCode = (int)selectedClient.FK_AccountID;                       
+
+                        if (accountType == Constants.K_PARTNER_INDIVIDUAL)
+                        {
+                            var individualAccountBO = new IndividualAccountInformationBO();
+                            userDisplayName = individualAccountBO.GetLiveIndividualName(selectedClient.PK_IntroducingBrokerID, LoginAccountType.PartnerAccount);
+                        }
+                        else if (accountType == Constants.K_PARTNER_JOINT)
+                        {
+                            var jointAccountBO = new JointAccountInformationBO();
+                            userDisplayName = jointAccountBO.GetLiveIndividualName(selectedClient.PK_IntroducingBrokerID, LoginAccountType.PartnerAccount);
+                        }
+                        else if (accountType == Constants.K_PARTNER_CORPORATE)
+                        {
+                            var corporateAccountBO = new CorporateAccountInformationBO();
+                            userDisplayName = corporateAccountBO.GetLiveIndividualName(selectedClient.PK_IntroducingBrokerID, LoginAccountType.PartnerAccount);
+                        }
+                        else if (accountType == Constants.K_PARTNER_TRUST)
+                        {
+                            var trustAccountBO = new TrustAccountInformationBO();
+                            userDisplayName = trustAccountBO.GetLiveIndividualName(selectedClient.PK_IntroducingBrokerID, LoginAccountType.PartnerAccount);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method returns customized link of IB
         /// </summary>
         /// <param name="userID">userID</param>

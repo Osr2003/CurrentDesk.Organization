@@ -12,8 +12,10 @@
 #region Namespace Used
 using CurrentDesk.BackOffice.Models;
 using CurrentDesk.BackOffice.Security;
+using CurrentDesk.BackOffice.Utilities;
 using CurrentDesk.Common;
 using CurrentDesk.Logging;
+using CurrentDesk.Repository.CurrentDesk;
 using System;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -63,8 +65,17 @@ namespace CurrentDesk.BackOffice.Controllers
                     }
                 }
 
-                ViewBag.ReturnUrl = returnUrl;
-                return View();
+                //Check for the existing organization from the URL
+                if (OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri) != null)
+                {
+                    ViewBag.ReturnUrl = returnUrl;
+                    return View();
+                }
+                else
+                {
+                    //Redirect it to page not found.
+                    return RedirectToAction("PageNotFound", "Error");
+                }
             }
             catch (Exception ex)
             {
@@ -84,10 +95,13 @@ namespace CurrentDesk.BackOffice.Controllers
         public ActionResult Login(LoginModel model, string returnUrl)
         {
             try
-            {
-                if (ModelState.IsValid)
+            {               
+                
+                var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
+
+                if (ModelState.IsValid && organizationID != null)
                 {
-                    if (LoginVerification.ValidateUser(model.UserName, model.Password))
+                    if (LoginVerification.ValidateUser(model.UserName, model.Password, (int)organizationID))
                     {
                         FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
                         if (SessionManagement.UserInfo.LogAccountType == LoginAccountType.LiveAccount)

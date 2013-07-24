@@ -309,7 +309,7 @@
             }, 5000);
 
             $("#tblInbox").jqGrid({
-                url: 'Inbox/GetUserMessages?status=inbox',
+                url: 'GetUserMessages?status=inbox',
                 jsonReader: {
                     root: "rows",
                     page: "page",
@@ -452,7 +452,7 @@
             $('a[href="#archive"]').on('shown', function (e) {
                 e.target
                 $("#tblArchive").jqGrid({
-                    url: 'Inbox/GetUserMessages?status=archive',
+                    url: 'GetUserMessages?status=archive',
                     jsonReader: {
                         root: "rows",
                         page: "page",
