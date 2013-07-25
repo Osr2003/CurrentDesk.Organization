@@ -606,6 +606,64 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method fetches Client information for different account types
+        /// </summary>
+        /// <param name="userID">userID</param>
+        /// <param name="accountType">accountType</param>
+        /// <param name="userDisplayName">userDisplayName</param>
+        /// <returns></returns>
+        public bool GetClientAccountInformation(int userID, ref int accountType, ref int accountCode, ref string userDisplayName)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var clientRepo =
+                              new ClientRepository(new EFRepository<Client>(), unitOfWork);
+
+                    ObjectSet<Client> clientObjSet =
+                      ((CurrentDeskClientsEntities)clientRepo.Repository.UnitOfWork.Context).Clients;
+
+                    var selectedClient = clientObjSet.Where(usr => usr.FK_UserID == userID).FirstOrDefault();
+
+                    if (selectedClient != null)
+                    {
+                        accountType = (int)selectedClient.FK_AccountTypeID;
+                        accountCode = (int)selectedClient.FK_AccountID;
+
+                        if (accountType == Constants.K_LIVE_INDIVIDUAL)
+                        {
+                            var individualAccountBO = new IndividualAccountInformationBO();
+                            userDisplayName = individualAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
+                        }
+                        else if (accountType == Constants.K_LIVE_JOINT)
+                        {
+                            var jointAccountBO = new JointAccountInformationBO();
+                            userDisplayName = jointAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
+                        }
+                        else if (accountType == Constants.K_LIVE_CORPORATE)
+                        {
+                            var corporateAccountBO = new CorporateAccountInformationBO();
+                            userDisplayName = corporateAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
+                        }
+                        else if (accountType == Constants.K_LIVE_TRUST)
+                        {
+                            var trustAccountBO = new TrustAccountInformationBO();
+                            userDisplayName = trustAccountBO.GetLiveIndividualName(selectedClient.PK_ClientID, LoginAccountType.LiveAccount);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method returns all clients that are under an IB
         /// </summary>
         /// <param name="userID">userID</param>

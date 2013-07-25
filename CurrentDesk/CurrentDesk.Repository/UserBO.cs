@@ -113,6 +113,71 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method validates user during login
+        /// </summary>
+        /// <param name="userName">userName</param>
+        /// <param name="password">password</param>
+        /// <param name="userID">userID</param>
+        /// <param name="userType">userType</param>
+        /// <param name="accountType">accountType</param>
+        /// <param name="accountCode">accountCode</param>
+        /// <param name="userDisplayName">userDisplayName</param>
+        /// <returns></returns>
+        public bool ValidateUser(string userName, string password, int organizationID, ref int userID, ref int userType, 
+                                ref int accountType, ref int accountCode, ref string userDisplayName)
+        {
+            var currentDeskSecurity = new CurrentDeskSecurity();
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var userRepo =
+                     new UserRepository(new EFRepository<User>(), unitOfWork);
+
+                    ObjectSet<User> userObjSet =
+                    ((CurrentDeskClientsEntities)userRepo.Repository.UnitOfWork.Context).Users;
+
+                    //Get The Selected client and check for the 
+                    //organization and than assign its Properties.
+                    var selectedUsers =
+                        userObjSet.Where(usr => usr.UserEmailID == userName && usr.FK_OrganizationID == organizationID).FirstOrDefault();
+
+                    if (selectedUsers != null)
+                    {
+                        if (currentDeskSecurity.GetPassDecrypted(selectedUsers.Password) == password)
+                        {
+                            userID = selectedUsers.PK_UserID;
+                            userType = (int)selectedUsers.FK_UserTypeID;
+
+                            if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_LIVE)
+                            {
+                                var clientBO = new ClientBO();
+                                return clientBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName);
+                            }
+                            else if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_PARTNER)
+                            {
+                                var introducingBrokerBO = new IntroducingBrokerBO();
+                                return introducingBrokerBO.GetClientAccountInformation(selectedUsers.PK_UserID, ref accountType, ref accountCode, ref userDisplayName);
+                            }
+                            else if (selectedUsers.FK_UserTypeID == Constants.K_BROKER_ADMIN)
+                            {
+                                accountCode = Constants.K_ACCTCODE_SUPERADMIN;                                
+                                return true;
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method returns true if passed emailID exists in Users table
         /// </summary>
         /// <param name="emailID">emailID</param>
