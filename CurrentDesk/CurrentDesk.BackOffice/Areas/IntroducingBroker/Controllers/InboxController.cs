@@ -72,18 +72,18 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<InboxModel> lstMessages = new List<InboxModel>();
+                    var lstMessages = new List<InboxModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    string sortColName = System.Web.HttpContext.Current.Request["sidx"];
-                    string sortOrder = System.Web.HttpContext.Current.Request["sord"];
+                    var sortColName = System.Web.HttpContext.Current.Request["sidx"];
+                    var sortOrder = System.Web.HttpContext.Current.Request["sord"];
 
                     //Get all messages of user as per status
                     var userMsgs = intUsrMsgBO.GetUserMessages(loginInfo.UserID, status, sortColName, sortOrder);
 
                     foreach (var msg in userMsgs)
                     {
-                        InboxModel userMsg = new InboxModel();
+                        var userMsg = new InboxModel();
                         userMsg.PK_MessageID = msg.PK_MessageID;
                         userMsg.MessageSubject = msg.MessageSubject;
                         userMsg.MessageBody = msg.MessageContent;

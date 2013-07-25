@@ -99,7 +99,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
+                    var lstDocument = new List<ClientDocumentModel>();
 
                     //Get docs required for that account type
                     var reqDocs = r_UserDocumentBO.GetAllDocumentsOfAccountType(loginInfo.AccountType);
@@ -107,7 +107,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     //Iterate through each doc type
                     foreach (var doc in reqDocs)
                     {
-                        ClientDocumentModel document = new ClientDocumentModel();
+                        var document = new ClientDocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -156,7 +156,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
+                    var lstDocument = new List<ClientDocumentModel>();
 
                     //Get broker forms required for that account type
                     var reqBrokerForms = r_UserDocumentBO.GetAllBrokerFormsOfAccountType(loginInfo.AccountType);
@@ -164,7 +164,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     //Iterate through each broker form
                     foreach (var doc in reqBrokerForms)
                     {
-                        ClientDocumentModel document = new ClientDocumentModel();
+                        var document = new ClientDocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -202,9 +202,9 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             try
             {
                 //Get extension of the file
-                string ext = Path.GetExtension(fileName).ToLower();
+                var ext = Path.GetExtension(fileName).ToLower();
 
-                FileInfo file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
+                var file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
 
                 Response.Clear();
                 Response.ClearHeaders();
@@ -230,9 +230,9 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         private string GetContentType(string fileName)
         {
 
-            string contentType = "application/octetstream";
+            var contentType = "application/octetstream";
 
-            string ext = Path.GetExtension(fileName).ToLower();
+            var ext = Path.GetExtension(fileName).ToLower();
 
             Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
 
@@ -305,14 +305,14 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
                     //Get file name from database
-                    string fileName = userDocumentBO.GetUploadedDocumentName(loginInfo.UserID, docID);
+                    var fileName = userDocumentBO.GetUploadedDocumentName(loginInfo.UserID, docID);
 
                     if (fileName != String.Empty)
                     {
                         //Get file extension
-                        string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+                        var fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
-                        FileInfo file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
+                        var file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
 
                         Response.Clear();
                         Response.ClearHeaders();
@@ -345,8 +345,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    string fileName = userDocumentBO.ClearUserDocument(loginInfo.UserID, docID);
-                    string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+                    var fileName = userDocumentBO.ClearUserDocument(loginInfo.UserID, docID);
+                    var fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
                     if (fileName != String.Empty)
                     {

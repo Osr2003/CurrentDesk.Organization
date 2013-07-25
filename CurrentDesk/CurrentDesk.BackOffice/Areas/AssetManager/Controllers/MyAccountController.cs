@@ -61,12 +61,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID).TrimEnd('/').Split('/');
 
-                    ClientAccountsModel currModel = new ClientAccountsModel();
+                    var currModel = new ClientAccountsModel();
                     currModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
 
                     foreach (var curr in currencyIds)
                     {
-                        MyAccountCurrencyModel model = new MyAccountCurrencyModel();
+                        var model = new MyAccountCurrencyModel();
                         var landingAccDetails = clientAccBo.GetLandingAccountForCurrencyOfUser(loginInfo.LogAccountType, loginInfo.UserID, Convert.ToInt32(curr));
                         model.CurrencyID = curr;
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
@@ -103,11 +103,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 LoginInformation loginInfo = SessionManagement.UserInfo;
                 var tradingAccs = clientAccBo.GetAllTradingAccountsForCurrency(loginInfo.LogAccountType, loginInfo.UserID, Convert.ToInt32(currencyID));
 
-                List<CurrencyAccountModel> tradingAccList = new List<CurrencyAccountModel>();
+                var tradingAccList = new List<CurrencyAccountModel>();
 
                 foreach (var acc in tradingAccs)
                 {
-                    CurrencyAccountModel accModel = new CurrencyAccountModel();
+                    var accModel = new CurrencyAccountModel();
                     
                     //If account name is available
                     if (acc.AccountName != null)
@@ -174,7 +174,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -227,7 +227,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -245,7 +245,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    AccountDetailsModel model = new AccountDetailsModel();
+                    var model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
 
                     var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
@@ -254,7 +254,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     //Iterate through all transactions
                     foreach (var tran in latestTransactions)
                     {
-                        TransferLogDetails log = new TransferLogDetails();
+                        var log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
                         log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
@@ -323,7 +323,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
                     model.AccountNumber = accountNumber;
@@ -332,7 +332,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var userBankInfos = bankBO.GetAllBankInfosForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankID = bank.PK_BankAccountInformationID;
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
@@ -343,7 +343,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var landingAccs = clientAccBo.GetAllLandingAccountForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
@@ -379,7 +379,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.TradingAccInformation = new List<TradingAccountGrouped>();
                     model.AccountNumber = accountNumber;
 
@@ -429,14 +429,14 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    AccountDetailsModel model = new AccountDetailsModel();
+                    var model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
                     var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
                     var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber, organizationID);
 
                     foreach (var tran in latestTransactions)
                     {
-                        TransferLogDetails log = new TransferLogDetails();
+                        var log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
                         log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");

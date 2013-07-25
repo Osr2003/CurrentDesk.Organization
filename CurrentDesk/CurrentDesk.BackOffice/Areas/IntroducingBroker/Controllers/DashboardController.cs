@@ -64,7 +64,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    IBDashboardModel model = new IBDashboardModel();
+                    var model = new IBDashboardModel();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     model.RebateAccDetails = new List<RebateAccount>();
 
@@ -74,7 +74,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each rebate acc
                     foreach (var acc in rebateAccInfo)
                     {
-                        RebateAccount rebateAcc = new RebateAccount();
+                        var rebateAcc = new RebateAccount();
                         rebateAcc.RebateAccNumber = acc.TradingAccount;
                         rebateAcc.RebateAccCurrency = lCurrValueBO.GetCurrencySymbolFromID((int)acc.FK_CurrencyID);
                         rebateAcc.Equity = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
@@ -121,7 +121,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             List<MarketNewsDataModel> lstMarketNews = new List<MarketNewsDataModel>();
             try
             {
-                XmlDocument xmlDoc = new XmlDocument();
+                var xmlDoc = new XmlDocument();
                 xmlDoc.Load("http://www.forexfactory.com/ffcal_week_this.xml");
                 XmlElement root = xmlDoc.DocumentElement;
                 XmlNodeList nodes = root.SelectNodes("event");
@@ -132,7 +132,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     if (node["date"].InnerText.DateTimeTryParse() >= DateTime.Now.Date)
                     {
-                        MarketNewsDataModel marketNewsData = new MarketNewsDataModel();
+                        var marketNewsData = new MarketNewsDataModel();
                         marketNewsData.NewsDateTime = node["date"].InnerText + " " + node["time"].InnerText;
                         marketNewsData.Currency = node["country"].InnerText;
                         marketNewsData.Title = node["title"].InnerText;
@@ -163,7 +163,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<IBClientsModel> lstClientList = new List<IBClientsModel>();
+                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnStatus(status, loginInfo.UserID);
 
@@ -175,7 +175,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = individualDetails.FirstName;
@@ -190,7 +190,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
@@ -205,7 +205,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
@@ -220,7 +220,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 if (trustDetails.FK_TrusteeTypeID == 1)
@@ -303,7 +303,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<IBClientsModel> lstClientList = new List<IBClientsModel>();
+                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnActivityStatus(activity, loginInfo.UserID);
 
@@ -315,7 +315,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = individualDetails.FirstName;
@@ -330,7 +330,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
@@ -345,7 +345,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
@@ -360,7 +360,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 if (trustDetails.FK_TrusteeTypeID == 1)
@@ -441,7 +441,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
+                    var lstUserActivities = new List<UserActivityModel>();
 
                     //Get latest activities
                     var activities = usrActivityBO.GetUserRecentActivityDetails(loginInfo.UserID);
@@ -451,7 +451,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var act in activities)
                     {
-                        UserActivityModel usrAct = new UserActivityModel();
+                        var usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy HH:mm:ss tt");
                         usrAct.IsSeen = (bool) act.IsSeen;
 
@@ -764,7 +764,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
+                    var lstUserActivities = new List<UserActivityModel>();
                     string clientIds = String.Empty;
 
                     var ibClients = clientBO.GetAllClientsOfIB(loginInfo.UserID);
@@ -781,7 +781,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var act in clientActivities)
                     {
-                        UserActivityModel usrAct = new UserActivityModel();
+                        var usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy hh:mm:ss tt");
                         usrAct.IsSeen = (bool) act.IsSeen;
 
@@ -1261,13 +1261,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    int monthToDateVol = 0;
-                    List<TradesVolume> lstTradesVolume = new List<TradesVolume>();
+                    var monthToDateVol = 0;
+                    var lstTradesVolume = new List<TradesVolume>();
 
                     //Loop through 1st day of current month to last day
                     for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
                     {
-                        TradesVolume vol = new TradesVolume();
+                        var vol = new TradesVolume();
                         vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
 
                         if (ctDay < DateTime.Now.Day)
@@ -1279,8 +1279,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             DateTime toDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, (ctDay + 1), 2, 29, 59).ToUniversalTime(), easternZone);
                             //Calculate epoch time from EST
                             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
-                            long epochFrom = Convert.ToInt64((fromDate - epoch).TotalSeconds);
-                            long epochTo = Convert.ToInt64((toDate - epoch).TotalSeconds);
+                            var epochFrom = Convert.ToInt64((fromDate - epoch).TotalSeconds);
+                            var epochTo = Convert.ToInt64((toDate - epoch).TotalSeconds);
                             
                             //Get volume for the day
                             vol.Volume = (int)intBrokerBO.GetCurrencyTradesVolumeByDay(intBrokerBO.GetBrokerIDFromBrokerUserID(loginInfo.UserID), epochFrom, epochTo) * 1000;
@@ -1295,7 +1295,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     }
 
                     //Add month to volume data to list
-                    TradesVolume volMonthToDate = new TradesVolume();
+                    var volMonthToDate = new TradesVolume();
                     volMonthToDate.Day = "MonthToDate";
                     volMonthToDate.Volume = monthToDateVol;
                     lstTradesVolume.Add(volMonthToDate);
@@ -1327,13 +1327,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    int monthToDateVol = 0;
-                    List<TradesVolume> lstTradesVolume = new List<TradesVolume>();
+                    var monthToDateVol = 0;
+                    var lstTradesVolume = new List<TradesVolume>();
 
                     //Loop through 1st day of current month to last day
                     for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
                     {
-                        TradesVolume vol = new TradesVolume();
+                        var vol = new TradesVolume();
                         vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
 
                         if (ctDay < DateTime.Now.Day)
@@ -1345,8 +1345,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             DateTime toDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, (ctDay + 1), 2, 29, 59).ToUniversalTime(), easternZone);
                             //Calculate epoch time from EST
                             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
-                            long epochFrom = Convert.ToInt64((fromDate - epoch).TotalSeconds);
-                            long epochTo = Convert.ToInt64((toDate - epoch).TotalSeconds);
+                            var epochFrom = Convert.ToInt64((fromDate - epoch).TotalSeconds);
+                            var epochTo = Convert.ToInt64((toDate - epoch).TotalSeconds);
 
                             //Get volume for the day
                             vol.Volume = (int)intBrokerBO.GetCFDTradesVolumeByDay(intBrokerBO.GetBrokerIDFromBrokerUserID(loginInfo.UserID), epochFrom, epochTo) * 1000;
@@ -1361,7 +1361,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     }
 
                     //Add month to volume data to list
-                    TradesVolume volMonthToDate = new TradesVolume();
+                    var volMonthToDate = new TradesVolume();
                     volMonthToDate.Day = "MonthToDate";
                     volMonthToDate.Volume = monthToDateVol;
                     lstTradesVolume.Add(volMonthToDate);

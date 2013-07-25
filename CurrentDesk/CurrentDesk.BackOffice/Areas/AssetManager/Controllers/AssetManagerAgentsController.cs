@@ -82,12 +82,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var agentList = agentBO.GetAllAgentsOfIB(loginInfo.UserID);
 
-                    List<AgentInfo> lstAgent = new List<AgentInfo>();
+                    var lstAgent = new List<AgentInfo>();
 
                     //Iterate through each agent
                     foreach (var agent in agentList)
                     {
-                        AgentInfo agnt = new AgentInfo();
+                        var agnt = new AgentInfo();
                         agnt.AgentID = String.Format("{0:000}", agent.AgentIntroducingBrokerCode);
                         agnt.FirstName = agent.FirstName;
                         agnt.LastName = agent.LastName;
@@ -210,7 +210,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
                     var agentDetail = agentBO.GetAgentDetails(agentID, loginInfo.UserID);
-                    AgentDetailsModel model = new AgentDetailsModel();
+                    var model = new AgentDetailsModel();
 
                     if (agentDetail != null)
                     {
@@ -266,7 +266,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    AgentReferralFeesModel model = new AgentReferralFeesModel();
+                    var model = new AgentReferralFeesModel();
 
                     model.AgentID = agentID;
                     model.AgentName = agentName;

@@ -102,7 +102,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<IBClientsModel> lstClientList = new List<IBClientsModel>();
+                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIB(loginInfo.UserID);  
 
@@ -117,7 +117,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = individualDetails.FirstName;
@@ -134,7 +134,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
@@ -151,7 +151,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
@@ -168,7 +168,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
                             {
-                                IBClientsModel model = new IBClientsModel();
+                                var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.Activity = clientAccBo.GetClientActivityStatus(client.PK_ClientID);
@@ -223,8 +223,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     ViewData["Agents"] = new SelectList(agentBO.GetAllAgentsOfIB(loginInfo.UserID), "PK_AgentID", "FirstName");
-                    
-                    ClientDetailsModel model = new ClientDetailsModel();
+
+                    var model = new ClientDetailsModel();
                     var selectedClient = clientBO.GetClientInformationOnClientPK(clientID);
                     var userInformation = selectedClient.User;
                     var bankInformationList = selectedClient.BankAccountInformations;
@@ -540,7 +540,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
                     ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, organizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
@@ -549,7 +548,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfClientOnClientPK(clientID).TrimEnd('/').Split('/');
 
-                    ClientAccountsModel clientModel = new ClientAccountsModel();
+                    var clientModel = new ClientAccountsModel();
                     clientModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
 
                     clientModel.ClientID = clientID;
@@ -558,7 +557,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var curr in currencyIds)
                     {
-                        MyAccountCurrencyModel model = new MyAccountCurrencyModel();
+                        var model = new MyAccountCurrencyModel();
                         var landingAccDetails = clientAccBo.GetLandingAccountForCurrencyOfClientOnClientPK(clientID, Convert.ToInt32(curr));
                         model.CurrencyID = curr;
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
@@ -597,12 +596,12 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 var tradingAccs = clientAccBo.GetAllTradingAccountsForCurrencyOfClient(clientID, Convert.ToInt32(currencyID));
                 var feeStructure = partCommBO.GetAllFeeStructureForUser(loginInfo.UserID);
 
-                List<CurrencyAccountModel> tradingAccList = new List<CurrencyAccountModel>();
+                var tradingAccList = new List<CurrencyAccountModel>();
 
                 foreach (var acc in tradingAccs)
                 {
                     string strFee = "<select onchange='accFeeStructureChange(this, "+acc.PK_ClientAccountID+")' class='chzn-select width-150'><option></option>";
-                    CurrencyAccountModel accModel = new CurrencyAccountModel();
+                    var accModel = new CurrencyAccountModel();
 
                     if (acc.IsTradingAccount == true)
                     {
@@ -668,7 +667,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -684,7 +683,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, (int)SessionManagement.OrganizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
-                    ClientAccountsModel model = new ClientAccountsModel();
+                    var model = new ClientAccountsModel();
                     model.AccountID = accountID;
                     model.ClientID = clientID;
                     model.ClientName = clientName;
@@ -719,7 +718,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    ClientAccountDetailsModel model = new ClientAccountDetailsModel();
+                    var model = new ClientAccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
                     model.ClientID = clientID;
                     model.ClientName = clientName;
@@ -729,7 +728,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var tran in latestTransactions)
                     {
-                        TransferLogDetails log = new TransferLogDetails();
+                        var log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
                         log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
@@ -771,7 +770,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<IBClientsModel> lstAccList = new List<IBClientsModel>();
+                    var lstAccList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIB(loginInfo.UserID);
 
@@ -806,7 +805,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                         foreach (var acc in clientAccounts)
                         {
-                            IBClientsModel model = new IBClientsModel();
+                            var model = new IBClientsModel();
                             
                             //Set Acc Type image
                             if (acc.IsLandingAccount == true)
@@ -924,18 +923,18 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
 
                     //Get client UserID
-                    int clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
+                    var clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
 
                     //Get all bank accounts
                     var userBankInfos = bankBO.GetAllBankInfosForUser(LoginAccountType.LiveAccount, clientUserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
                         model.BankInformation.Add(bankInfo);
@@ -945,7 +944,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var landingAccs = clientAccBo.GetAllLandingAccountForUser(LoginAccountType.LiveAccount, clientUserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
@@ -990,18 +989,18 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
 
                     //Get client UserID
-                    int clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
+                    var clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
 
                     //Get all bank accounts
                     var userBankInfos = bankBO.GetAllBankInfosForUser(LoginAccountType.LiveAccount, clientUserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
                         model.BankInformation.Add(bankInfo);
@@ -1011,7 +1010,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var landingAccs = clientAccBo.GetAllLandingAccountForUser(LoginAccountType.LiveAccount, clientUserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
@@ -1053,11 +1052,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.TradingAccInformation = new List<TradingAccountGrouped>();
 
                     //Get client UserID
-                    int clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
+                    var clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
 
                     //Get all trading accounts
                     var tradingAccs = clientAccBo.GetAllTradingAccountsOfUser(LoginAccountType.LiveAccount, clientUserID);
@@ -1151,7 +1150,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ClientDocumentModel model = new ClientDocumentModel();
+                    var model = new ClientDocumentModel();
                     model.ClientID = clientID;
                     model.AccountID = accountID;
                     model.ClientName = clientName;
@@ -1180,7 +1179,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
+                    var lstDocument = new List<ClientDocumentModel>();
 
                     //Get client UserID
                     var clientInfo = clientBO.GetClientInformationOnClientPK(clientID);
@@ -1191,7 +1190,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each doc type
                     foreach (var doc in reqDocs)
                     {
-                        ClientDocumentModel document = new ClientDocumentModel();
+                        var document = new ClientDocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -1297,14 +1296,14 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var clientInfo = clientBO.GetClientInformationOnClientPK(clientID);
 
                     //Get file name from database
-                    string fileName = userDocumentBO.GetUploadedDocumentName((int)clientInfo.FK_UserID, docID);
+                    var fileName = userDocumentBO.GetUploadedDocumentName((int)clientInfo.FK_UserID, docID);
 
                     if (fileName != String.Empty)
                     {
                         //Get file extension
-                        string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+                        var fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
-                        FileInfo file = new FileInfo(Server.MapPath("~/UserDocuments/" + clientInfo.FK_UserID + "-" + docID + fileExt));
+                        var file = new FileInfo(Server.MapPath("~/UserDocuments/" + clientInfo.FK_UserID + "-" + docID + fileExt));
 
                         Response.Clear();
                         Response.ClearHeaders();
@@ -1332,9 +1331,9 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         private string GetContentType(string fileName)
         {
 
-            string contentType = "application/octetstream";
+            var contentType = "application/octetstream";
 
-            string ext = Path.GetExtension(fileName).ToLower();
+            var ext = Path.GetExtension(fileName).ToLower();
 
             Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
 
@@ -1362,8 +1361,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Get client UserID
                     var clientInfo = clientBO.GetClientInformationOnClientPK(clientID);
 
-                    string fileName = userDocumentBO.ClearUserDocument((int)clientInfo.FK_UserID, docID);
-                    string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+                    var fileName = userDocumentBO.ClearUserDocument((int)clientInfo.FK_UserID, docID);
+                    var fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
                     if (fileName != String.Empty)
                     {
@@ -1397,7 +1396,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             try
             {
                 //Get total doc count for account type
-                int docCount = r_UserDocumentBO.GetAllDocumentsOfAccountType(accountTypeID).Count();
+                var docCount = r_UserDocumentBO.GetAllDocumentsOfAccountType(accountTypeID).Count();
 
                 //Get all docs of client
                 var userDocs = userDocumentBO.GetAllUserDocuments(userID);
@@ -1443,7 +1442,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ClientNoteHistoryModel model = new ClientNoteHistoryModel();
+                    var model = new ClientNoteHistoryModel();
                     model.ClientID = clientID;
                     model.AccountID = accountID;
                     model.ClientName = clientName;
@@ -1505,14 +1504,14 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    List<ClientNoteDetails> lstClientNotes = new List<ClientNoteDetails>();
+                    var lstClientNotes = new List<ClientNoteDetails>();
 
                     //Get all notes of this client
                     var clientNotes = clientNotesBO.GetAllNotesOfClient(clientID, loginInfo.UserID);
 
                     foreach (var note in clientNotes)
                     {
-                        ClientNoteDetails clntNote = new ClientNoteDetails();
+                        var clntNote = new ClientNoteDetails();
                         clntNote.Subject = note.Subject;
                         clntNote.Note = note.Note;
                         clntNote.Timestamp = Convert.ToDateTime(note.Timestamp).ToString("dd/MM/yyyy hh:mm:ss tt");
@@ -1582,7 +1581,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ClientActivityModel model = new ClientActivityModel();
+                    var model = new ClientActivityModel();
                     model.ClientID = clientID;
                     model.AccountID = accountID;
                     model.ClientName = clientName;
@@ -1638,17 +1637,17 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<ClientActivity> lstClientActivity = new List<ClientActivity>();
+                    var lstClientActivity = new List<ClientActivity>();
 
                     //Get client userID
-                    int clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
+                    var clientUserID = (int)clientBO.GetClientInformationOnClientPK(clientID).FK_UserID;
                     
                     //Get client activities
                     var clientActivities = usrActivityBO.GetUserRecentActivityDetails(clientUserID);
 
                     foreach (var act in clientActivities)
                     {
-                        ClientActivity clntAct = new ClientActivity();
+                        var clntAct = new ClientActivity();
                         clntAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy HH:mm:ss tt");
                         clntAct.ActivityType = act.L_ActivityType.ActivityTypeValue;
 
