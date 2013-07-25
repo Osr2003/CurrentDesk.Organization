@@ -141,7 +141,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
                     
                     //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
+                    var model = new IndividualAccountReviewModel();
                     model.Title = clientInformations.Title != null ? (clientInformations.Title == "1" ? "Mr." : "Mrs.") : "";
                     model.FirstName = clientInformations.FirstName ?? "";
                     model.MiddleName = clientInformations.MiddleName ?? "";
@@ -278,7 +278,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var bankList = new List<BankAccountModel>();
 
                     //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
+                    var model = new IndividualAccountReviewModel();
 
                     if (bankInformationList != null)
                     {
@@ -337,7 +337,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
 
                     //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
+                    var model = new JointAccountReviewModel();
                     model.PrimaryAccountHolderTitle = clientInformations.PrimaryAccountHolderTitle != null ? (clientInformations.PrimaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
                     model.PrimaryAccountHolderFirstName = clientInformations.PrimaryAccountHolderFirstName ?? "";
                     model.PrimaryAccountHolderMiddleName = clientInformations.PrimaryAccountHolderMiddleName ?? "";
@@ -402,7 +402,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var clientInformations = selectedClient.JointAccountInformations.FirstOrDefault();
 
                     //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
+                    var model = new JointAccountReviewModel();
                  
                     model.SecondaryAccountHolderTitle = clientInformations.SecondaryAccountHolderTitle != null ? (clientInformations.SecondaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
                     model.SecondaryAccountHolderFirstName = clientInformations.SecondaryAccountHolderFirstName ?? "";
@@ -548,7 +548,6 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize]
         public ActionResult UpdateIndividualPersonalInformation(PersonalInfoEditModel model)
         {
             try
@@ -1011,7 +1010,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                List<FeeStructure> lstFeeStructure = new List<FeeStructure>();
+                var lstFeeStructure = new List<FeeStructure>();
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
@@ -1022,7 +1021,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each fee structure and add to list
                     foreach (var fee in feeStructureList)
                     {
-                        FeeStructure feeStructure = new FeeStructure();
+                        var feeStructure = new FeeStructure();
                         feeStructure.StructureName = fee.FeeStructureName;
                         if (fee.FK_WidenSpreadID == 7)
                         {
@@ -1057,7 +1056,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -1073,7 +1072,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    PartnerCommission newFee = new PartnerCommission();
+                    var newFee = new PartnerCommission();
                     newFee.FK_UserID = loginInfo.UserID;
                     newFee.FK_WidenSpreadID = newFeeStruct.SpreadMarkUp.Int32TryParse();
                     newFee.FeeStructureName = newFeeStruct.StructureName;
@@ -1117,7 +1116,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         LoginInformation loginInfo = SessionManagement.UserInfo;
 
                         //Store image details in db and get pk ID
-                        int pkUserImgID = userImgBO.AddMarketingImageDetails(file.FileName, loginInfo.UserID);
+                        var pkUserImgID = userImgBO.AddMarketingImageDetails(file.FileName, loginInfo.UserID);
 
                         var fileName = pkUserImgID + file.FileName.Substring(file.FileName.LastIndexOf('.'));
 
@@ -1145,7 +1144,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                List<MarketingModel> lstMarketingImg = new List<MarketingModel>();
+                var lstMarketingImg = new List<MarketingModel>();
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
@@ -1156,7 +1155,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each image detail and add to list
                     foreach (var img in imageDetails)
                     {
-                        MarketingModel marktImg = new MarketingModel();
+                        var marktImg = new MarketingModel();
                         marktImg.ImageID = img.PK_UserImageID;
                         marktImg.ImageName = img.ImageName;
                         if (img.Status == "Active")
@@ -1195,7 +1194,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             catch(Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 

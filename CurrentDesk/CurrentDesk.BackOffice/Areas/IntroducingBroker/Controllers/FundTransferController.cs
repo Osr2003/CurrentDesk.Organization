@@ -70,7 +70,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
 
@@ -78,7 +78,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var userBankInfos = bankBO.GetAllBankInfosForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankID = bank.PK_BankAccountInformationID;
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
@@ -89,7 +89,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var landingAccs = clientAccBO.GetAllLandingAccountForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
@@ -127,9 +127,9 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    int currencyID = lCurrValueBO.GetCurrencyIDFromSymbol(withdrawData.Currency);
+                    var currencyID = lCurrValueBO.GetCurrencyIDFromSymbol(withdrawData.Currency);
                     var accountDetails = clientAccBO.GetLandingAccountForCurrencyOfUser(LoginAccountType.PartnerAccount, loginInfo.UserID, currencyID);
-                    decimal availableBalance = accountDetails != null ? (decimal)accountDetails.CurrentBalance : 0;
+                    var availableBalance = accountDetails != null ? (decimal)accountDetails.CurrentBalance : 0;
 
                     //Check if balance is  greater or equal to withdraw request
                     if (availableBalance >= withdrawData.Amount)
@@ -138,7 +138,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         if (availableBalance >= (adminTransactionBO.GetPendingWithdrawalAmount(withdrawData.AccountNumber, organizationID) + withdrawData.Amount))
                         {
                             //Assigning property values
-                            AdminTransaction newWithdrawRequest = new AdminTransaction();
+                            var newWithdrawRequest = new AdminTransaction();
                             newWithdrawRequest.TransactionDate = DateTime.UtcNow;
                             newWithdrawRequest.FK_UserID = loginInfo.UserID;
                             newWithdrawRequest.AccountNumber = withdrawData.AccountNumber;
@@ -198,7 +198,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.TradingAccInformation = new List<TradingAccountGrouped>();
 
                     //Get all trading accounts
@@ -251,8 +251,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    int currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
-                    string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
+                    var currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
+                    var clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
 
                     //Get transaction settings from database
                     var transacSett =
@@ -262,11 +262,11 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc, organizationID);
 
                     //Get from acc balance
-                    decimal balance = (decimal) fromAccDetails.CurrentBalance;
-                    decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
+                    var balance = (decimal)fromAccDetails.CurrentBalance;
+                    var pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
 
-                    bool isToSucessful = true;
-                    bool isFromSucessful = true;
+                    var isToSucessful = true;
+                    var isFromSucessful = true;
 
                     if (transacSett != null)
                     {
@@ -375,7 +375,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 if (balance >= (pendingAmount + (decimal) amount))
                                 {
                                     //Register transfer request
-                                    AdminTransaction transferTransac = new AdminTransaction();
+                                    var transferTransac = new AdminTransaction();
                                     transferTransac.TransactionDate = DateTime.UtcNow;
                                     transferTransac.FK_UserID = loginInfo.UserID;
                                     transferTransac.AccountNumber = fromAcc;
@@ -457,20 +457,20 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    int fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
-                    int toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[0]);
+                    var fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
+                    var toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[0]);
 
-                    string clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
+                    var clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
 
                     var fromAccDetails = clientAccBO.GetAnyAccountDetails(fromAcc, organizationID);
                     var toAccDetails = clientAccBO.GetAnyAccountDetails(toAcc, organizationID);
 
                     //Get from acc balance
-                    decimal balance = (decimal) fromAccDetails.CurrentBalance;
-                    decimal pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
+                    var balance = (decimal)fromAccDetails.CurrentBalance;
+                    var pendingAmount = adminTransactionBO.GetPendingTransferAmount(fromAcc, organizationID);
 
-                    bool isToSucessful = true;
-                    bool isFromSucessful = true;
+                    var isToSucessful = true;
+                    var isFromSucessful = true;
 
                     //Get transaction settings from database
                     var transacSett =
@@ -588,7 +588,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 if (balance >= (pendingAmount + (decimal) amount))
                                 {
                                     //Register transfer request
-                                    AdminTransaction convTransac = new AdminTransaction();
+                                    var convTransac = new AdminTransaction();
                                     convTransac.TransactionDate = DateTime.UtcNow;
                                     convTransac.FK_UserID = loginInfo.UserID;
                                     convTransac.AccountNumber = fromAcc;
@@ -754,7 +754,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             try
             {
-                TradeTransInfoNET newTransac = new TradeTransInfoNET();
+                var newTransac = new TradeTransInfoNET();
                 newTransac.cmd = (short)TradeCommands.OP_BALANCE;
                 newTransac.comment = comment;
                 newTransac.orderby = login;
@@ -762,7 +762,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 newTransac.type = (short)TradeTransTypes.TT_BR_BALANCE;
                 newTransac.reserved = 0;
 
-                MetaTraderWrapperManager manager = new MetaTraderWrapperManager("mtdem01.primexm.com:443", 900, "!FQS123!!");
+                var manager = new MetaTraderWrapperManager("mtdem01.primexm.com:443", 900, "!FQS123!!");
                 if (manager.IsConnected() == 1)
                 {
                     if (manager.TradeTransaction(newTransac) == 0)
@@ -792,8 +792,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    bool inverse = false;
-                    decimal exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
+                    var inverse = false;
+                    var exchangeRate = priceBO.GetExchangeRateForCurrencyPair(fromCurr, toCurr, ref inverse);
 
                     var settings =
                         transactionSettingBO.GetTransactionSetting((int) AdminTransactionType.ConversionsRequests, (int)SessionManagement.OrganizationID);
@@ -801,8 +801,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //If settings not null
                     if (settings != null)
                     {
-                        int markupType = (int) settings.ConversionMarkupType;
-                        decimal markup = (decimal) settings.ConversionMarkupValue;
+                        var markupType = (int)settings.ConversionMarkupType;
+                        var markup = (decimal)settings.ConversionMarkupValue;
 
                         //Markup in percentage
                         if (markupType == (int) ConversionMarkupType.Percentage)

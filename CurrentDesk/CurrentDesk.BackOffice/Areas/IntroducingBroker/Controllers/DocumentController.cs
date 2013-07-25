@@ -77,7 +77,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
+                    var lstDocument = new List<ClientDocumentModel>();
 
                     //Get docs required for that account type
                     var reqDocs = r_UserDocumentBO.GetAllDocumentsOfAccountType(loginInfo.AccountType);
@@ -85,7 +85,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each doc type
                     foreach (var doc in reqDocs)
                     {
-                        ClientDocumentModel document = new ClientDocumentModel();
+                        var document = new ClientDocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -159,7 +159,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<ClientDocumentModel> lstDocument = new List<ClientDocumentModel>();
+                    var lstDocument = new List<ClientDocumentModel>();
 
                     //Get broker forms required for that account type
                     var reqBrokerForms = r_UserDocumentBO.GetAllBrokerFormsOfAccountType(loginInfo.AccountType);
@@ -167,7 +167,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each broker form
                     foreach (var doc in reqBrokerForms)
                     {
-                        ClientDocumentModel document = new ClientDocumentModel();
+                        var document = new ClientDocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -207,7 +207,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 //Get extension of the file
                 string ext = Path.GetExtension(fileName).ToLower();
 
-                FileInfo file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
+                var file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
 
                 Response.Clear();
                 Response.ClearHeaders();
@@ -318,7 +318,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         //Get file extension
                         string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
-                        FileInfo file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
+                        var file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
 
                         Response.Clear();
                         Response.ClearHeaders();

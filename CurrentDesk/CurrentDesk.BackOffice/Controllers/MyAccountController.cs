@@ -110,7 +110,7 @@ namespace CurrentDesk.BackOffice.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -456,7 +456,7 @@ namespace CurrentDesk.BackOffice.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 

@@ -123,7 +123,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
 
                     //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
+                    var model = new IndividualAccountReviewModel();
                     model.Title = clientInformations.Title != null ? (clientInformations.Title == "1" ? "Mr." : "Mrs.") : "";
                     model.FirstName = clientInformations.FirstName ?? "";
                     model.MiddleName = clientInformations.MiddleName ?? "";
@@ -191,7 +191,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var clientAccInfo = selectedClient.Client_Account.FirstOrDefault();
 
                     //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
+                    var model = new JointAccountReviewModel();
                     model.PrimaryAccountHolderTitle = clientInformations.PrimaryAccountHolderTitle != null ? (clientInformations.PrimaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
                     model.PrimaryAccountHolderFirstName = clientInformations.PrimaryAccountHolderFirstName ?? "";
                     model.PrimaryAccountHolderMiddleName = clientInformations.PrimaryAccountHolderMiddleName ?? "";
@@ -256,7 +256,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var clientInformations = selectedClient.JointAccountInformations.FirstOrDefault();
 
                     //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
+                    var model = new JointAccountReviewModel();
 
                     model.SecondaryAccountHolderTitle = clientInformations.SecondaryAccountHolderTitle != null ? (clientInformations.SecondaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
                     model.SecondaryAccountHolderFirstName = clientInformations.SecondaryAccountHolderFirstName ?? "";
@@ -418,7 +418,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     var bankList = new List<BankAccountModel>();
 
                     //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
+                    var model = new IndividualAccountReviewModel();
 
                     if (bankInformationList != null)
                     {
@@ -496,7 +496,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                List<MarketingModel> lstMarketingImg = new List<MarketingModel>();
+                var lstMarketingImg = new List<MarketingModel>();
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
@@ -507,7 +507,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     //Iterate through each image detail and add to list
                     foreach (var img in imageDetails)
                     {
-                        MarketingModel marktImg = new MarketingModel();
+                        var marktImg = new MarketingModel();
                         marktImg.ImageID = img.PK_UserImageID;
                         marktImg.ImageName = img.ImageName;
                         if (img.Status == "Active")
@@ -546,7 +546,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -587,7 +587,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
         {
             try
             {
-                List<FeeStructure> lstFeeStructure = new List<FeeStructure>();
+                var lstFeeStructure = new List<FeeStructure>();
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
@@ -598,7 +598,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     //Iterate through each fee structure and add to list
                     foreach (var fee in feeStructureList)
                     {
-                        FeeStructure feeStructure = new FeeStructure();
+                        var feeStructure = new FeeStructure();
                         feeStructure.StructureName = fee.FeeStructureName;
                         if (fee.FK_WidenSpreadID == 7)
                         {
@@ -641,7 +641,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -657,7 +657,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    PartnerCommission newFee = new PartnerCommission();
+                    var newFee = new PartnerCommission();
                     newFee.FK_UserID = loginInfo.UserID;
                     newFee.FK_WidenSpreadID = newFeeStruct.SpreadMarkUp.Int32TryParse();
                     newFee.FK_CommissionID = newFeeStruct.CommissionMarkUp.Int32TryParse();
@@ -911,7 +911,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         LoginInformation loginInfo = SessionManagement.UserInfo;
 
                         //Store image details in db and get pk ID
-                        int pkUserImgID = userImgBO.AddMarketingImageDetails(file.FileName, loginInfo.UserID);
+                        var pkUserImgID = userImgBO.AddMarketingImageDetails(file.FileName, loginInfo.UserID);
 
                         var fileName = pkUserImgID + file.FileName.Substring(file.FileName.LastIndexOf('.'));
 
@@ -1312,7 +1312,6 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ManagedAccountProgramModel model = new ManagedAccountProgramModel();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
@@ -1347,7 +1346,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ManagedAccountProgramDetail model = new ManagedAccountProgramDetail();
+                    var model = new ManagedAccountProgramDetail();
                     var programDetails = manAccPrgmBO.GetProgramDetails(programID);
                     if (programDetails != null)
                     {
@@ -1413,7 +1412,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    IntroducingBrokerProfitShareModel model = new IntroducingBrokerProfitShareModel();
+                    var model = new IntroducingBrokerProfitShareModel();
 
                     model.ProgramID = programID;
                     model.ProgramName = programName;
@@ -1456,7 +1455,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    ManagedAccountProgram program = new ManagedAccountProgram();
+                    var program = new ManagedAccountProgram();
                     program.ProgramName = model.ProgramName;
                     program.MinimumDeposit = model.MinimumDeposit;
                     program.FK_AccountCurrencyID = model.CurrencyID;
@@ -1501,12 +1500,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    List<ManagedAccountProgramDetail> lstPrograms = new List<ManagedAccountProgramDetail>();
+                    var lstPrograms = new List<ManagedAccountProgramDetail>();
 
                     var allPrograms = manAccPrgmBO.GetAllManagedAccPrograms(loginInfo.UserID);
                     foreach (var program in allPrograms)
                     {
-                        ManagedAccountProgramDetail prg = new ManagedAccountProgramDetail();
+                        var prg = new ManagedAccountProgramDetail();
                         prg.PK_ProgramID = program.PK_ManagedAccPrgmID;
                         prg.ProgramName = program.ProgramName;
                         prg.Currency = accCurrBO.GetCurrencyLookUpValue((int)program.FK_AccountCurrencyID);
