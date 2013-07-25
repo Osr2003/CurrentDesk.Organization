@@ -101,7 +101,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new { Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -453,27 +453,27 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     {
                         UserActivityModel usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy HH:mm:ss tt");
-                        usrAct.IsSeen = (bool) act.IsSeen;
+                        usrAct.IsSeen = (bool)act.IsSeen;
 
                         //Profile Activities
-                        if (act.FK_ActivityTypeID == (int) ActivityType.ProfileActivity)
+                        if (act.FK_ActivityTypeID == (int)ActivityType.ProfileActivity)
                         {
                             usrAct.ActivityDetails = act.ProfileActivities.FirstOrDefault().ProfileActivityDetails;
                         }
-                            //Document activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.DocumentActivity)
+                        //Document activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.DocumentActivity)
                         {
                             usrAct.ActivityDetails = "<a href=Document>" +
                                                      act.DocumentActivities.FirstOrDefault().Document.DocumentName +
                                                      "</a>" + " document status has changed to <i>" +
                                                      act.DocumentActivities.FirstOrDefault().DocumentStatus + "</i>.";
                         }
-                            //Account activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.AccountActivity)
+                        //Account activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.AccountActivity)
                         {
                             //New acc creation activity
                             if (act.AccountActivities.FirstOrDefault().FK_AccActivityTypeID ==
-                                (int) AccountActivityType.NewAccountCreation)
+                                (int)AccountActivityType.NewAccountCreation)
                             {
                                 usrAct.ActivityDetails = "A new " +
                                                          act.AccountActivities.FirstOrDefault()
@@ -482,8 +482,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          " account has been created.";
                             }
                         }
-                            //Transfer activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.TransferActivity)
+                        //Transfer activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.TransferActivity)
                         {
                             if (act.TransferActivities.FirstOrDefault().TransferStatus == Constants.K_STATUS_TRANSFERRED)
                             {
@@ -553,8 +553,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          act.TransferActivities.FirstOrDefault().ToAccount + "</a>.";
                             }
                         }
-                            //Conversion activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.ConversionActivity)
+                        //Conversion activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.ConversionActivity)
                         {
                             if (act.ConversionActivities.FirstOrDefault().ConversionStatus ==
                                 Constants.K_STATUS_TRANSFERRED)
@@ -574,7 +574,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              Math.Round(
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
-                                                                        .ConversionAmount)*
+                                                                        .ConversionAmount) *
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
                                                                         .ExchangeRate),
@@ -686,7 +686,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          Math.Round(
                                                              Convert.ToDecimal(
                                                                  act.ConversionActivities.FirstOrDefault()
-                                                                    .ConversionAmount)*
+                                                                    .ConversionAmount) *
                                                              Convert.ToDecimal(
                                                                  act.ConversionActivities.FirstOrDefault().ExchangeRate),
                                                              2) +
@@ -697,8 +697,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          act.ConversionActivities.FirstOrDefault().ToAccount + "</a>.";
                             }
                         }
-                            //Withdraw fund activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.DepositOrWithdrawActivity)
+                        //Withdraw fund activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.DepositOrWithdrawActivity)
                         {
                             if (act.DepositOrWithdrawActivities.FirstOrDefault().TransferStatus ==
                                 Constants.K_STATUS_PENDING)
@@ -742,7 +742,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -783,10 +783,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     {
                         UserActivityModel usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy hh:mm:ss tt");
-                        usrAct.IsSeen = (bool) act.IsSeen;
+                        usrAct.IsSeen = (bool)act.IsSeen;
 
                         //Document activities
-                        if (act.FK_ActivityTypeID == (int) ActivityType.DocumentActivity)
+                        if (act.FK_ActivityTypeID == (int)ActivityType.DocumentActivity)
                         {
                             usrAct.ActivityDetails = "Client " +
                                                      act.User.Clients.FirstOrDefault()
@@ -799,12 +799,12 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                      "</a> document status has changed to <i>" +
                                                      act.DocumentActivities.FirstOrDefault().DocumentStatus + "</i>.";
                         }
-                            //Account activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.AccountActivity)
+                        //Account activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.AccountActivity)
                         {
                             //New acc creation activity
                             if (act.AccountActivities.FirstOrDefault().FK_AccActivityTypeID ==
-                                (int) AccountActivityType.NewAccountCreation)
+                                (int)AccountActivityType.NewAccountCreation)
                             {
                                 usrAct.ActivityDetails =
                                     act.AccountActivities.FirstOrDefault().L_CurrencyValue.CurrencyValue + " " +
@@ -818,8 +818,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                        .LastName + ".";
                             }
                         }
-                            //Transfer activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.TransferActivity)
+                        //Transfer activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.TransferActivity)
                         {
                             string clientName =
                                 act.User.Clients.FirstOrDefault()
@@ -944,8 +944,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          act.TransferActivities.FirstOrDefault().ToAccount + "</a>.";
                             }
                         }
-                            //Conversion activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.ConversionActivity)
+                        //Conversion activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.ConversionActivity)
                         {
                             string clientName =
                                 act.User.Clients.FirstOrDefault()
@@ -984,7 +984,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              Math.Round(
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
-                                                                        .ConversionAmount)*
+                                                                        .ConversionAmount) *
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
                                                                         .ExchangeRate),
@@ -1003,18 +1003,18 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                     string toClientName = String.Empty;
                                     if (
                                         userBO.GetUserDetails(
-                                            (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
+                                            (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
                                         null)
                                     {
                                         toClientName =
                                             clientBO.GetClientName(
-                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
                                     else
                                     {
                                         toClientName =
                                             introducingBrokerBO.GetPartnerName(
-                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
 
                                     usrAct.ActivityDetails = "Client " +
@@ -1038,7 +1038,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              Math.Round(
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
-                                                                        .ConversionAmount)*
+                                                                        .ConversionAmount) *
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
                                                                         .ExchangeRate),
@@ -1055,18 +1055,18 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                     string fromClientName = String.Empty;
                                     if (
                                         userBO.GetUserDetails(
-                                            (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
+                                            (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID) !=
                                         null)
                                     {
                                         fromClientName =
                                             clientBO.GetClientName(
-                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
                                     else
                                     {
                                         fromClientName =
                                             introducingBrokerBO.GetPartnerName(
-                                                (int) act.ConversionActivities.FirstOrDefault().FK_ToUserID);
+                                                (int)act.ConversionActivities.FirstOrDefault().FK_ToUserID);
                                     }
 
                                     usrAct.ActivityDetails = "Client " +
@@ -1088,7 +1088,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                              Math.Round(
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
-                                                                        .ConversionAmount)*
+                                                                        .ConversionAmount) *
                                                                  Convert.ToDecimal(
                                                                      act.ConversionActivities.FirstOrDefault()
                                                                         .ExchangeRate),
@@ -1126,7 +1126,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          Math.Round(
                                                              Convert.ToDecimal(
                                                                  act.ConversionActivities.FirstOrDefault()
-                                                                    .ConversionAmount)*
+                                                                    .ConversionAmount) *
                                                              Convert.ToDecimal(
                                                                  act.ConversionActivities.FirstOrDefault().ExchangeRate),
                                                              2) +
@@ -1139,8 +1139,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                          act.ConversionActivities.FirstOrDefault().ToAccount + "</a>.";
                             }
                         }
-                            //Deposit Or Withdraw Activities
-                        else if (act.FK_ActivityTypeID == (int) ActivityType.DepositOrWithdrawActivity)
+                        //Deposit Or Withdraw Activities
+                        else if (act.FK_ActivityTypeID == (int)ActivityType.DepositOrWithdrawActivity)
                         {
                             string clientName =
                                 act.User.Clients.FirstOrDefault()
@@ -1181,7 +1181,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                                                 .AccountNumber + "</a>.";
                                 }
                             }
-                                //Withdraw
+                            //Withdraw
                             else
                             {
                                 if (act.DepositOrWithdrawActivities.FirstOrDefault().TransferStatus ==
@@ -1238,7 +1238,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -1253,7 +1253,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         /// for current month
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetCurrencyVolumeOverviewData()
+        public ActionResult GetCurrencyVolumeOverviewOFData()
         {
             try
             {
@@ -1273,7 +1273,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         if (ctDay < DateTime.Now.Day)
                         {
                             TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
-                            
+
                             //Calculate EST from UTC
                             DateTime fromDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, ctDay, 2, 30, 0).ToUniversalTime(), easternZone);
                             DateTime toDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, (ctDay + 1), 2, 29, 59).ToUniversalTime(), easternZone);
@@ -1281,9 +1281,143 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
                             long epochFrom = Convert.ToInt64((fromDate - epoch).TotalSeconds);
                             long epochTo = Convert.ToInt64((toDate - epoch).TotalSeconds);
-                            
+
                             //Get volume for the day
                             vol.Volume = (int)intBrokerBO.GetCurrencyTradesVolumeByDay(intBrokerBO.GetBrokerIDFromBrokerUserID(loginInfo.UserID), epochFrom, epochTo) * 1000;
+                            monthToDateVol += vol.Volume;
+                        }
+                        else
+                        {
+                            vol.Volume = 0;
+                        }
+
+                        lstTradesVolume.Add(vol);
+                    }
+
+                    //Add month to volume data to list
+                    TradesVolume volMonthToDate = new TradesVolume();
+                    volMonthToDate.Day = "MonthToDate";
+                    volMonthToDate.Volume = monthToDateVol;
+                    lstTradesVolume.Add(volMonthToDate);
+
+                    return Json(lstTradesVolume, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { Area = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                CurrentDeskLog.Error(ex.Message, ex);
+                return View("ErrorMessage");
+            }
+        }
+
+
+        /// <summary>
+        /// This actions returns total volume of Currency trades done per day
+        /// for current month
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetCurrencyVolumeOverviewData()
+        {
+            try
+            {
+                if (SessionManagement.UserInfo != null)
+                {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    //Get all the Platform login
+                    List<int?> platformLoginList = introducingBrokerBO.GetPlatformLoginsIntroducingBroker(loginInfo.UserID);
+
+                    long epochFrom = GetESTFromUTCStart(1);
+                    long epochTo = GetESTFromUTCEnd(DateTime.UtcNow.Day);
+
+                    //Get All Closed Trades
+                    var tradesHistoryBO = new TradesHistoryBO();
+                    var resultantTrade = tradesHistoryBO.GetAllCurrencyClosedTradesByPlatformLogin(platformLoginList, epochFrom, epochTo);
+
+                    List<TradesVolume> lstTradesVolume = new List<TradesVolume>();
+                    int monthToDateVol = 0;
+
+                    for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
+                    {
+                        TradesVolume vol = new TradesVolume();
+                        vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
+                        if (ctDay < DateTime.Now.Day)
+                        { 
+                            long selEpochFrom = GetESTFromUTCStart(ctDay);
+                            long selEpochTo = GetESTFromUTCEnd(ctDay + 1);
+
+                            vol.Volume = (int)resultantTrade.Where(x => x.Timestamp > selEpochFrom && x.Timestamp < selEpochTo ).Sum(x => x.Volume) * 1000;
+                            monthToDateVol += vol.Volume;
+                        }
+                        else
+                        {
+                            vol.Volume = 0;
+                        }
+
+                        lstTradesVolume.Add(vol);
+                    }
+
+                    //Add month to volume data to list
+                    TradesVolume volMonthToDate = new TradesVolume();
+                    volMonthToDate.Day = "MonthToDate";
+                    volMonthToDate.Volume = monthToDateVol;
+                    lstTradesVolume.Add(volMonthToDate);
+
+                    return Json(lstTradesVolume, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { Area = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                CurrentDeskLog.Error(ex.Message, ex);
+                return View("ErrorMessage");
+            }
+        }
+
+
+        /// <summary>
+        /// This actions returns total volume of CFD trades done per day
+        /// for current month
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetCFDVolumeOverviewData()
+        {
+            try
+            {
+                if (SessionManagement.UserInfo != null)
+                {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    //Get all the Platform login
+                    List<int?> platformLoginList = introducingBrokerBO.GetPlatformLoginsIntroducingBroker(loginInfo.UserID);
+
+                    long epochFrom = GetESTFromUTCStart(1);
+                    long epochTo = GetESTFromUTCEnd(DateTime.UtcNow.Day);
+
+                    //Get All Closed Trades
+                    var tradesHistoryBO = new TradesHistoryBO();
+                    var resultantTrade = tradesHistoryBO.GetAllCurrencyCFDTradesByPlatformLogin(platformLoginList, epochFrom, epochTo);
+
+                    List<TradesVolume> lstTradesVolume = new List<TradesVolume>();
+                    int monthToDateVol = 0;
+
+                    for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
+                    {
+                        TradesVolume vol = new TradesVolume();
+                        vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
+                        if (ctDay < DateTime.Now.Day)
+                        {
+                            long selEpochFrom = GetESTFromUTCStart(ctDay);
+                            long selEpochTo = GetESTFromUTCEnd(ctDay + 1);
+
+                            vol.Volume = (int)resultantTrade.Where(x => x.Timestamp > selEpochFrom && x.Timestamp < selEpochTo).Sum(x => x.Volume) * 1000;
                             monthToDateVol += vol.Volume;
                         }
                         else
@@ -1319,7 +1453,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         /// for current month
         /// </summary>
         /// <returns></returns>
-        public ActionResult GetCFDVolumeOverviewData()
+        public ActionResult GetCFDVolumeOverviewOFData()
         {
             try
             {
@@ -1421,8 +1555,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         withdrawal.AccountNumber = transaction.AccountNumber;
                         withdrawal.ClientName = transaction.ClientName;
-                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
-                        withdrawal.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
+                        withdrawal.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
+                        withdrawal.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(withdrawal);
                     }
@@ -1437,7 +1571,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -1487,8 +1621,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             Convert.ToDateTime(transaction.TransactionDate).ToString("dd/MM/yyyy hh:mm:ss tt");
                         deposit.AccountNumber = transaction.AccountNumber;
                         deposit.ClientName = transaction.ClientName;
-                        deposit.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
-                        deposit.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
+                        deposit.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
+                        deposit.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstWithdrawals.Add(deposit);
                     }
@@ -1503,7 +1637,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -1556,8 +1690,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         internalTran.ClientName = transaction.ClientName;
                         internalTran.ToAccount = transaction.ToAccountNumber;
                         internalTran.ToClientName = transaction.ToClientName;
-                        internalTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
-                        internalTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
+                        internalTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
+                        internalTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstInternalTransfers.Add(internalTran);
                     }
@@ -1572,7 +1706,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -1625,13 +1759,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         convTran.ClientName = transaction.ClientName;
                         convTran.ToAccount = transaction.ToAccountNumber;
                         convTran.ToClientName = transaction.ToClientName;
-                        convTran.Amount = Utility.FormatCurrencyValue((decimal) transaction.TransactionAmount, "");
-                        convTran.ExchangeRate = (double) transaction.ExchangeRate;
+                        convTran.Amount = Utility.FormatCurrencyValue((decimal)transaction.TransactionAmount, "");
+                        convTran.ExchangeRate = (double)transaction.ExchangeRate;
                         convTran.ExchangedAmount =
                             Utility.FormatCurrencyValue(
                                 Math.Round(
-                                    (decimal) (transaction.TransactionAmount*(decimal) transaction.ExchangeRate), 2), "");
-                        convTran.Status = (bool) transaction.IsApproved ? "Approved" : "Pending";
+                                    (decimal)(transaction.TransactionAmount * (decimal)transaction.ExchangeRate), 2), "");
+                        convTran.Status = (bool)transaction.IsApproved ? "Approved" : "Pending";
 
                         lstConversionTransfers.Add(convTran);
                     }
@@ -1646,7 +1780,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("Login", "Account", new {Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = "" });
                 }
             }
             catch (Exception ex)
@@ -1655,6 +1789,40 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 throw;
             }
         }
+        #endregion
+
+        #region Common
+        /// <summary>
+        /// This Function will convert date 
+        /// from EST to UTC 
+        /// </summary>
+        /// <param name="day">day</param>
+        /// <returns>Epoch Value</returns>
+        public long GetESTFromUTCStart(int day)
+        {
+            //Calculate EST from UTC
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTime selectedDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, day, 2, 30, 0).ToUniversalTime(), easternZone); 
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
+            return Convert.ToInt64((selectedDate - epoch).TotalSeconds);            
+        }
+
+
+        /// <summary>
+        /// This Function will convert date 
+        /// from EST to UTC 
+        /// </summary>
+        /// <param name="day">day</param>
+        /// <returns>Epoch Value</returns>
+        public long GetESTFromUTCEnd(int day)
+        {
+            //Calculate EST from UTC
+            TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+            DateTime selectedDate = TimeZoneInfo.ConvertTimeFromUtc(new DateTime(DateTime.Now.Year, DateTime.Now.Month, (day), 2, 29, 59).ToUniversalTime(), easternZone);
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Unspecified);
+            return Convert.ToInt64((selectedDate - epoch).TotalSeconds);
+        }
+
         #endregion
     }
 }

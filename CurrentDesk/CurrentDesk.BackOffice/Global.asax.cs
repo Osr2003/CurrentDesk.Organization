@@ -15,6 +15,7 @@ namespace CurrentDesk.BackOffice
     {
         protected void Application_Start()
         {
+            HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
             //Remove All Engine
             ViewEngines.Engines.Clear();
 
