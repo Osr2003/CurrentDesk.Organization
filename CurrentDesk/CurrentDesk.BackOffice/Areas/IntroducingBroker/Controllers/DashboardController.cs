@@ -118,7 +118,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         /// <returns></returns>
         public List<MarketNewsDataModel> GetMarketNews()
         {
-            List<MarketNewsDataModel> lstMarketNews = new List<MarketNewsDataModel>();
+            var lstMarketNews = new List<MarketNewsDataModel>();
             try
             {
                 var xmlDoc = new XmlDocument();
@@ -295,7 +295,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         /// This action returns list of client details
         /// with a particular activity and IsActivityDismissed = false
         /// </summary>
-        /// <param name="status">activity</param>
+        /// <param name="activity">activity</param>
         /// <returns></returns>
         public ActionResult GetClientListOnActivityStatus(string activity)
         {

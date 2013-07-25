@@ -100,7 +100,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     }
                     else
                     {
-                        return View("");
+                        return View("ErrorMessage");
                     }
                 }
                 else

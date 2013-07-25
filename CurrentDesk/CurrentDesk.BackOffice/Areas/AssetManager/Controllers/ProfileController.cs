@@ -88,13 +88,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     }
                     else
                     {
-                        return View("");
+                        return View("ErrorMessage");
                     }
                 }
-                else
-                {
-                    return RedirectToAction("Login", "Account", new { Area = "" });
-                }
+
+                return RedirectToAction("Login", "Account", new { Area = "" });
             }
             catch (Exception ex)
             {

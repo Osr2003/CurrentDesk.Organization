@@ -106,7 +106,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     }
                     else
                     {
-                        return View("");
+                        return View("ErrorMessage");
                     }
                 }
                 else

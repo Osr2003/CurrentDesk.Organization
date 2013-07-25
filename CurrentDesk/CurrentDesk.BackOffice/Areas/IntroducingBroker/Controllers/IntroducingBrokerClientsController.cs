@@ -1215,11 +1215,8 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                         rows = lstDocument
                     }, JsonRequestBehavior.AllowGet);
                 }
-                else
-                {
-                    RedirectToAction("Login", "Account");
-                    return View();
-                }
+                
+                return RedirectToAction("Login", "Account");
             }
             catch (Exception ex)
             {
