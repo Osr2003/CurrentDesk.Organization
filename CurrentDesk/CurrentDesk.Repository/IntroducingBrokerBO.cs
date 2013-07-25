@@ -1045,5 +1045,47 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
+
+        /// <summary>
+        /// This Function Will get all the Platform logins of all the clients 
+        /// of respective introducing broker. 
+        /// </summary>
+        /// <returns></returns>
+        public List<int?> GetPlatformLoginsIntroducingBroker(int userID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var introducingBrokerRepo =
+                        new IntroducingBrokerRepository(new EFRepository<IntroducingBroker>(), unitOfWork);
+
+                    //Get IntroducingBrokedID
+                    var introducingBrokerID = GetBrokerIDFromBrokerUserID(userID);
+
+                    //ObjectSet<IntroducingBroker> introducingBrokerObjSet =
+                    //  ((CurrentDeskClientsEntities)introducingBrokerRepo.Repository.UnitOfWork.Context).IntroducingBrokers;
+
+                    //var introducingBrokerList = introducingBrokerObjSet.Include("Client_Account").
+                    //                            Where(x => x.PK_IntroducingBrokerID == introducingBrokerID).ToList();
+
+                    var context = ((CurrentDeskClientsEntities)introducingBrokerRepo.Repository.UnitOfWork.Context);
+                    var platformLoginList = (from ib in context.IntroducingBrokers
+                                       join cl in context.Clients on ib.PK_IntroducingBrokerID equals cl.FK_IntroducingBrokerID
+                                       join ca in context.Client_Account on cl.PK_ClientID equals ca.FK_ClientID
+                                       where (ib.PK_IntroducingBrokerID == introducingBrokerID && ca.PlatformLogin != null)
+                                       select ca.PlatformLogin).ToList();
+
+                    return platformLoginList;     
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+       
     }
 }

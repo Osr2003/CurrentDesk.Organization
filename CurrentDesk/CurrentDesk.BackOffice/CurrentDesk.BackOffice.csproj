@@ -29,7 +29,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,7 +40,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HibernatingRhinos.Profiler.Appender">
-      <HintPath>C:\Users\chinmoyd\Desktop\EntityFramework.Profiler-v2.0-Build-2186\HibernatingRhinos.Profiler.Appender.dll</HintPath>
+      <HintPath>E:\EntityFrameworkProfiler\EntityFramework.Profiler-v2.0-Build-2186\HibernatingRhinos.Profiler.Appender.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationServer.Caching.AzureClientHelper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAzure.Caching.2.0.0.0\lib\net40-full\Microsoft.ApplicationServer.Caching.AzureClientHelper.dll</HintPath>
@@ -303,6 +302,9 @@
     <Compile Include="Models\TrustAccountModel.cs" />
     <Compile Include="Models\TrustAccountReviewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\BackOfficeCustomMembershipProvider.cs" />
+    <Compile Include="Security\BackOfficeUser.cs" />
+    <Compile Include="Security\BackOfficeUserAlias.cs" />
     <Compile Include="Security\LoginInformation.cs" />
     <Compile Include="Security\LoginVerification.cs" />
     <Compile Include="Security\SessionManagement.cs" />

@@ -64,7 +64,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    var model = new IBDashboardModel();
+                    IBDashboardModel model = new IBDashboardModel();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     model.RebateAccDetails = new List<RebateAccount>();
 
@@ -74,9 +74,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Iterate through each rebate acc
                     foreach (var acc in rebateAccInfo)
                     {
-                        var rebateAcc = new RebateAccount();
+                        RebateAccount rebateAcc = new RebateAccount();
                         rebateAcc.RebateAccNumber = acc.TradingAccount;
                         rebateAcc.RebateAccCurrency = lCurrValueBO.GetCurrencySymbolFromID((int)acc.FK_CurrencyID);
+<<<<<<< HEAD
                         rebateAcc.Equity = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
                         model.RebateAccDetails.Add(rebateAcc);
                     }
@@ -101,7 +102,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 }
                 else
                 {
-               	   return RedirectToAction("Login", "Account", new { Area = ""});
+                    return RedirectToAction("Login", "Account", new { Area = ""});
                 }
             }
             catch (Exception ex)
@@ -120,8 +121,53 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
         {
             var lstMarketNews = new List<MarketNewsDataModel>();
             try
+=======
+                        rebateAcc.Equity = Utility.FormatCurrencyValue((decimal)acc.CurrentBalance, "");
+                        model.RebateAccDetails.Add(rebateAcc);
+                    }
+
+                    //Get market news
+                    model.MarketNews = GetMarketNews();
+
+                    //Latest client changes display data
+                    var clientStatus = clientBO.GetStatusReport(loginInfo.UserID);
+                    model.ApprovedStatus = clientStatus[0];
+                    model.PendingStatus = clientStatus[1];
+                    model.MissingStatus = clientStatus[2];
+                    model.DeniedStatus = clientStatus[3];
+
+                    var activityStatus = clientBO.GetActivityStatusReport(loginInfo.UserID);
+                    model.NewStatus = activityStatus[0];
+                    model.ActiveStatus = activityStatus[1];
+                    model.InactiveStatus = activityStatus[2];
+                    model.DormantStatus = activityStatus[3];
+
+                    return View(model);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { Area = "" });
+                }
+            }
+            catch (Exception ex)
             {
-                var xmlDoc = new XmlDocument();
+                CurrentDeskLog.Error(ex.Message, ex);
+                return View("ErrorMessage");
+            }
+        }
+
+        /// <summary>
+        /// This action returns list of market news from
+        /// forexfactory xml file
+        /// </summary>
+        /// <returns></returns>
+        public List<MarketNewsDataModel> GetMarketNews()
+        {
+            List<MarketNewsDataModel> lstMarketNews = new List<MarketNewsDataModel>();
+            try
+>>>>>>> a805afe508b432476f57a3ca13f376297d915f4c
+            {
+                XmlDocument xmlDoc = new XmlDocument();
                 xmlDoc.Load("http://www.forexfactory.com/ffcal_week_this.xml");
                 XmlElement root = xmlDoc.DocumentElement;
                 XmlNodeList nodes = root.SelectNodes("event");
@@ -132,7 +178,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     if (node["date"].InnerText.DateTimeTryParse() >= DateTime.Now.Date)
                     {
-                        var marketNewsData = new MarketNewsDataModel();
+                        MarketNewsDataModel marketNewsData = new MarketNewsDataModel();
                         marketNewsData.NewsDateTime = node["date"].InnerText + " " + node["time"].InnerText;
                         marketNewsData.Currency = node["country"].InnerText;
                         marketNewsData.Title = node["title"].InnerText;
@@ -163,7 +209,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    var lstClientList = new List<IBClientsModel>();
+                    List<IBClientsModel> lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnStatus(status, loginInfo.UserID);
 
@@ -175,7 +221,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = individualDetails.FirstName;
@@ -190,7 +236,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
@@ -205,7 +251,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
@@ -220,6 +266,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
                             {
+<<<<<<< HEAD
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
@@ -302,8 +349,92 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             try
             {
                 if (SessionManagement.UserInfo != null)
+=======
+                                IBClientsModel model = new IBClientsModel();
+                                model.PK_ClientID = client.PK_ClientID;
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                if (trustDetails.FK_TrusteeTypeID == 1)
+                                {
+                                    model.FirstName = trustDetails.TrusteeAuthOfficerFirstName;
+                                    model.LastName = trustDetails.TrusteeAuthOfficerLastName;
+                                    model.CompanyName = trustDetails.TrusteeCompanyName;
+                                }
+                                else if (trustDetails.FK_TrusteeTypeID == 2)
+                                {
+                                    model.FirstName = trustDetails.TrusteeIndividualFirstName;
+                                    model.LastName = trustDetails.TrusteeIndividualLastName;
+                                    model.CompanyName = "N/A";
+                                }
+                                lstClientList.Add(model);
+                            }
+                        }
+                    }
+
+                    //Set IsSeen of all above clients to true before return
+                    clientBO.SetIsSeenForClientsAfterReportShow(status, loginInfo.UserID);
+
+                    return Json(new
+                    {
+                        total = 1,
+                        page = 1,
+                        records = lstClientList.Count,
+                        rows = lstClientList
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                else
                 {
-                    var lstClientList = new List<IBClientsModel>();
+                    return RedirectToAction("Login", "Account", new { Area = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                CurrentDeskLog.Error(ex.Message, ex);
+                return View("ErrorMessage");
+            }
+        }
+
+        /// <summary>
+        /// This action sets IsDismiss to true for each selected client
+        /// </summary>
+        /// <param name="clientIDs">clientIDs</param>
+        /// <param name="status">status</param>
+        /// <returns></returns>
+        public ActionResult DismissSelectedClients(string clientIDs, string status)
+        {
+            try
+            {
+                if (SessionManagement.UserInfo != null)
+                {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+
+                    return Json(clientBO.DismissSelectedClients(clientIDs, status, loginInfo.UserID));
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { Area = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                CurrentDeskLog.Error(ex.Message, ex);
+                return View("ErrorMessage");
+            }
+        }
+
+        /// <summary>
+        /// This action returns list of client details
+        /// with a particular activity and IsActivityDismissed = false
+        /// </summary>
+        /// <param name="status">activity</param>
+        /// <returns></returns>
+        public ActionResult GetClientListOnActivityStatus(string activity)
+        {
+            try
+            {
+                if (SessionManagement.UserInfo != null)
+>>>>>>> a805afe508b432476f57a3ca13f376297d915f4c
+                {
+                    List<IBClientsModel> lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnActivityStatus(activity, loginInfo.UserID);
 
@@ -315,7 +446,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var individualDetails = indAccInfoBO.GetIndividualAccountDetails(client.PK_ClientID);
                             if (individualDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = individualDetails.FirstName;
@@ -330,7 +461,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var jointDetails = jointAccInfoBO.GetJointAccountDetails(client.PK_ClientID);
                             if (jointDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
@@ -345,7 +476,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var corpDetails = corpAccInfoBO.GetCorporateAccountDetails(client.PK_ClientID);
                             if (corpDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
@@ -360,7 +491,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             var trustDetails = trustAccInfoBO.GetTrustAccountDetails(client.PK_ClientID);
                             if (trustDetails != null)
                             {
-                                var model = new IBClientsModel();
+                                IBClientsModel model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
                                 model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
                                 if (trustDetails.FK_TrusteeTypeID == 1)
@@ -441,7 +572,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    var lstUserActivities = new List<UserActivityModel>();
+                    List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
 
                     //Get latest activities
                     var activities = usrActivityBO.GetUserRecentActivityDetails(loginInfo.UserID);
@@ -451,7 +582,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var act in activities)
                     {
-                        var usrAct = new UserActivityModel();
+                        UserActivityModel usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy HH:mm:ss tt");
                         usrAct.IsSeen = (bool)act.IsSeen;
 
@@ -764,7 +895,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    var lstUserActivities = new List<UserActivityModel>();
+                    List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
                     string clientIds = String.Empty;
 
                     var ibClients = clientBO.GetAllClientsOfIB(loginInfo.UserID);
@@ -781,7 +912,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
 
                     foreach (var act in clientActivities)
                     {
-                        var usrAct = new UserActivityModel();
+                        UserActivityModel usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy hh:mm:ss tt");
                         usrAct.IsSeen = (bool)act.IsSeen;
 
@@ -1261,13 +1392,13 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    var monthToDateVol = 0;
-                    var lstTradesVolume = new List<TradesVolume>();
+                    int monthToDateVol = 0;
+                    List<TradesVolume> lstTradesVolume = new List<TradesVolume>();
 
                     //Loop through 1st day of current month to last day
                     for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
                     {
-                        var vol = new TradesVolume();
+                        TradesVolume vol = new TradesVolume();
                         vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
 
                         if (ctDay < DateTime.Now.Day)
@@ -1467,7 +1598,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     //Loop through 1st day of current month to last day
                     for (int ctDay = 1; ctDay <= DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month); ctDay++)
                     {
-                        var vol = new TradesVolume();
+                        TradesVolume vol = new TradesVolume();
                         vol.Day = DateTime.Now.ToString("MMM") + " " + ctDay;
 
                         if (ctDay < DateTime.Now.Day)
@@ -1495,7 +1626,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                     }
 
                     //Add month to volume data to list
-                    var volMonthToDate = new TradesVolume();
+                    TradesVolume volMonthToDate = new TradesVolume();
                     volMonthToDate.Day = "MonthToDate";
                     volMonthToDate.Volume = monthToDateVol;
                     lstTradesVolume.Add(volMonthToDate);
