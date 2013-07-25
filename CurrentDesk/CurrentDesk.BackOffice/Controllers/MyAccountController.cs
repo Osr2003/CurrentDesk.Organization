@@ -55,7 +55,6 @@ namespace CurrentDesk.BackOffice.Controllers
         /// This action returns view model for My Accounts view 
         /// </summary>
         /// <returns></returns>
-        [Authorize]
         public ActionResult Index()
         {
             try
@@ -64,19 +63,19 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     //LoginInformation loginInfo = (LoginInformation)System.Web.HttpContext.Current.Session["UserInfo"];
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    int organizationID = (int)SessionManagement.OrganizationID;
+                    var organizationID = (int)SessionManagement.OrganizationID;
                     string[] currencyIds = clientAccBo.GetDifferentCurrencyAccountOfUser(loginInfo.LogAccountType, loginInfo.UserID).TrimEnd('/').Split('/');
 
                     ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_LIVE, organizationID), "PK_AccountCurrencyID", "L_CurrencyValue.CurrencyValue");
                     ViewData["AccountCode"] = new SelectList(accountCodeBO.GetSelectedAccount(Constants.K_BROKER_LIVE), "PK_AccountID", "AccountName");
                     ViewData["TradingPlatform"] = new SelectList(tradingPlatformBO.GetSelectedPlatform(Constants.K_BROKER_LIVE, organizationID), "PK_TradingPlatformID", "L_TradingPlatformValues.TradingValue");
 
-                    MyAccountModel currModel = new MyAccountModel();
+                    var currModel = new MyAccountModel();
                     currModel.CurrencyAccountDetails = new List<MyAccountCurrencyModel>();
                     
                     foreach (var curr in currencyIds)
                     {
-                        MyAccountCurrencyModel model = new MyAccountCurrencyModel();
+                        var model = new MyAccountCurrencyModel();
                         var landingAccDetails = clientAccBo.GetLandingAccountForCurrencyOfUser(loginInfo.LogAccountType, loginInfo.UserID, Convert.ToInt32(curr));
                         model.CurrencyID = curr;
                         model.CurrencyName = lCurrValueBO.GetCurrencySymbolFromID(Convert.ToInt32(curr));
@@ -125,13 +124,13 @@ namespace CurrentDesk.BackOffice.Controllers
 
             try
             {
-                DataCache marginCache = new DataCache("MarginCache");
+                var marginCache = new DataCache("MarginCache");
                 object objMargin = marginCache.Get(loginid.StringTryParse());
                 if (objMargin != null)
                 {
-                    Margin margin = (Margin)objMargin;
+                    var margin = (Margin)objMargin;
 
-                    MarginDetails marginDetails = new MarginDetails();
+                    var marginDetails = new MarginDetails();
 
                     marginDetails.Equ = margin.Equity.CurrencyFormat();
                     marginDetails.Bal = margin.Balance.CurrencyFormat();
@@ -165,9 +164,9 @@ namespace CurrentDesk.BackOffice.Controllers
 
             try
             {
-                DataCache tradesCache = new DataCache("TradesCache");
+                var tradesCache = new DataCache("TradesCache");
 
-                List<string> lstLogin = new List<string>();
+                var lstLogin = new List<string>();
                 lstLogin.Add(loginid.StringTryParse());
                 IEnumerable<KeyValuePair<string, object>> lstTrades = tradesCache.BulkGet(lstLogin);
                 profits = lstTrades.Select(s => (TradesInfo)s.Value).ToList().Sum(s => s.Profit);
@@ -199,15 +198,15 @@ namespace CurrentDesk.BackOffice.Controllers
 
 
 
-                DataCache marginCache = new DataCache("MarginCache");
+                var marginCache = new DataCache("MarginCache");
 
-                List<string> lstStrLogin = lstLogin.Select(s => s.StringTryParse()).ToList();
+                var lstStrLogin = lstLogin.Select(s => s.StringTryParse()).ToList();
 
                 IEnumerable<KeyValuePair<string, object>> lstMarginsObj = marginCache.BulkGet(lstStrLogin);
                 var lstMargins = lstMarginsObj.Select(s => (Margin)s.Value).ToList();
 
 
-                DataCache tradesCache = new DataCache("TradesCache");
+                var tradesCache = new DataCache("TradesCache");
                 IEnumerable<KeyValuePair<string, object>> lstTrades = tradesCache.BulkGet(lstStrLogin);
                 var lstTradesInfo = lstTrades.Select(s => (TradesInfo)s.Value).ToList();
                 var lstPnl = (from lt in lstTradesInfo
@@ -252,13 +251,13 @@ namespace CurrentDesk.BackOffice.Controllers
         public JsonResult GetEquityList(string strLogin)
         {
 
-            List<MarginDetails> lstMarginDetails = new List<MarginDetails>();
-            List<int> lstLogin = new List<int>();
+            var lstMarginDetails = new List<MarginDetails>();
+            var lstLogin = new List<int>();
 
             try
             {
 
-                //Convert platfoem login to List<int>
+                //Convert platform login to List<int>
                 string[] lstStrLogins = strLogin.Split(new[] { ',' });
                 foreach (var pl in lstStrLogins)
                 {
@@ -266,11 +265,11 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
 
                 //Get Data from cache
-                DataCache marginCache = new DataCache("MarginCache");
+                var marginCache = new DataCache("MarginCache");
                 List<string> lstStrLogin = lstLogin.Select(s => s.StringTryParse()).ToList();
                 IEnumerable<KeyValuePair<string, object>> lstMarginsObj = marginCache.BulkGet(lstStrLogin);
 
-                //Craete a Json Data
+                //Create a Json Data
                 var lstMargins = lstMarginsObj.Select(s => (Margin)s.Value).ToList();
                 foreach (var margin in lstMargins)
                 {
@@ -314,11 +313,11 @@ namespace CurrentDesk.BackOffice.Controllers
                 LoginInformation loginInfo = SessionManagement.UserInfo;
                 var tradingAccs = clientAccBo.GetAllTradingAccountsForCurrency(loginInfo.LogAccountType, loginInfo.UserID, currencyID);
 
-                List<CurrencyAccountModel> tradingAccList = new List<CurrencyAccountModel>();
+                var tradingAccList = new List<CurrencyAccountModel>();
 
                 foreach (var acc in tradingAccs)
                 {
-                    CurrencyAccountModel accModel = new CurrencyAccountModel();
+                    var accModel = new CurrencyAccountModel();
                     if (acc.IsTradingAccount == true)
                     {
                         if (acc.AccountName != null)
@@ -369,7 +368,7 @@ namespace CurrentDesk.BackOffice.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -385,9 +384,9 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    int currLookupValue = accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID));
+                    var currLookupValue = accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID));
 
-                    int accCreationResult = clientAccBo.CreateNewTraderLandingAccount(loginInfo.UserID, currLookupValue);
+                    var accCreationResult = clientAccBo.CreateNewTraderLandingAccount(loginInfo.UserID, currLookupValue);
 
                     //If landing account creation successful
                     if (accCreationResult != 0)
@@ -407,7 +406,7 @@ namespace CurrentDesk.BackOffice.Controllers
             catch (Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -432,7 +431,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         int pkClientAccID = clientAccBo.CreateNewTradingAccount(loginInfo.LogAccountType, loginInfo.UserID, currLookupValue);
 
                         //Create platform trading account
-                        CurrentDesk.Models.User user = new CurrentDesk.Models.User();
+                        var user = new User();
                         user.UserEmailID = loginInfo.UserEmail;
                         AccountCreationController.CreateMetaTraderAccountForUser(pkClientAccID, platformID, user, loginInfo.LogAccountType);
 
@@ -475,14 +474,14 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    AccountDetailsModel model = new AccountDetailsModel();
+                    var model = new AccountDetailsModel();
                     model.TransferLogDetails = new List<TransferLogDetails>();
                     var accountDetails = clientAccBo.GetAccountDetails(accountNumber, organizationID);
                     var latestTransactions = transferLogBO.GetLatestTransactionsForAccount(accountNumber, organizationID);
 
                     foreach (var tran in latestTransactions)
                     {
-                        TransferLogDetails log = new TransferLogDetails();
+                        var log = new TransferLogDetails();
                         log.TransactionDate = Convert.ToDateTime(tran.TransactionDateTime).ToString("dd/MM/yyyy HH:mm:ss tt");
                         log.TransactionType = tran.TransactionType;
                         log.TransactionAmount = Utility.FormatCurrencyValue((decimal)tran.Amount, "");
@@ -553,7 +552,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
                     model.AccountNumber = accountNumber;
@@ -562,7 +561,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     var userBankInfos = bankBO.GetAllBankInfosForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
                         model.BankInformation.Add(bankInfo);
@@ -572,7 +571,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     var landingAccs = clientAccBo.GetAllLandingAccountForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
@@ -607,7 +606,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.TradingAccInformation = new List<TradingAccountGrouped>();
                     model.AccountNumber = accountNumber;
 
@@ -657,7 +656,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    TransfersModel model = new TransfersModel();
+                    var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
                     model.AccountNumber = accountNumber;
@@ -666,7 +665,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     var userBankInfos = bankBO.GetAllBankInfosForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var bank in userBankInfos)
                     {
-                        BankInformation bankInfo = new BankInformation();
+                        var bankInfo = new BankInformation();
                         bankInfo.BankID = bank.PK_BankAccountInformationID;
                         bankInfo.BankName = bank.BankName;
                         bankInfo.BankAccNumber = bank.AccountNumber;
@@ -677,7 +676,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     var landingAccs = clientAccBo.GetAllLandingAccountForUser(loginInfo.LogAccountType, loginInfo.UserID);
                     foreach (var lAcc in landingAccs)
                     {
-                        LandingAccInformation lAccInfo = new LandingAccInformation();
+                        var lAccInfo = new LandingAccInformation();
                         lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 

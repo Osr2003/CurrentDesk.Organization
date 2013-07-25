@@ -46,13 +46,13 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                string tradingAccountNumber = string.Empty;
+                var tradingAccountNumber = string.Empty;
                 var landingAccountNumber = string.Empty;
-                string landingAccCurrencyCode = string.Empty;
-                long lAccNumber = 0;
+                var landingAccCurrencyCode = string.Empty;
+                var lAccNumber = 0L;
 
                 //Get organization id from session
-                int organizationID = (int)SessionManagement.OrganizationID;
+                var organizationID = (int)SessionManagement.OrganizationID;
 
                 var rulelist = accountCreationRuleBO.GetRule(organizationID).OrderBy(c => c.Position);
                 var currencyID = curencyBO.GetCurrencyLookUpID(newClient.FK_AccountCurrencyID);
@@ -127,7 +127,7 @@ namespace CurrentDesk.BackOffice.Controllers
             catch(Exception ex)
             {
                 CurrentDeskLog.Error(ex.Message, ex);
-                throw ex;
+                throw;
             }
         }
 
@@ -140,13 +140,13 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {
-                string tradingAccountNumber = string.Empty;
+                var tradingAccountNumber = string.Empty;
                 var landingAccountNumber = string.Empty;
-                string landingAccCurrencyCode = string.Empty;
-                long lAccNumber = 0;
+                var landingAccCurrencyCode = string.Empty;
+                var lAccNumber = 0L;
 
                 //Get organization id from session
-                int organizationID = (int)SessionManagement.OrganizationID;
+                var organizationID = (int)SessionManagement.OrganizationID;
 
                 var rulelist = accountCreationRuleBO.GetRule(organizationID).OrderBy(c => c.Position);
                 var currencyID = curencyBO.GetCurrencyLookUpID(newIB.FK_AccountCurrencyID);
@@ -235,7 +235,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 user.name = newUser.UserEmailID;
                 user.password = "NewUser";
 
-                MetaTraderWrapperManager manager = new MetaTraderWrapperManager("mtdem01.primexm.com:443", 900, "!FQS123!!");
+                var manager = new MetaTraderWrapperManager("mtdem01.primexm.com:443", 900, "!FQS123!!");
                 if (manager.IsConnected() == 1)
                 {
                     var accStatus = manager.CreateNewUser(user);
@@ -243,7 +243,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     //If success
                     if (accStatus == 0)
                     {
-                        Client_AccountBO clientAccBO = new Client_AccountBO();
+                        var clientAccBO = new Client_AccountBO();
                         clientAccBO.InsertPlatformLoginForTradingAccount(pkClientAccID, fkPlatformID, user.password, user.login);
                         return true;
                     }

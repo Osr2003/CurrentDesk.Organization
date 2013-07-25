@@ -363,8 +363,8 @@
                 "TransactionAmount": $('#txtTranAmt' + pkTransactionID).val().split(',').join(''),
                 "FeeAmount": $('#txtFeeAmt' + pkTransactionID).val().split(',').join(''),
                 "Notes": $('#txtNotes').val(),
-                "ClientName": $('#txtPassword').val()
-            }
+                "adminPassword": $('#txtPassword').val()
+            };
 
             $.post("@Url.Action("ApproveIncomingTransaction", "Transactions")", value, function (data) {
                 if (data) {

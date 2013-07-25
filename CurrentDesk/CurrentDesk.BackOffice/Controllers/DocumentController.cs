@@ -79,7 +79,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<DocumentModel> lstDocument = new List<DocumentModel>();
+                    var lstDocument = new List<DocumentModel>();
 
                     //Get docs required for that account type
                     var reqDocs = r_UserDocumentBO.GetAllDocumentsOfAccountType(loginInfo.AccountType);
@@ -87,7 +87,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     //Iterate through each doc type
                     foreach (var doc in reqDocs)
                     {
-                        DocumentModel document = new DocumentModel();
+                        var document = new DocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -160,7 +160,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    List<DocumentModel> lstDocument = new List<DocumentModel>();
+                    var lstDocument = new List<DocumentModel>();
 
                     //Get broker forms required for that account type
                     var reqBrokerForms = r_UserDocumentBO.GetAllBrokerFormsOfAccountType(loginInfo.AccountType);
@@ -168,7 +168,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     //Iterate through each broker form
                     foreach (var doc in reqBrokerForms)
                     {
-                        DocumentModel document = new DocumentModel();
+                        var document = new DocumentModel();
                         document.DocumentName = doc.Document.DocumentName;
                         document.DocumentID = (int)doc.FK_DocumentID;
 
@@ -206,9 +206,9 @@ namespace CurrentDesk.BackOffice.Controllers
             try
             {
                 //Get extension of the file
-                string ext = System.IO.Path.GetExtension(fileName).ToLower();
+                string ext = Path.GetExtension(fileName).ToLower();
 
-                FileInfo file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
+                var file = new FileInfo(Server.MapPath("~/BrokerForms/" + brokerFormID + ext));
 
                 Response.Clear();
                 Response.ClearHeaders();
@@ -236,7 +236,7 @@ namespace CurrentDesk.BackOffice.Controllers
 
             string contentType = "application/octetstream";
 
-            string ext = System.IO.Path.GetExtension(fileName).ToLower();
+            string ext = Path.GetExtension(fileName).ToLower();
 
             Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
 
@@ -321,7 +321,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         //Get file extension
                         string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
 
-                        FileInfo file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
+                        var file = new FileInfo(Server.MapPath("~/UserDocuments/" + loginInfo.UserID + "-" + docID + fileExt));
 
                         Response.Clear();
                         Response.ClearHeaders();
@@ -354,8 +354,8 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    string fileName = userDocumentBO.ClearUserDocument(loginInfo.UserID, docID);
-                    string fileExt = fileName.Substring(fileName.LastIndexOf('.'));
+                    var fileName = userDocumentBO.ClearUserDocument(loginInfo.UserID, docID);
+                    var fileExt = fileName.Substring(fileName.LastIndexOf('.'));
                     
                     if (fileName != String.Empty)
                     {
@@ -392,7 +392,7 @@ namespace CurrentDesk.BackOffice.Controllers
             try
             {
                 //Get total doc count for account type
-                int docCount = r_UserDocumentBO.GetAllDocumentsOfAccountType(accountTypeID).Count();
+                var docCount = r_UserDocumentBO.GetAllDocumentsOfAccountType(accountTypeID).Count();
                 
                 //Get all docs of client
                 var userDocs = userDocumentBO.GetAllUserDocuments(userID);

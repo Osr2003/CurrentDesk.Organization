@@ -54,7 +54,7 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    DashboardModel model = new DashboardModel();
+                    var model = new DashboardModel();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var userAccInfo = clientAccBO.GetDashboardAccounts(loginInfo.LogAccountType, loginInfo.UserID);
 
@@ -81,13 +81,13 @@ namespace CurrentDesk.BackOffice.Controllers
                     model.MarketNews = GetMarketNews();
 
                     //Get IB userID under which client is present
-                    int IbUserID = clientBO.GetIntroducingBrokerIDOfClient(loginInfo.UserID);
+                    int ibUserID = clientBO.GetIntroducingBrokerIDOfClient(loginInfo.UserID);
                     model.BrokerPromoImgName = String.Empty;
                     
                     //If client is under any IB
-                    if (IbUserID != 0)
+                    if (ibUserID != 0)
                     {
-                        var imgDetail = userImgBO.GetActiveImageOfIB(IbUserID);
+                        var imgDetail = userImgBO.GetActiveImageOfIB(ibUserID);
                         if (imgDetail != null)
                         {
                             var imgExt = imgDetail.ImageName.Substring(imgDetail.ImageName.LastIndexOf('.'));
@@ -116,10 +116,10 @@ namespace CurrentDesk.BackOffice.Controllers
         /// <returns></returns>
         public List<MarketNewsDataModel> GetMarketNews()
         {
-            List<MarketNewsDataModel> lstMarketNews = new List<MarketNewsDataModel>();
+            var lstMarketNews = new List<MarketNewsDataModel>();
             try
             {
-                XmlDocument xmlDoc = new XmlDocument();
+                var xmlDoc = new XmlDocument();
                 xmlDoc.Load("http://www.forexfactory.com/ffcal_week_this.xml");
                 XmlElement root = xmlDoc.DocumentElement;
                 XmlNodeList nodes = root.SelectNodes("event");
@@ -130,7 +130,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     if (node["date"].InnerText.DateTimeTryParse() >= DateTime.Now.Date)
                     {
-                        MarketNewsDataModel marketNewsData = new MarketNewsDataModel();
+                        var marketNewsData = new MarketNewsDataModel();
                         marketNewsData.NewsDateTime = node["date"].InnerText + " " + node["time"].InnerText;
                         marketNewsData.Currency = node["country"].InnerText;
                         marketNewsData.Title = node["title"].InnerText;
@@ -160,7 +160,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
-                    List<UserActivityModel> lstUserActivities = new List<UserActivityModel>();
+                    var lstUserActivities = new List<UserActivityModel>();
 
                     //Get latest activities
                     var activities = usrActivityBO.GetUserRecentActivityDetails(loginInfo.UserID);
@@ -170,7 +170,7 @@ namespace CurrentDesk.BackOffice.Controllers
 
                     foreach (var act in activities)
                     {
-                        UserActivityModel usrAct = new UserActivityModel();
+                        var usrAct = new UserActivityModel();
                         usrAct.ActivityTimestamp = Convert.ToDateTime(act.Timestamp).ToString("dd/MM/yyyy HH:mm:ss tt");
                         usrAct.IsSeen = (bool) act.IsSeen;
 

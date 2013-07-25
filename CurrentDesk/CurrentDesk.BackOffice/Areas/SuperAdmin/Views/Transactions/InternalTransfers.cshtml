@@ -393,8 +393,8 @@
                 "TransactionAmount": $('#txtTranAmt' + pkTransactionID).val().split(',').join(''),
                 "FeeAmount": $('#txtFeeAmt' + pkTransactionID).val().split(',').join(''),
                 "Notes": $('#txtAppvNotes').val(),
-                "ClientName": $('#txtAppvPassword').val()
-            }
+                "adminPassword": $('#txtAppvPassword').val()
+            };
 
             $.post("@Url.Action("ApproveInternalTransferTransaction", "Transactions")", value, function (data) {
                 if (data.status) {

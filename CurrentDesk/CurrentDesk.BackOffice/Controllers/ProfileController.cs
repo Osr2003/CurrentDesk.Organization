@@ -140,7 +140,7 @@ namespace CurrentDesk.BackOffice.Controllers
 
 
                     //Assigning properties to IndividualAccountReviewModel object
-                    IndividualAccountReviewModel model = new IndividualAccountReviewModel();
+                    var model = new IndividualAccountReviewModel();
                     model.Title = clientInformations.Title != null ? (clientInformations.Title == "1" ? "Mr." : "Mrs.") : "";
                     model.FirstName = clientInformations.FirstName ?? "";
                     model.MiddleName = clientInformations.MiddleName ?? "";
@@ -235,7 +235,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     var bankList = new List<BankAccountModel>();
 
                     //Assigning properties to JointAccountReviewModel object
-                    JointAccountReviewModel model = new JointAccountReviewModel();
+                    var model = new JointAccountReviewModel();
                     model.PrimaryAccountHolderTitle = clientInformations.PrimaryAccountHolderTitle != null ? (clientInformations.PrimaryAccountHolderTitle == "1" ? "Mr." : "Mrs.") : "";
                     model.PrimaryAccountHolderFirstName = clientInformations.PrimaryAccountHolderFirstName ?? "";
                     model.PrimaryAccountHolderMiddleName = clientInformations.PrimaryAccountHolderMiddleName ?? "";
@@ -681,7 +681,6 @@ namespace CurrentDesk.BackOffice.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Authorize]
         public ActionResult UpdateIndividualPersonalInformation(PersonalInfoEditModel model)
         {
             try

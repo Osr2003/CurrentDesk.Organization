@@ -211,6 +211,49 @@ namespace CurrentDesk.Repository.CurrentDesk
                 throw;
             }
         }
+
+        /// <summary>
+        /// This method validates admin password while transaction operation
+        /// </summary>
+        /// <param name="userEmail">userEmail</param>
+        /// <param name="password">password</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        public bool ValidateAdmin(string userEmail, string password, int organizationID)
+        {
+            try
+            {
+                using (var unitOfWork = new EFUnitOfWork())
+                {
+                    var currentDeskSecurity = new CurrentDeskSecurity();
+
+                    var userRepo =
+                        new UserRepository(new EFRepository<User>(), unitOfWork);
+
+                    ObjectSet<User> userObjSet =
+                        ((CurrentDeskClientsEntities) userRepo.Repository.UnitOfWork.Context).Users;
+
+                    var selectedUser =
+                        userObjSet.Where(
+                            usr =>
+                            usr.UserEmailID == userEmail &&
+                            usr.FK_OrganizationID == organizationID)
+                                  .FirstOrDefault();
+
+                    if (selectedUser != null)
+                    {
+                        return currentDeskSecurity.GetPassDecrypted(selectedUser.Password) == password ? true : false;
+                    }
+
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
 	}
 
     public class BrokerClients

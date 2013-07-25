@@ -67,7 +67,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    FundingSourceModel model = new FundingSourceModel();
+                    var model = new FundingSourceModel();
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
@@ -97,7 +97,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    List<FundingSourceDetail> lstFundingSources = new List<FundingSourceDetail>();
+                    var lstFundingSources = new List<FundingSourceDetail>();
                     
                     //Get all funding sources
                     var allFundSources = fundSourceBO.GetAllFundSources((int)SessionManagement.OrganizationID);
@@ -105,7 +105,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     //Iterate through each source
                     foreach (var source in allFundSources)
                     {
-                        FundingSourceDetail fundSource = new FundingSourceDetail();
+                        var fundSource = new FundingSourceDetail();
                         fundSource.PK_FundingSourceID = source.PK_FundingSourceID;
                         fundSource.SourceType = GetSourceTypeValueFromID((int)source.SourceType);
                         fundSource.SourceName = source.SourceName;
@@ -175,7 +175,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    FundingSource source = new FundingSource();
+                    var source = new FundingSource();
                     source.SourceType = Convert.ToInt32(newFundSource.SourceType);
                     source.SourceName = newFundSource.SourceName;
                     source.BankName = newFundSource.BankName;
@@ -232,7 +232,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                 //Get details
                 var fundSource = fundSourceBO.GetFundingSourceDetails(pkFundingSourceID);
 
-                FundingSourceDetail detail = new FundingSourceDetail();
+                var detail = new FundingSourceDetail();
                 detail.PK_FundingSourceID = fundSource.PK_FundingSourceID;
                 detail.SourceName = fundSource.SourceName;
                 detail.SourceType = fundSource.SourceType.ToString();
@@ -275,7 +275,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    FundingSource source = new FundingSource();
+                    var source = new FundingSource();
                     source.PK_FundingSourceID = fundSource.PK_FundingSourceID;
                     source.SourceType = Convert.ToInt32(fundSource.SourceType);
                     source.SourceName = fundSource.SourceName;
