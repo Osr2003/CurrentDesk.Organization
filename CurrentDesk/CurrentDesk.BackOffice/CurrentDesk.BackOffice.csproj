@@ -302,9 +302,6 @@
     <Compile Include="Models\TrustAccountModel.cs" />
     <Compile Include="Models\TrustAccountReviewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\BackOfficeCustomMembershipProvider.cs" />
-    <Compile Include="Security\BackOfficeUser.cs" />
-    <Compile Include="Security\BackOfficeUserAlias.cs" />
     <Compile Include="Security\LoginInformation.cs" />
     <Compile Include="Security\LoginVerification.cs" />
     <Compile Include="Security\SessionManagement.cs" />
