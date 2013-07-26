@@ -62,14 +62,14 @@ namespace CurrentDesk.BackOffice.Controllers
                 foreach (var item in rulelist)
                 {
                     //Currency
-                    if (item.Position == (int)AccountCreationPosition.Currency)
+                    if (item.Meaning == Constants.K_ACC_RULE_CURRENCY)
                     {
 
                         tradingAccountNumber += currAccCode + "-";
                         landingAccountNumber += currAccCode + "-";
                     }
                     //Account Number Belonging to that Currency
-                    else if (item.Position == (int)AccountCreationPosition.AccountNumberBelongingToThatCurrency)
+                    else if (item.Meaning == Constants.K_ACC_RULE_CURR_NUMBER)
                     {
                         var template = item.Template;
                         
@@ -85,7 +85,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         landingAccountNumber += landingAccCurrencyCode + "-";
                     }
                     //Client Account Number
-                    else if (item.Position == (int)AccountCreationPosition.ClientAccountNumber)
+                    else if (item.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
                     {
                         var template = item.Template;
                         var existingAccNumber = clientAccBO.GetUserExistingAccountNumber(LoginAccountType.LiveAccount ,newClient.PK_ClientID);
@@ -156,13 +156,13 @@ namespace CurrentDesk.BackOffice.Controllers
                 foreach (var item in rulelist)
                 {
                     //Currency
-                    if (item.Position == (int)AccountCreationPosition.Currency)
+                    if (item.Meaning == Constants.K_ACC_RULE_CURRENCY)
                     {
                         tradingAccountNumber += currAccCode + "-";
                         landingAccountNumber += currAccCode + "-";
                     }
                     //Account Number Belonging to that Currency
-                    else if (item.Position == (int)AccountCreationPosition.AccountNumberBelongingToThatCurrency)
+                    else if (item.Meaning == Constants.K_ACC_RULE_CURR_NUMBER)
                     {
                         var template = item.Template;
                         var tradingAccCount = clientAccBO.GetNumberOfSameCurrencyTradingAccountForUser(LoginAccountType.PartnerAccount ,newIB.PK_IntroducingBrokerID, currencyID);
@@ -176,7 +176,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         landingAccountNumber += landingAccCurrencyCode + "-";
                     }
                     //Client Account Number
-                    else if (item.Position == (int)AccountCreationPosition.ClientAccountNumber)
+                    else if (item.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
                     {
                         var template = item.Template;
                         var existingAccNumber = clientAccBO.GetUserExistingAccountNumber(LoginAccountType.PartnerAccount ,newIB.PK_IntroducingBrokerID);

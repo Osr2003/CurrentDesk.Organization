@@ -143,7 +143,24 @@ namespace CurrentDesk.BackOffice.Security
             }
         }
 
-
+        /// <summary>
+        /// This will store account creation rule information
+        /// </summary>
+        public static AccountNumberRuleInfo AccountRuleInfo
+        {
+            get
+            {
+                if (HttpContext.Current.Session["AccountRuleInfo"] != null)
+                {
+                    return (AccountNumberRuleInfo)HttpContext.Current.Session["AccountRuleInfo"];
+                }
+                return null;
+            }
+            set
+            {
+                HttpContext.Current.Session["AccountRuleInfo"] = value;
+            }
+        }
     }
 }
 

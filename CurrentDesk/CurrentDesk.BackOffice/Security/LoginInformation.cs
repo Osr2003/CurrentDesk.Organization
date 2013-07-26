@@ -26,4 +26,13 @@ namespace CurrentDesk.BackOffice.Security
         public int AccountCode { get; set; }//Trading/Managed/IB/AM
         public LoginAccountType LogAccountType { get; set; }//Live/Partner
     }
+
+    /// <summary>
+    /// This class contains account creation rules data in session
+    /// </summary>
+    public class AccountNumberRuleInfo
+    {
+        public int CurrencyPosition { get; set; }
+        public int AccountNumberPosition { get; set; }
+    }
 }

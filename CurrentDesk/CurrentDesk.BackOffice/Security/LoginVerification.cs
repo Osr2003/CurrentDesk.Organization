@@ -27,75 +27,12 @@ namespace CurrentDesk.BackOffice.Security
     public static class LoginVerification
     {
         /// <summary>
-        /// This action returns true if user is valid user
-        /// and sets required session values
-        /// </summary>
-        /// <param name="username">username</param>
-        /// <param name="password">password</param>
-        /// <returns></returns>
-        public static bool ValidateUser(string username, string password)
-        {
-            bool isValidated = false;
-            int accountType = 0;
-            int userType = 0;
-            int userID = 0;
-            int accountCode = 0;
-            int organizationID = 0;
-            string userDisplayName = string.Empty;           
-
-            try
-            {               
-
-                var userBO = new UserBO();
-                isValidated = userBO.ValidateUser(username, password,ref userID , ref userType, ref accountType, ref accountCode, ref userDisplayName, ref organizationID);
-                
-                //if true
-                if (isValidated)
-                {
-                    var loginInfo = new LoginInformation()
-                    {
-                        UserID = userID,
-                        UserEmail = username,
-                        AccountType = accountType,
-                        AccountCode = accountCode
-                    };
-
-                    if (userType == Constants.K_BROKER_LIVE)
-                    {
-                        loginInfo.LogAccountType =  LoginAccountType.LiveAccount;
-                    }
-                    else if (userType == Constants.K_BROKER_PARTNER)
-                    {
-                        loginInfo.LogAccountType = LoginAccountType.PartnerAccount;
-                    }
-                    else if (userType == Constants.K_BROKER_ADMIN)
-                    {
-                        loginInfo.LogAccountType = LoginAccountType.AdminAccount;
-                    }
-
-                    SessionManagement.UserInfo = loginInfo;
-                    SessionManagement.DisplayName = userDisplayName;
-                    SessionManagement.ImageURL = GetImageURL(loginInfo.UserID);
-                    SessionManagement.IsLoginAuthenticated = true;
-                    SessionManagement.OrganizationID = organizationID;
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// This Function Will Validate User 
         /// With the Organization ID
         /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
+        /// <param name="username">username</param>
+        /// <param name="password">password</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
         public static bool ValidateUser(string username, string password, int organizationID)
         {
@@ -108,13 +45,32 @@ namespace CurrentDesk.BackOffice.Security
 
             try
             {
-
                 var userBO = new UserBO();
                 isValidated = userBO.ValidateUser(username, password,organizationID, ref userID, ref userType, ref accountType, ref accountCode, ref userDisplayName);
 
                 //if true
                 if (isValidated)
                 {
+                    //Get account creation rules
+                    var accCreationRuleBO = new AccountCreationRuleBO();
+                    var rules = accCreationRuleBO.GetRule(organizationID);
+
+                    var ruleInfo = new AccountNumberRuleInfo();
+
+                    //Assign in session variables rules
+                    foreach (var rule in rules)
+                    {
+                        if (rule.Meaning == Constants.K_ACC_RULE_CURRENCY)
+                        {
+                            ruleInfo.CurrencyPosition = (int)rule.Position;
+                        }
+                        else if (rule.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
+                        {
+                            ruleInfo.AccountNumberPosition = (int) rule.Position;
+                        }
+                    }
+
+                    //Assign login info in session
                     var loginInfo = new LoginInformation()
                     {
                         UserID = userID,
@@ -141,6 +97,7 @@ namespace CurrentDesk.BackOffice.Security
                     SessionManagement.ImageURL = GetImageURL(loginInfo.UserID);
                     SessionManagement.IsLoginAuthenticated = true;
                     SessionManagement.OrganizationID = organizationID;
+                    SessionManagement.AccountRuleInfo = ruleInfo;
 
                     return true;
                 }
@@ -158,7 +115,7 @@ namespace CurrentDesk.BackOffice.Security
         /// </summary>
         /// <param name="userID">userID</param>
         /// <returns></returns>
-        public static string GetImageURL(int userID)
+        private static string GetImageURL(int userID)
         {
             try
             {

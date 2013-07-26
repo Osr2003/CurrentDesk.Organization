@@ -96,7 +96,6 @@ namespace CurrentDesk.BackOffice.Controllers
         {
             try
             {               
-                
                 var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
 
                 if (ModelState.IsValid && organizationID != null)
