@@ -144,6 +144,64 @@ namespace CurrentDesk.BackOffice.Security
         }
 
 
+        /// <summary>
+        /// This Will store Image URL
+        /// </summary>
+        public static string OrganizationImagLogoLoginURL
+        {
+            get
+            {
+                if (HttpContext.Current.Session["OrganizationImagLogoLoginURL"] != null)
+                {
+                    return HttpContext.Current.Session["OrganizationImagLogoLoginURL"].ToString();
+                }
+                return string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["OrganizationImagLogoLoginURL"] = value;
+            }
+        }
+
+        /// <summary>
+        /// This Will store Image URL
+        /// </summary>
+        public static string OrganizationImagLogoHeaderURL
+        {
+            get
+            {
+                if (HttpContext.Current.Session["OrganizationImagLogoHeaderURL"] != null)
+                {
+                    return HttpContext.Current.Session["OrganizationImagLogoHeaderURL"].ToString();
+                }
+                return string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["OrganizationImagLogoHeaderURL"] = value;
+            }
+        }
+
+        /// <summary>
+        /// This Will store Image URL
+        /// </summary>
+        public static string OrganizationImagLogoSignUpURL
+        {
+            get
+            {
+                if (HttpContext.Current.Session["OrganizationImagLogoSignUpURL"] != null)
+                {
+                    return HttpContext.Current.Session["OrganizationImagLogoSignUpURL"].ToString();
+                }
+                return string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["OrganizationImagLogoSignUpURL"] = value;
+            }
+        }
+
+
     }
 }
 

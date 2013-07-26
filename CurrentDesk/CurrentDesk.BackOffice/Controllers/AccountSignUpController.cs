@@ -93,6 +93,10 @@ namespace CurrentDesk.BackOffice.Controllers
                 {
                     //Add Organization ID to Session
                     SessionManagement.OrganizationID = organizationID;
+                    //SessionManagement.OrganizationImagLogoHeaderURL = @"/Images/logo.png";
+                    //SessionManagement.OrganizationImagLogoLoginURL =  ;
+                    //SessionManagement.OrganizationImagLogoSignUpURL = ;
+
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["AccountCurrency"] = new SelectList(accountCurrencyBO.GetSelectedCurrency(Constants.K_BROKER_DEMO, (int)organizationID),
@@ -3281,6 +3285,28 @@ namespace CurrentDesk.BackOffice.Controllers
         }
 
         #endregion
+
+        /// <summary>
+        /// This Function will get you signup Images
+        /// </summary>
+        /// <returns>File With Organization ID</returns>
+        public ActionResult GetSignUpImage()
+        {
+            //return File("/Images/logo.png", "image/png");
+
+            //if (SessionManagement.OrganizationID != null)
+            //{
+            //    var fileName = @"/Images/logosignup" + SessionManagement.OrganizationID + ".png";
+            //    return File(fileName, "image/png");
+            //}
+            //else
+            //{
+            //    return File("/Images/logo.png", "image/png");
+            //}
+
+            var fileName = SessionManagement.OrganizationID != null ? @"/Images/logosignup" + SessionManagement.OrganizationID + ".png" : @"/Images/logo.png";
+            return File(fileName, "image/png");
+        }
 
         #endregion
     }

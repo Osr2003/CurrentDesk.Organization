@@ -345,7 +345,9 @@ input.button:disabled {background-position:0 -31px !important;}
 .top-bar {position:relative; height:65px; font-size:1.1em; color:#fff; background:url(../Images/bg-top-bar.png) left top no-repeat;}
 .top-bar a {color:#fff; text-decoration:none;}
 .top-bar h1 {float:left;}
-.top-bar h1 a.logo {display:block; height:65px; width:195px; text-indent:-9000px; background:url(../Images/logo-header.png) left center no-repeat;}
+/*.top-bar h1 a.logo {display:block; height:65px; width:195px; text-indent:-9000px; background:url(../Images/logo-header.png) left center no-repeat;}*/
+
+.top-bar h1 a.logo {display:block; height:65px; width:195px;}
 
 .top-bar .top-right {position:absolute; top:0; right:0; min-width:220px; height:65px; padding:0 20px 0 50px; line-height:65px; text-align:right;}
 .top-bar .top-right {background:url(../Images/bg-top-right-angle.png) 0 0 no-repeat, url(../Images/bg-top-right.png) 0 0 repeat-x;}

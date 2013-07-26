@@ -22,7 +22,7 @@ using System.Web.Security;
 #endregion
 
 namespace CurrentDesk.BackOffice.Controllers
-{    
+{
     /// <summary>
     /// This class represents Account controller handling login
     /// and signout related functionality
@@ -66,8 +66,10 @@ namespace CurrentDesk.BackOffice.Controllers
                 }
 
                 //Check for the existing organization from the URL
-                if (OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri) != null)
+                var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
+                if ( organizationID != null)
                 {
+                    SessionManagement.OrganizationID = organizationID;
                     ViewBag.ReturnUrl = returnUrl;
                     return View();
                 }
@@ -83,7 +85,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 throw;
             }
         }
-       
+
         /// <summary>
         /// On Submission this action will take place
         /// </summary>
@@ -95,8 +97,8 @@ namespace CurrentDesk.BackOffice.Controllers
         public ActionResult Login(LoginModel model, string returnUrl)
         {
             try
-            {               
-                
+            {
+
                 var organizationID = OrganizationUtility.GetOrganizationID(Request.Url.AbsoluteUri);
 
                 if (ModelState.IsValid && organizationID != null)
@@ -156,6 +158,29 @@ namespace CurrentDesk.BackOffice.Controllers
             SessionManagement.Invalidate();
             return RedirectToAction("Login", "Account", FormMethod.Get);
         }
-        
+
+        /// <summary>
+        /// This Function will get us login Image 
+        /// </summary>
+        /// <returns>ReturnFile Name with Image Content</returns>
+        public ActionResult GetLoginImage()
+        {
+            //return File("/Images/logo.png", "image/png");
+
+            var fileName = SessionManagement.OrganizationID != null ? @"/Images/logo-login" + SessionManagement.OrganizationID + ".png" : @"/Images/logo.png";
+            return File(fileName, "image/png");
+
+        }
+
+        /// <summary>
+        /// This Function will get us header image
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult GetHeaderImage()
+        {
+            var fileName = SessionManagement.OrganizationID != null ? @"/Images/logo-header" + SessionManagement.OrganizationID + ".png" : @"/Images/logo.png";
+            return File(fileName, "image/png");
+        }
+
     }
 }
