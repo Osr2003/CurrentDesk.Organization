@@ -927,27 +927,29 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var selectedIB =
                         introducingBrokerObjSet.Where(ib => ib.FK_UserID == userID).FirstOrDefault();
 
-                    //Check for Nullability
+                    //Check for nullability
                     if (selectedIB != null)
                     {
-                        var accountType = (int)selectedIB.FK_AccountTypeID;
+                        //Get account type details
+                        var accTypeBO = new AccountTypeBO();
+                        var accountTypeDetails = accTypeBO.GetAccountTypeAndFormTypeValue((int)selectedIB.FK_AccountTypeID);
 
-                        if (accountType == Constants.K_PARTNER_INDIVIDUAL)
+                        if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                         {
                             var individualAccountBO = new IndividualAccountInformationBO();
                             return individualAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
                         }
-                        else if (accountType == Constants.K_PARTNER_JOINT)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                         {
                             var jointAccountBO = new JointAccountInformationBO();
                             return jointAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
                         }
-                        else if (accountType == Constants.K_PARTNER_CORPORATE)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                         {
                             var corporateAccountBO = new CorporateAccountInformationBO();
                             return corporateAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
                         }
-                        else if (accountType == Constants.K_PARTNER_TRUST)
+                        else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                         {
                             var trustAccountBO = new TrustAccountInformationBO();
                             return trustAccountBO.GetPartnerIndividualName(selectedIB.PK_IntroducingBrokerID);
@@ -997,31 +999,34 @@ namespace CurrentDesk.Repository.CurrentDesk
 
                     List<BrokerClients> lstBrokerClients = new List<BrokerClients>();
 
-                    //Check for Nullability
+                    //Check for nullability
                     if (selectedClient != null)
                     {
                         foreach (var item in selectedClient)
                         {
                             var brokerClient = new BrokerClients();
                             string brokerName = string.Empty;
-                            var accountType = (int)item.FK_AccountTypeID;
+                            
+                            //Get account type details
+                            var accTypeBO = new AccountTypeBO();
+                            var accountTypeDetails = accTypeBO.GetAccountTypeAndFormTypeValue((int)item.FK_AccountTypeID);
 
-                            if (accountType == Constants.K_LIVE_INDIVIDUAL)
+                            if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                             {
                                 var liveInfo = item.IndividualAccountInformations.FirstOrDefault();
                                 brokerName = (liveInfo != null ? liveInfo.FirstName + " " + liveInfo.LastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
                             }
-                            else if (accountType == Constants.K_LIVE_JOINT)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                             {
                                 var jointInfo = item.JointAccountInformations.FirstOrDefault();
                                 brokerName = (jointInfo != null ? jointInfo.PrimaryAccountHolderFirstName + " " + jointInfo.PrimaryAccountHolderLastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
                             }
-                            else if (accountType == Constants.K_LIVE_CORPORATE)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                             {
                                 var corInfo = item.CorporateAccountInformations.FirstOrDefault();
                                 brokerName = (corInfo != null ? corInfo.CompanyName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
                             }
-                            else if (accountType == Constants.K_LIVE_TRUST)
+                            else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                             {
                                 var trustInfo = item.TrustAccountInformations.FirstOrDefault();
                                 brokerName = (trustInfo != null ? trustInfo.TrustName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
