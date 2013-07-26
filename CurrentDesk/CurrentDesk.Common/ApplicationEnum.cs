@@ -39,16 +39,6 @@ namespace CurrentDesk.Common
     }
 
     /// <summary>
-    /// Indicates position of account number creation sub parts
-    /// </summary>
-    public enum AccountCreationPosition
-    {
-        Currency = 1,
-        AccountNumberBelongingToThatCurrency = 2,
-        ClientAccountNumber = 3
-    }
-
-    /// <summary>
     /// Indicates types of Activity by users
     /// </summary>
     public enum ActivityType

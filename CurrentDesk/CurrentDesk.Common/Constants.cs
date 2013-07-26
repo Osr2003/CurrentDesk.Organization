@@ -153,10 +153,15 @@ namespace CurrentDesk.Common
         /// </summary>
         public const int K_META_TRADER_ID = 1;
 
+        //Used for transaction purposes
         public static string K_DEPOSIT = "deposit";
         public static string K_WITHDRAW = "withdraw";
         public static string K_STATUS_PENDING = "pending";
         public static string K_STATUS_TRANSFERRED = "transferred";
 
+        //Account creation rules
+        public const string K_ACC_RULE_CURRENCY = "Currency";
+        public const string K_ACC_RULE_CURR_NUMBER = "Account Number Belonging to that Currency";
+        public const string K_ACC_RULE_ACC_NUMBER = "Client Account Number";
     }
 }
