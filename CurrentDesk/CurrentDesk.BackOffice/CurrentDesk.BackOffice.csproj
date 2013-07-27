@@ -438,6 +438,11 @@
     <Content Include="Images\button-view-edit.png" />
     <Content Include="Images\chosen-sprite%402x.png" />
     <Content Include="Images\chosen-sprite.png" />
+    <Content Include="Images\logo-header1.png" />
+    <Content Include="Images\logo-header2.png" />
+    <Content Include="Images\logo-login1.png" />
+    <Content Include="Images\logo-login2.png" />
+    <Content Include="Images\logosignup1.png" />
     <Content Include="Images\glyphicons-halflings-white.png" />
     <Content Include="Images\glyphicons-halflings.png" />
     <Content Include="Images\icon-accounts.png" />
@@ -503,6 +508,7 @@
     <Content Include="Images\logo-login.png" />
     <Content Include="Images\logo-metatrader4.png" />
     <Content Include="Images\logo.png" />
+    <Content Include="Images\logosignup2.png" />
     <Content Include="Images\notifications-arrow.png" />
     <Content Include="Images\ui-icons_888888_256x240.png" />
     <Content Include="MarketingImages\1.jpg" />

@@ -25,7 +25,10 @@
             <!-- Universal Top Bar Section -->
             <div class="top-bar">
                 <!-- Client Logo with link to dashboard -->
-                <h1><a class="logo" href="#">Page Title</a></h1>
+                @*<h1><a class="logo" href="#">Page Title</a></h1>*@
+                <h1><a class="logo" href="#">
+                    <img src ="@Url.Action("GetHeaderImage", "Account", new { Area = "" })" />
+                    </a></h1>
                 <!-- Notifications section -->
                 <div class="notifications"><a href="#" class="alert-linkMain"><span class="icon"></span><span class="alert">3</span>Notifications</a></div>
                 <!-- User and logout information -->

@@ -31,7 +31,8 @@
                     </nav>
                 </div>
             </div>*@
-            <div class="header"><img src="~/Images/logo.png" alt="FastQuote Securities" /></div>
+           @* <div class="header"><img src="~/Images/logo.png" alt="FastQuote Securities" /></div>*@
+            <div class="header"><img src="@Url.Action("GetSignUpImage", "AccountSignUp")" alt="FastQuote Securities" /></div>
         </header>
     <div id="body">
         @RenderSection("featured", required: false)

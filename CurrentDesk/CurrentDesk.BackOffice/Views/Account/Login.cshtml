@@ -20,7 +20,8 @@
 
         <div class="login-wrapper">
             <header>
-                <img src=@Url.Content("~/Images/logo-login.png") alt="FastQuote Securities"></header>
+                @*<img src=@Url.Content("~/Images/logo-login.png") alt="FastQuote Securities"></header>*@
+                <img src="@Url.Action("GetLoginImage","Account")" alt="FastQuote Securities"></header>
             <form>
                 <dl class="left-fields">
                     <dt>
