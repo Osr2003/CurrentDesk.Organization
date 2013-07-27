@@ -76,6 +76,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
                     //Get setting from database
@@ -88,7 +89,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     }
                     ViewData["FundingSource"] = new SelectList(fundSourceBO.GetAllTransferFundSources(organizationID), "PK_FundingSourceID", "SourceName");
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID, ruleInfo.AccountNumberPosition - 1), "UserID", "DisplayName");
 
                     return View();
                 }
@@ -351,7 +352,9 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker((int)SessionManagement.OrganizationID), "UserID", "DisplayName");
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker((int)SessionManagement.OrganizationID, ruleInfo.AccountNumberPosition - 1), "UserID", "DisplayName");
                     return View();
                 }
                 else
@@ -689,6 +692,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
                     var model = new InternalTransferModel();
 
@@ -707,7 +711,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
 
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
                     ViewData["Approval"] = new SelectList(ExtensionUtility.GetAllApprovalOptions(), "ID", "Value");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID, ruleInfo.AccountNumberPosition - 1), "UserID", "DisplayName");
 
                     return View(model);
                 }
@@ -998,8 +1002,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     //Validate admin password
                     if (userBO.ValidateAdmin(loginInfo.UserEmail, newTransfer.AdminPassword, organizationID))
                     {
+                        //Get from acc details
+                        var accountDetails = clientAccBO.GetAnyAccountDetails(newTransfer.FromClientAccount, organizationID);
+
                         //Get balance for accounts
-                        decimal accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount, organizationID);
+                        decimal accBalance = accountDetails != null ? (decimal)accountDetails.CurrentBalance : 0;
                         decimal pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount, organizationID);
                         
                         //Check balance
@@ -1127,6 +1134,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
                     var model = new InternalTransferModel();
 
@@ -1147,7 +1155,7 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
 
                     ViewData["Currency"] = new SelectList(currencyBO.GetCurrencies(), "PK_CurrencyValueID", "CurrencyValue");
                     ViewData["Approval"] = new SelectList(ExtensionUtility.GetAllApprovalOptions(), "ID", "Value");
-                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID), "UserID", "DisplayName");
+                    ViewData["Clients"] = new SelectList(userBO.GetAllClientsOfBroker(organizationID, ruleInfo.AccountNumberPosition - 1), "UserID", "DisplayName");
 
                     return View(model);
                 }
@@ -1548,8 +1556,11 @@ namespace CurrentDesk.BackOffice.Areas.SuperAdmin.Controllers
                     //Validate admin password
                     if (userBO.ValidateAdmin(loginInfo.UserEmail, newTransfer.AdminPassword, organizationID))
                     {
+                        //Get from acc details
+                        var accountDetails = clientAccBO.GetAnyAccountDetails(newTransfer.FromClientAccount, organizationID);
+
                         //Get balance for accounts
-                        var accBalance = clientAccBO.GetAccountBalance(newTransfer.FromClientAccount, organizationID);
+                        var accBalance = accountDetails != null ? accountDetails.CurrentBalance : 0;
                         var pendingTransactionAmount = adminTransactionBO.GetPendingTransferAmount(newTransfer.FromClientAccount, organizationID);
 
                         //Check balance

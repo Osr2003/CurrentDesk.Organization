@@ -217,7 +217,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
 
-                    return (Json(clientAccBo.CreateNewLandingAccount(loginInfo.LogAccountType, loginInfo.UserID, accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID)))));
+                    return (Json(clientAccBo.CreateNewLandingAccount(loginInfo.LogAccountType, loginInfo.UserID, accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID)), (int)SessionManagement.OrganizationID)));
                 }
                 else
                 {
@@ -319,10 +319,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
                     var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
@@ -344,7 +346,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
                         lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");

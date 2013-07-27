@@ -71,10 +71,12 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
                     var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
@@ -95,7 +97,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 
@@ -334,9 +336,10 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    var currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
+                    var currID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[ruleInfo.CurrencyPosition - 1]);
                     var clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
 
                     //Get transaction settings from database
@@ -543,10 +546,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var organizationID = (int) SessionManagement.OrganizationID;
 
-                    var fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[0]);
-                    var toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[0]);
+                    var fromCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(fromAcc.Split('-')[ruleInfo.CurrencyPosition - 1]);
+                    var toCurrID = lCurrValueBO.GetCurrencyIDFromAccountCode(toAcc.Split('-')[ruleInfo.CurrencyPosition - 1]);
 
                     var clientName = introducingBrokerBO.GetPartnerName(loginInfo.UserID);
 

@@ -163,8 +163,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
+                    var lstClientList = new List<IBClientsModel>();
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnStatus(status, loginInfo.UserID);
 
                     foreach (var client in clientsOfIB)
@@ -177,7 +179,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = individualDetails.FirstName;
                                 model.LastName = individualDetails.LastName;
                                 model.CompanyName = "N/A";
@@ -192,7 +194,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
                                 model.LastName = jointDetails.PrimaryAccountHolderLastName;
                                 model.CompanyName = "N/A";
@@ -207,7 +209,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
                                 model.LastName = corpDetails.AuthOfficerLastName;
                                 model.CompanyName = corpDetails.CompanyName;
@@ -222,7 +224,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 if (trustDetails.FK_TrusteeTypeID == 1)
                                 {
                                     model.FirstName = trustDetails.TrusteeAuthOfficerFirstName;
@@ -303,8 +305,10 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
+                    var lstClientList = new List<IBClientsModel>();
                     var clientsOfIB = clientBO.GetAllClientsOfIBOnActivityStatus(activity, loginInfo.UserID);
 
                     foreach (var client in clientsOfIB)
@@ -317,7 +321,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = individualDetails.FirstName;
                                 model.LastName = individualDetails.LastName;
                                 model.CompanyName = "N/A";
@@ -332,7 +336,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
                                 model.LastName = jointDetails.PrimaryAccountHolderLastName;
                                 model.CompanyName = "N/A";
@@ -347,7 +351,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
                                 model.LastName = corpDetails.AuthOfficerLastName;
                                 model.CompanyName = corpDetails.CompanyName;
@@ -362,7 +366,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 if (trustDetails.FK_TrusteeTypeID == 1)
                                 {
                                     model.FirstName = trustDetails.TrusteeAuthOfficerFirstName;
@@ -764,6 +768,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
                     var lstUserActivities = new List<UserActivityModel>();
                     string clientIds = String.Empty;
 
@@ -828,7 +833,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 act.User.Clients.FirstOrDefault()
                                    .IndividualAccountInformations.FirstOrDefault()
                                    .LastName;
-                            string clientAccountID = act.TransferActivities.FirstOrDefault().ToAccount.Split('-')[2];
+                            string clientAccountID = act.TransferActivities.FirstOrDefault().ToAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                             int clientID = act.User.Clients.FirstOrDefault().PK_ClientID;
 
                             if (act.TransferActivities.FirstOrDefault().TransferStatus == Constants.K_STATUS_TRANSFERRED)
@@ -954,7 +959,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                 act.User.Clients.FirstOrDefault()
                                    .IndividualAccountInformations.FirstOrDefault()
                                    .LastName;
-                            string clientAccountID = act.ConversionActivities.FirstOrDefault().ToAccount.Split('-')[2];
+                            string clientAccountID = act.ConversionActivities.FirstOrDefault().ToAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                             int clientID = act.User.Clients.FirstOrDefault().PK_ClientID;
 
                             if (act.ConversionActivities.FirstOrDefault().ConversionStatus ==
@@ -1150,7 +1155,7 @@ namespace CurrentDesk.BackOffice.Areas.IntroducingBroker.Controllers
                                    .IndividualAccountInformations.FirstOrDefault()
                                    .LastName;
                             string clientAccountID =
-                                act.DepositOrWithdrawActivities.FirstOrDefault().AccountNumber.Split('-')[2];
+                                act.DepositOrWithdrawActivities.FirstOrDefault().AccountNumber.Split('-')[ruleInfo.AccountNumberPosition - 1];
                             int clientID = act.User.Clients.FirstOrDefault().PK_ClientID;
 
                             //Deposit

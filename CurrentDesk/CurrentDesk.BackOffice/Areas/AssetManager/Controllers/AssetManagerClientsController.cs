@@ -99,8 +99,10 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
-                    var lstClientList = new List<IBClientsModel>();
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
+                    var lstClientList = new List<IBClientsModel>();
                     var clientsOfIB = clientBO.GetAllClientsOfIB(loginInfo.UserID);
 
                     foreach (var client in clientsOfIB)
@@ -116,7 +118,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = individualDetails.FirstName;
                                 model.LastName = individualDetails.LastName;
                                 model.CompanyName = "N/A";
@@ -133,7 +135,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = jointDetails.PrimaryAccountHolderFirstName;
                                 model.LastName = jointDetails.PrimaryAccountHolderLastName;
                                 model.CompanyName = "N/A";
@@ -150,7 +152,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.FirstName = corpDetails.AuthOfficerFirstName;
                                 model.LastName = corpDetails.AuthOfficerLastName;
                                 model.CompanyName = corpDetails.CompanyName;
@@ -167,7 +169,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                             {
                                 var model = new IBClientsModel();
                                 model.PK_ClientID = client.PK_ClientID;
-                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2];
+                                model.AccountID = client.Client_Account.FirstOrDefault().LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1];
                                 model.Activity = clientAccBo.GetClientActivityStatus(client.PK_ClientID);
                                 model.Status = client.Status;
                                 if (trustDetails.FK_TrusteeTypeID == 1)
@@ -367,6 +369,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Agents"] = new SelectList(agentBO.GetAllAgentsOfIB(loginInfo.UserID), "PK_AgentID", "FirstName");
 
                     var model = new ClientDetailsModel();
@@ -404,7 +408,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 model.IdInfo = individualDetails.FK_IDInformationID != null ? idInfoTypeBO.GetSelectedIDInformation((int)individualDetails.FK_IDInformationID) : "";
                                 model.IdNumber = individualDetails.IDNumber != null ? individualDetails.IDNumber : "";
                                 model.ResidenceCountry = countryBO.GetSelectedCountry((int)individualDetails.FK_ResidenceCountryID);
-                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                                 model.PhoneID = individualDetails.PhoneID ?? "";
 
                                 model.ResidentialAddLine1 = individualDetails.ResidentialAddress != null ? (individualDetails.ResidentialAddress.Split('@')[0] + " " + individualDetails.ResidentialAddress.Split('@')[1]) : "";
@@ -468,7 +472,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 model.IdInfo = jointDetails.FK_PrimaryAccountHolderIDTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)jointDetails.FK_PrimaryAccountHolderIDTypeID) : "";
                                 model.IdNumber = jointDetails.PrimaryAccountHolderIDNumber != null ? jointDetails.PrimaryAccountHolderIDNumber : "";
                                 model.ResidenceCountry = countryBO.GetSelectedCountry((int)jointDetails.FK_PrimaryAccountHolderResidenceCountryID);
-                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                                 model.PhoneID = jointDetails.PhoneID ?? "";
 
                                 model.ResidentialAddLine1 = jointDetails.ResidentialAddress != null ? (jointDetails.ResidentialAddress.Split('@')[0] + " " + jointDetails.ResidentialAddress.Split('@')[1]) : "";
@@ -531,7 +535,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                 model.IdInfo = corpDetails.FK_AuthOfficerInformationTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)corpDetails.FK_AuthOfficerInformationTypeID) : "";
                                 model.IdNumber = corpDetails.AuthOfficerIDNumber != null ? corpDetails.AuthOfficerIDNumber : "";
                                 model.ResidenceCountry = countryBO.GetSelectedCountry((int)corpDetails.FK_AuthOfficerResidenceCountryID);
-                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                                 model.PhoneID = corpDetails.PhoneID ?? "";
 
                                 model.ResidentialAddLine1 = corpDetails.AuthOfficerAddress != null ? (corpDetails.AuthOfficerAddress.Split('@')[0] + " " + corpDetails.AuthOfficerAddress.Split('@')[1]) : "";
@@ -631,7 +635,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                                     model.MobileNumber = Convert.ToInt64(trustDetails.TrusteeIndividualMobileNumber.Split('-')[1]);
                                 }
                                 model.EmailAddress = userInformation.UserEmailID ?? "";
-                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                                model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                                 if (bankInformationList != null)
                                 {
                                     foreach (var item in bankInformationList)
@@ -1208,6 +1212,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
                     var model = new TransfersModel();
@@ -1232,7 +1238,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 
@@ -1273,6 +1279,8 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
 
@@ -1298,7 +1306,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
                         lAccInfo.LAccCustomName = lAcc.AccountName;
 

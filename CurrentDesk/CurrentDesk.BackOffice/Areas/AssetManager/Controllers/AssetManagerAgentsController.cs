@@ -208,6 +208,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     var agentDetail = agentBO.GetAgentDetails(agentID, loginInfo.UserID);
                     var model = new AgentDetailsModel();
@@ -239,7 +240,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
 
                     //For referral links
                     ViewData["CustomizedLink"] = introducingBrokerBO.GetCustomizedLinkOfIB(loginInfo.UserID);
-                    ViewData["AccountNumber"] = clientAccBO.GetAccountNumberOfUser(loginInfo.LogAccountType, loginInfo.UserID).Split('-')[2];
+                    ViewData["AccountNumber"] = clientAccBO.GetAccountNumberOfUser(loginInfo.LogAccountType, loginInfo.UserID).Split('-')[ruleInfo.AccountNumberPosition - 1];
 
                     return View(model);
                 }

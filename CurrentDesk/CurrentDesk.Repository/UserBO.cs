@@ -211,8 +211,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// This method returns all clients of broker with name and account number
         /// </summary>
         /// <param name="organizationID">organizationID</param>
+        /// <param name="accountNumberPosition">accountNumberPosition</param>
         /// <returns></returns>
-        public List<BrokerClients> GetAllClientsOfBroker(int organizationID)
+        public List<BrokerClients> GetAllClientsOfBroker(int organizationID, int accountNumberPosition)
         {
             try
             {
@@ -232,8 +233,8 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var allClients = userObjSet.Where(usr => usr.FK_OrganizationID == organizationID && (usr.FK_UserTypeID == Constants.K_BROKER_LIVE || usr.FK_UserTypeID == Constants.K_BROKER_PARTNER)).ToList();
 
                     //Get live and partner clients names with a/c numbers
-                    var liveClients = clientBO.GetClientNames(allClients);
-                    var partnerClients = introducingBrokerBO.GetPartnerNames(allClients);
+                    var liveClients = clientBO.GetClientNames(allClients, accountNumberPosition);
+                    var partnerClients = introducingBrokerBO.GetPartnerNames(allClients, accountNumberPosition);
 
                     //Merger both and add to list
                     lstAllClients.AddRange(liveClients);

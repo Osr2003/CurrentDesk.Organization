@@ -25,6 +25,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method logs fund transfer details(Withdrawal/Deposit) in TransferLogs table
         /// </summary>
+        /// <param name="pkTransactionID">pkTransactionID</param>
         /// <param name="fromAcc">fromAcc</param>
         /// <param name="toAcc">toAcc</param>
         /// <param name="fromCurrID">fromCurrID</param>
@@ -170,6 +171,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method logs fund transfer details(Withdrawal/Deposit) in TransferLogs table
         /// </summary>
+        /// <param name="pkTransactionID">pkTransactionID</param>
         /// <param name="fromAcc">fromAcc</param>
         /// <param name="toAcc">toAcc</param>
         /// <param name="fromCurrID">fromCurrID</param>
@@ -326,6 +328,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This method logs fee transfer details in TransferLogs table
         /// </summary>
+        /// <param name="pkTransactionID">pkTransactionID</param>
         /// <param name="fromAcc">fromAcc</param>
         /// <param name="fromCurrID">fromCurrID</param>
         /// <param name="toCurrID">toCurrID</param>

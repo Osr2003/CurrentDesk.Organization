@@ -204,24 +204,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                         newTradingAcc.CurrentBalance = Convert.ToDecimal(0.00);
                         newTradingAcc.IsLandingAccount = false;
                         newTradingAcc.IsTradingAccount = false;
-
-                        //Create rebate account if AM and set above 
-                        //rebate acc as trading acc for AM
-                        //if (fkAccountID == Constants.K_ACCTCODE_AM)
-                        //{
-                        //    newAssetRebateAcc.FK_IntroducingBrokerID = pkClientOrIBID;
-                        //    newAssetRebateAcc.FK_CurrencyID = pkCurrencyID;
-                        //    newAssetRebateAcc.TradingAccount = tradingAcc.Split('-')[0] + "-002-" + tradingAcc.Split('-')[2];
-                        //    newAssetRebateAcc.LandingAccount = landingAcc;
-                        //    newAssetRebateAcc.AccountNumber = accNumber;
-                        //    newAssetRebateAcc.CurrentBalance = Convert.ToDecimal(0.00);
-                        //    newAssetRebateAcc.IsLandingAccount = false;
-                        //    newAssetRebateAcc.IsTradingAccount = false;
-
-                        //    newTradingAcc.IsTradingAccount = true;
-
-                        //    clientAccRepo.Add(newAssetRebateAcc);
-                        //}
                     }
 
                     clientAccRepo.Add(newLandingAcc);
@@ -595,8 +577,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="accType">accType</param>
         /// <param name="userID">userID</param>
         /// <param name="currID">currID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns>bool</returns>
-        public bool CreateNewLandingAccount(LoginAccountType accType, int userID, int currID)
+        public bool CreateNewLandingAccount(LoginAccountType accType, int userID, int currID, int organizationID)
         {
             try
             {
@@ -608,8 +591,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
-
-                    L_CurrencyValueBO currencyBO = new L_CurrencyValueBO();
 
                     //Check if same landing account is present
                     var checkIfLandingAccExists = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID && acc.FK_CurrencyID == currID).FirstOrDefault();
@@ -627,7 +608,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         newLandingAcc.FK_OrganizationID = existingUserAccNumber.FK_OrganizationID;
                         newLandingAcc.FK_CurrencyID = currID;
                         newLandingAcc.AccountNumber = existingUserAccNumber.AccountNumber;
-                        newLandingAcc.LandingAccount = currencyBO.GetCurrencyAccountCode(currID) + "-" + existingUserAccNumber.LandingAccount.Split('-')[1] + "-" + existingUserAccNumber.LandingAccount.Split('-')[2];
+                        newLandingAcc.LandingAccount = CreateNewLandingAccByRules(currID, existingUserAccNumber.LandingAccount, organizationID);
                         newLandingAcc.CurrentBalance = Convert.ToDecimal(0.00);
                         newLandingAcc.IsLandingAccount = true;
 
@@ -635,7 +616,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                         clientAccRepo.Save();
 
                         //Add managed account
-                        CreateNewManagedAccount(accType, userID, currID);
+                        CreateNewManagedAccount(accType, userID, currID, organizationID);
 
                         return true;
                     }
@@ -650,12 +631,66 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method creates new landing account as per rules from db
+        /// </summary>
+        /// <param name="currID">currID</param>
+        /// <param name="existingAcc">existingAcc</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        private string CreateNewLandingAccByRules(int currID, string existingAcc, int organizationID)
+        {
+            try
+            {
+                var landingAccountNumber = string.Empty;
+                var landingAccCurrencyCode = string.Empty;
+                var accountCreationRuleBO = new AccountCreationRuleBO();
+                var currencyBO = new L_CurrencyValueBO();
+
+                //Get rules from db
+                var rulelist = accountCreationRuleBO.GetRule(organizationID).OrderBy(c => c.Position);
+
+                //Iterating through each rule/steps of account creation
+                foreach (var item in rulelist)
+                {
+                    //Currency
+                    if (item.Meaning == Constants.K_ACC_RULE_CURRENCY)
+                    {
+                        landingAccountNumber += currencyBO.GetCurrencyAccountCode(currID) + "-";
+                    }
+                    //Account Number Belonging to that Currency
+                    else if (item.Meaning == Constants.K_ACC_RULE_CURR_NUMBER)
+                    {
+                        //Required for creating landing account
+                        for (var ctDigit = 0; ctDigit < item.Template.Length; ctDigit++)
+                        {
+                            landingAccCurrencyCode += "0";
+                        }
+                        landingAccountNumber += landingAccCurrencyCode + "-";
+                    }
+                    //Client Account Number
+                    else if (item.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
+                    {
+                        landingAccountNumber += existingAcc.Split('-')[(int)item.Position - 1] + "-";
+                    }
+                }
+
+                return landingAccountNumber.TrimEnd('-');
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method creates trader new landing account
         /// </summary>
         /// <param name="userID">userID</param>
         /// <param name="currID">currID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
-        public int CreateNewTraderLandingAccount(int userID, int currID)
+        public int CreateNewTraderLandingAccount(int userID, int currID, int organizationID)
         {
             try
             {
@@ -668,8 +703,6 @@ namespace CurrentDesk.Repository.CurrentDesk
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
-                    L_CurrencyValueBO currencyBO = new L_CurrencyValueBO();
-
                     //Check if same landing account is present
                     var checkIfLandingAccExists = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true).FirstOrDefault();
                     if (checkIfLandingAccExists != null)
@@ -681,15 +714,13 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var existingUserAccNumber = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID).FirstOrDefault();
                     if (existingUserAccNumber != null)
                     {
-                        string accNumber = existingUserAccNumber.LandingAccount.Split('-')[2];
-
                         //Add landing acc
                         Client_Account newLandingAcc = new Client_Account();
                         newLandingAcc.FK_ClientID = existingUserAccNumber.FK_ClientID;
                         newLandingAcc.FK_OrganizationID = existingUserAccNumber.FK_OrganizationID;
                         newLandingAcc.FK_CurrencyID = currID;
                         newLandingAcc.AccountNumber = existingUserAccNumber.AccountNumber;
-                        newLandingAcc.LandingAccount = currencyBO.GetCurrencyAccountCode(currID) + "-" + existingUserAccNumber.LandingAccount.Split('-')[1] + "-" + existingUserAccNumber.LandingAccount.Split('-')[2];
+                        newLandingAcc.LandingAccount = CreateNewLandingAccByRules(currID, existingUserAccNumber.LandingAccount, organizationID);
                         newLandingAcc.CurrentBalance = Convert.ToDecimal(0.00);
                         newLandingAcc.IsLandingAccount = true;
 
@@ -714,8 +745,9 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <param name="accType">accType</param>
         /// <param name="userID">userID</param>
         /// <param name="currID">currID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
-        public int CreateNewTradingAccount(LoginAccountType accType, int userID, int currID)
+        public int CreateNewTradingAccount(LoginAccountType accType, int userID, int currID, int organizationID)
         {
             try
             {
@@ -724,7 +756,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                                 new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 
@@ -733,16 +765,19 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Live
                     if (accType == LoginAccountType.LiveAccount)
                     {
+                        //Get landing acc
+                        var landingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true).FirstOrDefault();
                         //Check if trading account is present of same currency
                         var tradingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == false).ToList();
-                        if (tradingAcc != null)
+
+                        if (landingAcc != null)
                         {
-                            newTradingAcc.FK_ClientID = tradingAcc.FirstOrDefault().FK_ClientID;
-                            newTradingAcc.FK_OrganizationID = tradingAcc.FirstOrDefault().FK_OrganizationID;
+                            newTradingAcc.FK_ClientID = landingAcc.FK_ClientID;
+                            newTradingAcc.FK_OrganizationID = landingAcc.FK_OrganizationID;
                             newTradingAcc.FK_CurrencyID = currID;
-                            newTradingAcc.LandingAccount = tradingAcc.FirstOrDefault().LandingAccount;
-                            newTradingAcc.AccountNumber = tradingAcc.FirstOrDefault().AccountNumber;
-                            newTradingAcc.TradingAccount = tradingAcc.FirstOrDefault().TradingAccount.Split('-')[0] + "-" + (tradingAcc.Count() + 1).ToString("D3") + "-" + tradingAcc.FirstOrDefault().TradingAccount.Split('-')[2];
+                            newTradingAcc.LandingAccount = landingAcc.LandingAccount;
+                            newTradingAcc.AccountNumber = landingAcc.AccountNumber;
+                            newTradingAcc.TradingAccount = CreateNewTradingAccByRules(landingAcc.LandingAccount, tradingAcc.Count(), organizationID);
                             newTradingAcc.CurrentBalance = Convert.ToDecimal(0.00);
                             newTradingAcc.IsLandingAccount = false;
                             newTradingAcc.IsTradingAccount = true;
@@ -755,16 +790,19 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Partner
                     else if (accType == LoginAccountType.PartnerAccount)
                     {
+                        //Get landing acc
+                        var landingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true).FirstOrDefault();
                         //Check if trading account is present of same currency
                         var tradingAcc = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == false).ToList();
-                        if (tradingAcc != null)
+
+                        if (landingAcc != null)
                         {
-                            newTradingAcc.FK_IntroducingBrokerID = tradingAcc.FirstOrDefault().FK_IntroducingBrokerID;
-                            newTradingAcc.FK_OrganizationID = tradingAcc.FirstOrDefault().FK_OrganizationID;
+                            newTradingAcc.FK_IntroducingBrokerID = landingAcc.FK_IntroducingBrokerID;
+                            newTradingAcc.FK_OrganizationID = landingAcc.FK_OrganizationID;
                             newTradingAcc.FK_CurrencyID = currID;
-                            newTradingAcc.LandingAccount = tradingAcc.FirstOrDefault().LandingAccount;
-                            newTradingAcc.AccountNumber = tradingAcc.FirstOrDefault().AccountNumber;
-                            newTradingAcc.TradingAccount = tradingAcc.FirstOrDefault().TradingAccount.Split('-')[0] + "-" + (tradingAcc.Count() + 1).ToString("D3") + "-" + tradingAcc.FirstOrDefault().TradingAccount.Split('-')[2];
+                            newTradingAcc.LandingAccount = landingAcc.LandingAccount;
+                            newTradingAcc.AccountNumber = landingAcc.AccountNumber;
+                            newTradingAcc.TradingAccount = CreateNewTradingAccByRules(landingAcc.LandingAccount, tradingAcc.Count(), organizationID);
                             newTradingAcc.CurrentBalance = Convert.ToDecimal(0.00);
                             newTradingAcc.IsLandingAccount = false;
                             newTradingAcc.IsTradingAccount = true;
@@ -785,13 +823,60 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
+        /// This method creates new trading/managed account number as per rules
+        /// </summary>
+        /// <param name="existingAcc">existingAcc</param>
+        /// <param name="tradingAccCount">tradingAccCount</param>
+        /// <param name="organizationID">organizationID</param>
+        /// <returns></returns>
+        private string CreateNewTradingAccByRules(string existingAcc, int tradingAccCount, int organizationID)
+        {
+            try
+            {
+                var tradingAccountNumber = string.Empty;
+                var accountCreationRuleBO = new AccountCreationRuleBO();
+                
+                //Get rules from db
+                var rulelist = accountCreationRuleBO.GetRule(organizationID).OrderBy(c => c.Position);
+
+                //Iterating through each rule/steps of account creation
+                foreach (var item in rulelist)
+                {
+                    //Currency
+                    if (item.Meaning == Constants.K_ACC_RULE_CURRENCY)
+                    {
+                        tradingAccountNumber += existingAcc.Split('-')[(int)item.Position - 1] + "-";
+                    }
+                    //Account Number Belonging to that Currency
+                    else if (item.Meaning == Constants.K_ACC_RULE_CURR_NUMBER)
+                    {
+                        tradingAccountNumber += (tradingAccCount + 1).ToString("D" + item.Template.Length) + "-";
+                    }
+                    //Client Account Number
+                    else if (item.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
+                    {
+                        tradingAccountNumber += existingAcc.Split('-')[(int)item.Position - 1] + "-";
+                    }
+                }
+
+                return tradingAccountNumber.TrimEnd('-');
+            }
+            catch (Exception ex)
+            {
+                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
+                throw;
+            }
+        }
+
+        /// <summary>
         /// This method creates new managed account in database
         /// </summary>
         /// <param name="accType">accType</param>
         /// <param name="userID">userID</param>
         /// <param name="currID">currID</param>
+        /// <param name="organizationID">organizationID</param>
         /// <returns></returns>
-        public int CreateNewManagedAccount(LoginAccountType accType, int userID, int currID)
+        public int CreateNewManagedAccount(LoginAccountType accType, int userID, int currID, int organizationID)
         {
             try
             {
@@ -810,16 +895,16 @@ namespace CurrentDesk.Repository.CurrentDesk
                     if (accType == LoginAccountType.LiveAccount)
                     {
                         //Check if trading account is present of same currency
-                        var landingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true);
+                        var landingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true).FirstOrDefault();
                         var tradingAcc = clientAccObjSet.Include("Client").Where(acc => acc.Client.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == false).ToList();
                         if (landingAcc != null)
                         {
-                            newManagedAcc.FK_ClientID = landingAcc.FirstOrDefault().FK_ClientID;
-                            newManagedAcc.FK_OrganizationID = landingAcc.FirstOrDefault().FK_OrganizationID;
+                            newManagedAcc.FK_ClientID = landingAcc.FK_ClientID;
+                            newManagedAcc.FK_OrganizationID = landingAcc.FK_OrganizationID;
                             newManagedAcc.FK_CurrencyID = currID;
-                            newManagedAcc.LandingAccount = landingAcc.FirstOrDefault().LandingAccount;
-                            newManagedAcc.AccountNumber = landingAcc.FirstOrDefault().AccountNumber;
-                            newManagedAcc.TradingAccount = landingAcc.FirstOrDefault().LandingAccount.Split('-')[0] + "-" + (tradingAcc.Count() + 1).ToString("D3") + "-" + landingAcc.FirstOrDefault().LandingAccount.Split('-')[2];
+                            newManagedAcc.LandingAccount = landingAcc.LandingAccount;
+                            newManagedAcc.AccountNumber = landingAcc.AccountNumber;
+                            newManagedAcc.TradingAccount = CreateNewTradingAccByRules(landingAcc.LandingAccount, tradingAcc.Count(), organizationID);
                             newManagedAcc.CurrentBalance = Convert.ToDecimal(0.00);
                             newManagedAcc.IsLandingAccount = false;
                             newManagedAcc.IsTradingAccount = false;
@@ -833,16 +918,16 @@ namespace CurrentDesk.Repository.CurrentDesk
                     else if (accType == LoginAccountType.PartnerAccount)
                     {
                         //Check if trading account is present of same currency
-                        var landingAcc = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true);
+                        var landingAcc = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == true).FirstOrDefault();
                         var tradingAcc = clientAccObjSet.Include("IntroducingBroker").Where(acc => acc.IntroducingBroker.FK_UserID == userID && acc.FK_CurrencyID == currID && acc.IsLandingAccount == false).ToList();
                         if (landingAcc != null)
                         {
-                            newManagedAcc.FK_IntroducingBrokerID = landingAcc.FirstOrDefault().FK_IntroducingBrokerID;
-                            newManagedAcc.FK_OrganizationID = landingAcc.FirstOrDefault().FK_OrganizationID;
+                            newManagedAcc.FK_IntroducingBrokerID = landingAcc.FK_IntroducingBrokerID;
+                            newManagedAcc.FK_OrganizationID = landingAcc.FK_OrganizationID;
                             newManagedAcc.FK_CurrencyID = currID;
-                            newManagedAcc.LandingAccount = landingAcc.FirstOrDefault().LandingAccount;
-                            newManagedAcc.AccountNumber = landingAcc.FirstOrDefault().AccountNumber;
-                            newManagedAcc.TradingAccount = landingAcc.FirstOrDefault().LandingAccount.Split('-')[0] + "-" + (tradingAcc.Count() + 1).ToString("D3") + "-" + landingAcc.FirstOrDefault().LandingAccount.Split('-')[2];
+                            newManagedAcc.LandingAccount = landingAcc.LandingAccount;
+                            newManagedAcc.AccountNumber = landingAcc.AccountNumber;
+                            newManagedAcc.TradingAccount = CreateNewTradingAccByRules(landingAcc.LandingAccount, tradingAcc.Count(), organizationID);
                             newManagedAcc.CurrentBalance = Convert.ToDecimal(0.00);
                             newManagedAcc.IsLandingAccount = false;
                             newManagedAcc.IsTradingAccount = false;
@@ -1345,8 +1430,20 @@ namespace CurrentDesk.Repository.CurrentDesk
                     //Get all IB accounts
                     var brokerAccs = clientAccObjSet.Where(acc => acc.FK_IntroducingBrokerID != null && acc.FK_OrganizationID == organizationID).ToList();
 
-                    //Filter required acc number and return FK_IntroducingBrokerID
-                    return (int)brokerAccs.Where(acc => acc.LandingAccount.Split('-')[2] == accNumber).FirstOrDefault().FK_IntroducingBrokerID;
+                    //Get account creation rules
+                    var accCreationRule = new AccountCreationRuleBO();
+                    var rules = accCreationRule.GetRule(organizationID);
+
+                    foreach (var rule in rules)
+                    {
+                        if (rule.Meaning == Constants.K_ACC_RULE_ACC_NUMBER)
+                        {
+                            //Filter required acc number and return FK_IntroducingBrokerID
+                            return (int)brokerAccs.Where(acc => acc.LandingAccount.Split('-')[(int)rule.Position - 1] == accNumber).FirstOrDefault().FK_IntroducingBrokerID;
+                        }
+                    }
+
+                    return 0;
                 }
             }
             catch (Exception ex)
@@ -1456,8 +1553,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// <summary>
         /// This Function Will Update Slave Equity For Open Trades
         /// </summary>
-        /// </summary>
-        /// <param name="clientAcctID">clientAcctID</param>
+        /// <param name="clientAcctIDList">clientAcctIDList</param>
         public void UpdateSlaveOpenEquity(List<int> clientAcctIDList)
         {
             try
@@ -1577,47 +1673,6 @@ namespace CurrentDesk.Repository.CurrentDesk
         }
 
         /// <summary>
-        /// This methods returns current balance of an account
-        /// </summary>
-        /// <param name="accNumber">accNumber</param>
-        /// <param name="organizationID">organizationID</param>
-        /// <returns></returns>
-        public decimal GetAccountBalance(string accNumber, int organizationID)
-        {
-            try
-            {
-                using (var unitOfWork = new EFUnitOfWork())
-                {
-                    var clientAccRepo =
-                                new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
-
-                    //Creating ClientAccount Objset to Query
-                    ObjectSet<Client_Account> clientAccObjSet =
-                      ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
-
-                    Client_Account acc;
-
-                    //If landing account
-                    if (accNumber.Split('-')[1] == "000")
-                    {
-                        acc = clientAccObjSet.Where(ac => ac.LandingAccount == accNumber && ac.IsLandingAccount == true && ac.FK_OrganizationID == organizationID).FirstOrDefault();
-                    }
-                    else
-                    {
-                        acc = clientAccObjSet.Where(ac => ac.TradingAccount == accNumber && ac.FK_OrganizationID == organizationID).FirstOrDefault();
-                    }
-
-                    return acc != null ? (decimal)acc.CurrentBalance : 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                CommonErrorLogger.CommonErrorLog(ex, System.Reflection.MethodBase.GetCurrentMethod().Name);
-                throw;
-            }
-        }
-
-        /// <summary>
         /// This method returns account details of 
         /// a particular account
         /// </summary>
@@ -1633,7 +1688,7 @@ namespace CurrentDesk.Repository.CurrentDesk
                     var clientAccRepo =
                                 new Client_AccountRepository(new EFRepository<Client_Account>(), unitOfWork);
 
-                    //Creating ClientAccount Objeset to Query
+                    //Creating ClientAccount Objset to Query
                     ObjectSet<Client_Account> clientAccObjSet =
                       ((CurrentDeskClientsEntities)clientAccRepo.Repository.UnitOfWork.Context).Client_Account;
 

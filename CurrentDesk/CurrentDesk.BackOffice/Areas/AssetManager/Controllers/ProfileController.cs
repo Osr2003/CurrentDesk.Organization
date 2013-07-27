@@ -113,6 +113,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     //Get Individual Account details for the partner user
                     var selectedClient = introducingBrokerBO.GetIndividualAccountDetails(loginInfo.UserID);
@@ -134,7 +135,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     model.IdInfo = clientInformations.FK_IDInformationID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_IDInformationID) : "";
                     model.IdNumber = clientInformations.IDNumber != null ? clientInformations.IDNumber : "";
                     model.ResidenceCountry = countryBO.GetSelectedCountry((int)clientInformations.FK_ResidenceCountryID);
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                     model.PhoneID = clientInformations.PhoneID ?? "";
 
                     model.ResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
@@ -181,6 +182,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     //Get Joint Account details for the partner user
                     var selectedClient = introducingBrokerBO.GetJointAccountDetails(loginInfo.UserID);
@@ -202,7 +204,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                     model.PrimaryAccountHolderIdInfo = clientInformations.FK_PrimaryAccountHolderIDTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_PrimaryAccountHolderIDTypeID) : "";
                     model.PrimaryAccountHolderIdNumber = clientInformations.PrimaryAccountHolderIDNumber ?? "";
                     model.PrimaryAccountHolderResidenceCountry = clientInformations.FK_PrimaryAccountHolderResidenceCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PrimaryAccountHolderResidenceCountryID) : "";
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                     model.PhoneID = clientInformations.PhoneID ?? "";
 
                     model.PrimaryAccountHolderResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
@@ -296,6 +298,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     //Get Corporate Account details for the partner user
                     var selectedResult = introducingBrokerBO.GetCorporateAccountDetails(loginInfo.UserID);
@@ -312,7 +315,7 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                         CompanyCity = corporateAccountInformation.City,
                         CompanyCountry = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_CompanyCountryID),
                         CompanyPostalCode = corporateAccountInformation.CompanyPostalCode,
-                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "",
+                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "",
                         PhoneID = corporateAccountInformation.PhoneID ?? "",
                         IsLive = false
                     };
@@ -466,10 +469,11 @@ namespace CurrentDesk.BackOffice.Areas.AssetManager.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     ViewData["CustomizedLink"] = introducingBrokerBO.GetCustomizedLinkOfIB(loginInfo.UserID);
 
-                    ViewData["AccountNumber"] = clientAccBO.GetAccountNumberOfUser(loginInfo.LogAccountType, loginInfo.UserID).Split('-')[2];
+                    ViewData["AccountNumber"] = clientAccBO.GetAccountNumberOfUser(loginInfo.LogAccountType, loginInfo.UserID).Split('-')[ruleInfo.AccountNumberPosition - 1];
 
 
                     return View("Marketing");

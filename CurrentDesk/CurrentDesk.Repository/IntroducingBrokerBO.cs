@@ -971,7 +971,7 @@ namespace CurrentDesk.Repository.CurrentDesk
         /// </summary>
         /// <param name="userID">users</param>
         /// <returns></returns>
-        public List<BrokerClients> GetPartnerNames(List<User> users)
+        public List<BrokerClients> GetPartnerNames(List<User> users, int accountNumberPosition)
         {
             try
             {
@@ -1014,22 +1014,22 @@ namespace CurrentDesk.Repository.CurrentDesk
                             if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_INDIVIDUAL)
                             {
                                 var liveInfo = item.IndividualAccountInformations.FirstOrDefault();
-                                brokerName = (liveInfo != null ? liveInfo.FirstName + " " + liveInfo.LastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
+                                brokerName = (liveInfo != null ? liveInfo.FirstName + " " + liveInfo.LastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[accountNumberPosition] : "");
                             }
                             else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_JOINT)
                             {
                                 var jointInfo = item.JointAccountInformations.FirstOrDefault();
-                                brokerName = (jointInfo != null ? jointInfo.PrimaryAccountHolderFirstName + " " + jointInfo.PrimaryAccountHolderLastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
+                                brokerName = (jointInfo != null ? jointInfo.PrimaryAccountHolderFirstName + " " + jointInfo.PrimaryAccountHolderLastName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[accountNumberPosition] : "");
                             }
                             else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_CORPORATE)
                             {
                                 var corInfo = item.CorporateAccountInformations.FirstOrDefault();
-                                brokerName = (corInfo != null ? corInfo.CompanyName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
+                                brokerName = (corInfo != null ? corInfo.CompanyName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[accountNumberPosition] : "");
                             }
                             else if (accountTypeDetails.FK_AccountTypeValue == Constants.K_ACCT_TRUST)
                             {
                                 var trustInfo = item.TrustAccountInformations.FirstOrDefault();
-                                brokerName = (trustInfo != null ? trustInfo.TrustName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[2] : "");
+                                brokerName = (trustInfo != null ? trustInfo.TrustName : null) + " - " + (item.Client_Account.FirstOrDefault() != null ? item.Client_Account.FirstOrDefault().LandingAccount.Split('-')[accountNumberPosition] : "");
                             }
 
                             brokerClient.UserID = (int)item.FK_UserID;

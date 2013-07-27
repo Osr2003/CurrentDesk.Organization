@@ -386,7 +386,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     LoginInformation loginInfo = SessionManagement.UserInfo;
                     var currLookupValue = accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID));
 
-                    var accCreationResult = clientAccBo.CreateNewTraderLandingAccount(loginInfo.UserID, currLookupValue);
+                    var accCreationResult = clientAccBo.CreateNewTraderLandingAccount(loginInfo.UserID, currLookupValue, (int)SessionManagement.OrganizationID);
 
                     //If landing account creation successful
                     if (accCreationResult != 0)
@@ -424,11 +424,12 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    var organizationID = (int) SessionManagement.OrganizationID;
                     int currLookupValue = accountCurrencyBO.GetCurrencyLookUpID(Convert.ToInt32(currencyID));
 
                     if (accountTypeID == Constants.K_TRADING_ACCOUNT)
                     {
-                        int pkClientAccID = clientAccBo.CreateNewTradingAccount(loginInfo.LogAccountType, loginInfo.UserID, currLookupValue);
+                        int pkClientAccID = clientAccBo.CreateNewTradingAccount(loginInfo.LogAccountType, loginInfo.UserID, currLookupValue, organizationID);
 
                         //Create platform trading account
                         var user = new User();
@@ -442,7 +443,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     }
                     else if (accountTypeID == Constants.K_MANAGED_ACCOUNT)
                     {
-                        int pkClientAccID = clientAccBo.CreateNewManagedAccount(loginInfo.LogAccountType, loginInfo.UserID, currLookupValue);
+                        int pkClientAccID = clientAccBo.CreateNewManagedAccount(loginInfo.LogAccountType, loginInfo.UserID, currLookupValue, organizationID);
 
                         //Logs new account creation in db
                         InsertAccountActivityDetails(currLookupValue, "Managed", pkClientAccID);
@@ -549,9 +550,12 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+                    
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    
                     var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
@@ -572,7 +576,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
                         lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");
@@ -653,9 +657,12 @@ namespace CurrentDesk.BackOffice.Controllers
             {
                 if (SessionManagement.UserInfo != null)
                 {
+                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
+
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
-                    LoginInformation loginInfo = SessionManagement.UserInfo;
+                    
                     var model = new TransfersModel();
                     model.BankInformation = new List<BankInformation>();
                     model.LandingAccInformation = new List<LandingAccInformation>();
@@ -677,7 +684,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     foreach (var lAcc in landingAccs)
                     {
                         var lAccInfo = new LandingAccInformation();
-                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[0]);
+                        lAccInfo.LCurrencyName = lCurrValueBO.GetCurrencySymbolFromCurrencyAccountCode(lAcc.LandingAccount.Split('-')[ruleInfo.CurrencyPosition - 1]);
                         lAccInfo.LAccNumber = lAcc.LandingAccount;
 
                         lAccInfo.LAccBalance = Utility.FormatCurrencyValue((decimal)lAcc.CurrentBalance, "");

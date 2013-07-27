@@ -1,8 +1,11 @@
 ﻿#region Header Information
 /********************************************************
  * File Name     : ProfileController.cs
- * Purpose       : This file contains controller actions for profile view of different account types
+ * Author        : Chinmoy Dey
+ * Copyright     : Mindfire Solutions
  * Creation Date : 21st Jan 2013 
+ * Modified Date : 21st Jan 2013
+ * Description   : This file contains controller actions for profile view of different account types
  * *****************************************************/
 #endregion
 
@@ -126,6 +129,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
@@ -153,7 +157,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     model.IdInfo = clientInformations.FK_IDInformationID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_IDInformationID) : "";
                     model.IdNumber = clientInformations.IDNumber != null ? clientInformations.IDNumber : "";
                     model.ResidenceCountry = countryBO.GetSelectedCountry((int)clientInformations.FK_ResidenceCountryID);
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                     model.PhoneID = clientInformations.PhoneID ?? "";
 
                     model.ResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
@@ -222,6 +226,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
@@ -248,7 +253,7 @@ namespace CurrentDesk.BackOffice.Controllers
                     model.PrimaryAccountHolderIdInfo = clientInformations.FK_PrimaryAccountHolderIDTypeID != null ? idInfoTypeBO.GetSelectedIDInformation((int)clientInformations.FK_PrimaryAccountHolderIDTypeID) : "";
                     model.PrimaryAccountHolderIdNumber = clientInformations.PrimaryAccountHolderIDNumber ?? "";
                     model.PrimaryAccountHolderResidenceCountry = clientInformations.FK_PrimaryAccountHolderResidenceCountryID != null ? countryBO.GetSelectedCountry((int)clientInformations.FK_PrimaryAccountHolderResidenceCountryID) : "";
-                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "";
+                    model.ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "";
                     model.PhoneID = clientInformations.PhoneID ?? "";
 
                     model.PrimaryAccountHolderResidentialAddLine1 = clientInformations.ResidentialAddress != null ? (clientInformations.ResidentialAddress.Split('@')[0] + " " + clientInformations.ResidentialAddress.Split('@')[1]) : "";
@@ -332,6 +337,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
@@ -353,7 +359,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         CompanyCity = corporateAccountInformation.City,
                         CompanyCountry = countryBO.GetSelectedCountry((int)corporateAccountInformation.FK_CompanyCountryID),
                         CompanyPostalCode = corporateAccountInformation.CompanyPostalCode,
-                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "",
+                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "",
                         PhoneID = corporateAccountInformation.PhoneID ?? "",
 
                         //Authorized Officer Information
@@ -437,6 +443,7 @@ namespace CurrentDesk.BackOffice.Controllers
                 if (SessionManagement.UserInfo != null)
                 {
                     LoginInformation loginInfo = SessionManagement.UserInfo;
+                    AccountNumberRuleInfo ruleInfo = SessionManagement.AccountRuleInfo;
 
                     ViewData["Country"] = new SelectList(countryBO.GetCountries(), "PK_CountryID", "CountryName");
                     ViewData["ReceivingBankInfo"] = new SelectList(receivingBankInfoBO.GetReceivingBankInfo((int)SessionManagement.OrganizationID), "PK_RecievingBankID", "RecievingBankName");
@@ -457,7 +464,7 @@ namespace CurrentDesk.BackOffice.Controllers
                         TrustCity = trustAccountInformation.TrustCity,
                         TrustCountry = countryBO.GetSelectedCountry((int)trustAccountInformation.FK_TrusteeCountryID),
                         TrustPostalCode = trustAccountInformation.TrustPostalCode,
-                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[2] : "",
+                        ClientAccountNumber = clientAccInfo != null ? clientAccInfo.LandingAccount.Split('-')[ruleInfo.AccountNumberPosition - 1] : "",
                         PhoneID = trustAccountInformation.PhoneID ?? "",
                         IsLive = true
 
